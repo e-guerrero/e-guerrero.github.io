@@ -49,6 +49,47 @@ skillsHeader.forEach((el) => {
     el.addEventListener('click', toggleSkills)
 })
 
+/*==================== DYNAMICALLY GENERATED SKILLS ====================*/
+function createSkillsDataListing(category, name, percentage){
+    //  Skills data container
+    let skillsData_divElement = document.createElement('div');
+    skillsData_divElement.classList.add('skills__data');
+
+        //  Titles container
+        let skillsTitles_divElement = document.createElement('div');
+        skillsTitles_divElement.classList.add('skills__titles');
+        skillsData_divElement.appendChild(skillsTitles_divElement);
+            // Skills name
+            let skillsName_h3Element = document.createElement('h3');
+            skillsName_h3Element.classList.add('skills__name');
+            skillsName_h3Element.innerText = name;
+            skillsTitles_divElement.appendChild(skillsName_h3Element);
+            // Skills number
+            let skillsNumber_spanElement = document.createElement('span');
+            skillsNumber_spanElement.classList.add('skills__number');
+            skillsNumber_spanElement.innerText = percentage;
+            skillsTitles_divElement.appendChild(skillsNumber_spanElement);
+
+        //  Skills bar container
+        let skillsBar_divElement = document.createElement('div');
+        skillsBar_divElement.classList.add('skills__bar');
+        skillsData_divElement.appendChild(skillsBar_divElement);
+            // Skills bar width
+            let skillsBarWidth_spanElement = document.createElement('span');
+            skillsBarWidth_spanElement.classList.add('skills__percentage');
+            skillsBarWidth_spanElement.style.width = percentage;
+            skillsBar_divElement.appendChild(skillsBarWidth_spanElement);
+
+
+    // Add the element to webpage
+    let skillsList_containerDiv = document.getElementById('skills-list-' + category);
+    skillsList_containerDiv.appendChild(skillsData_divElement);
+}
+
+createSkillsDataListing('frontend','HTML','20%');
+createSkillsDataListing('frontend','CSS','70%');
+
+
 /*==================== QUALIFICATION TABS ====================*/
 const tabs = document.querySelectorAll('[data-target]'),
 tabContents = document.querySelectorAll('[data-content]')
