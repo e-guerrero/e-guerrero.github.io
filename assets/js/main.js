@@ -49,26 +49,358 @@ skillsHeader.forEach((el) => {
     el.addEventListener('click', toggleSkills)
 })
 
-/*==================== DYNAMICALLY GENERATED SKILLS ====================*/
-function createSkillsDataListing(category, name, percentage){
+/*========================= DYNAMICALLY GENERATED SKILLS =======================*/
+
+fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?recursive=1")
+    .then(response => {
+        return response.json(); 
+    })
+    .then(result => {
+        //console.log(result.tree)
+        return getSkills(result.tree);
+    })
+    .then(skills => {
+        skills.forEach(skill => {
+            addSkillListingToPage(skill.category, skill.title, skill.percentage);
+        })
+    });
+
+
+let Range = {
+    startLine: 0,
+    endLine: 0
+}
+
+let Snippet = {
+        filePath: "",
+        ranges: []
+}
+
+class Article {
+    constructor(title) {
+        this._title = title; // mandatory
+        this._hasReadme = false;
+
+        this._youtubeURL = ""; // optional
+        this._bloggerURL = ""; // optional
+        // Just because there is a Github link, doesn't mean there should be 
+        //  a value here. Only fill this in...
+        //      
+        //      if article file tree is >1 level deep.
+        //      if there's >= 1 snippet.
+        //      
+        this._githubURL = ""; // conditional  
+        // Optional but If no snippets and only 1 level deep: auto 
+        // If auto, you would display all code from each file as snippets.
+        this._snippets = []; // optional  
+    }
+    set hasReadme(hasReadme) { this._hasReadme = hasReadme; }
+}
+
+class Section {
+    constructor(title) {
+        this._title = title;
+        this._articles = [];
+    }
+    get articles() { return this._articles; }
+}
+
+class Part {
+    constructor(title) {
+        this._title = title;
+        this._sections = [];
+    }
+    get sections() { return this._sections; }   
+}
+
+class Skill {
+      
+    constructor() {
+        this._title = "";
+        this._category = "";
+        this._parts = [];
+        this._sections = [];
+        this._articles = [];
+        this._totalCategories = 0; // 1 - 3
+        this._articleCount = 0; 
+        this._totalArticleCount = 0;
+    }   
+
+    set title(title) { this._title = title; }
+    set category(category) { this._category = category; }
+
+    set totalCategories(totalCategories) { this._totalCategories = totalCategories; }
+    set articleCount(articleCount) { this._articleCount = articleCount; }
+    set totalArticleCount(totalArticleCount) { this._totalArticleCount = totalArticleCount; }
+    
+    get title() {
+    // Remove sequential numbers.
+        let nameCategoryArray = this._title.split(" ");
+        return nameCategoryArray[1];
+    }
+    get category() { return this._category; }
+    get parts() { return this._parts; }
+    get sections() { return this._sections; }
+    get articles() { return this._articles; } 
+    get percentage() { 
+        return Math.round((this._articleCount / this._totalArticleCount) * 100 ) + "%"; 
+    }
+    
+} 
+
+
+const category_Index = 0;
+const skill_Index = 1;
+const level_1_Index = 2;
+const level_2_Index = 3;
+const level_3_Index = 4;
+const level_4_Index = 5;
+
+function parseOneCategory(tree) {
+    let skill = new Skill();
+    const article_Index = level_1_Index;
+    const content_index = level_2_Index;
+    let directoryTitle = "";
+    let currentArticle = -1;
+    let articleCount = 0;
+    let totalArticleCount = 0;
+
+    tree.forEach(function(result, index) {
+        splitPath = result.path.split("/");
+        currentDepthIndex = splitPath.length - 1;
+
+        if (splitPath.length === 2) {
+            skill.category = splitPath[category_Index];
+            skill.title = splitPath[skill_Index];
+        }
+        if (currentDepthIndex === article_Index) {
+            directoryTitle = splitPath[article_Index];
+            skill.articles.push(new Article(directoryTitle));
+
+            // Keep count of total articles for bar percentage calculation.
+            articleCount++;
+        }
+        if (currentDepthIndex === content_index) {
+            // Check for README.md file.
+            if (splitPath[level_2_Index].search("README.md") >= 0){
+                currentArticle = skill.articles.length - 1;
+                skill.articles[currentArticle].hasReadme = true;
+            }
+        }
+        if (index === tree.length - 1) {
+            totalArticleCount = splitPath[level_1_Index].match(/\d+/g);
+        }
+    })
+
+    skill.totalArticleCount = totalArticleCount;
+    skill.articleCount = articleCount;
+    return skill;
+
+}
+
+function parseTwoCategories(tree) {
+    let skill = new Skill();
+    const section_Index = level_1_Index;
+    const article_Index = level_2_Index;
+    const content_index = level_3_Index;
+    let directoryTitle = "";
+    let currentSection = -1;
+    let currentArticle = -1;
+    let articleCount = 0;
+    let totalArticleCount = 0;
+
+    tree.forEach(function(result, index) {
+        splitPath = result.path.split("/");
+        currentDepthIndex = splitPath.length - 1;
+
+        if (splitPath.length === 2) {
+            skill.category = splitPath[category_Index];
+            skill.title = splitPath[skill_Index];
+        }
+        if (currentDepthIndex === section_Index) {
+            directoryTitle = splitPath[section_Index];
+            skill.sections.push(new Section(directoryTitle));
+        }
+        if (currentDepthIndex === article_Index) {
+            directoryTitle = splitPath[article_Index];
+            currentSection = skill.sections.length - 1;
+            skill.sections[currentSection].articles.push(new Article(directoryTitle));
+
+            // Keep count of total articles for bar percentage calculation.
+            articleCount++;
+        }
+        if (currentDepthIndex === content_index) {
+            // Check for README.md file.
+            if (splitPath[level_2_Index].search("README.md") >= 0){
+                currentArticle = skill.sections[currentSection].articles.length - 1;
+                skill.sections[currentSection].articles[currentArticle].hasReadme = true;
+            }
+        }
+        if (index === tree.length - 1) {
+            totalArticleCount = splitPath[level_1_Index].match(/\d+/g);
+        }
+    })
+
+    skill.totalArticleCount = totalArticleCount;
+    skill.articleCount = articleCount;
+    return skill;
+}
+
+function parseThreeCategories(tree) {
+    let skill = new Skill();
+    const part_Index = level_1_Index;
+    const section_Index = level_2_Index;
+    const article_Index = level_3_Index;
+    const content_index = level_4_Index;
+    let directoryTitle = "";
+    let currentPart = -1;
+    let currentSection = -1;
+    let currentArticle = -1;
+    let articleCount = 0;
+    let totalArticleCount = 0;
+
+    tree.forEach(function(result, index) {
+        splitPath = result.path.split("/");
+        currentDepthIndex = splitPath.length - 1;
+
+        if (splitPath.length === 2) {
+            skill.category = splitPath[category_Index];
+            skill.title = splitPath[skill_Index];
+        }
+        if (currentDepthIndex === part_Index) {
+            directoryTitle = splitPath[part_Index];
+            skill.parts.push(new Part(directoryTitle));
+        }
+        if (currentDepthIndex === section_Index) {
+            directoryTitle = splitPath[section_Index];
+            currentPart = skill.parts.length - 1;
+            skill.parts[currentPart].sections.push(new Section(directoryTitle));
+        }
+        if (currentDepthIndex === article_Index) {
+            directoryTitle = splitPath[article_Index];
+            currentSection = skill.parts[currentPart].sections.length - 1;
+            skill.parts[currentPart].sections[currentSection].articles.push(new Article(directoryTitle));
+
+            // Keep count of total articles for bar percentage calculation.
+            articleCount++;
+        }
+        if (currentDepthIndex === content_index) {
+            // Check for README.md file.
+            if (splitPath[level_2_Index].search("README.md") >= 0){
+                currentArticle = skill.parts[currentPart].sections[currentSection].articles.length - 1;
+                skill.parts[currentPart].sections[currentSection].articles[currentArticle].hasReadme = true;
+            }
+        }
+        if (index === tree.length - 1) {
+            totalArticleCount = splitPath[level_1_Index].match(/\d+/g);
+        }
+    })
+
+    skill.totalArticleCount = totalArticleCount;
+    skill.articleCount = articleCount;
+    return skill;
+}
+
+
+/*================================ PARSE SKILLS ================================*/
+
+function getSkills(wholeTree) {
+
+    //console.log(tree);
+
+    // Skill object
+    let skill = new Skill();
+    // For gradually saving all the skills.
+    let results = [];
+    let skills = [];
+    let totalCategories = 0; // 1-3
+    // Path as an array of strings seperated by "/".
+    let splitPath = [];
+    let currentDepthIndex = 0;
+
+    wholeTree.shift(); // trim off .gitignore
+    wholeTree.shift(); // trim off README.md
+
+
+    wholeTree.forEach(function(result) {
+        splitPath = result.path.split("/");
+        currentDepthIndex = splitPath.length - 1;
+
+        // Don't include results that only contain the category.
+        // This overcomplicates the parsing algorithms.
+        if (currentDepthIndex != category_Index) {
+            // Keep saving results until end of skill is reached.
+            // Then take the results for each skill and parse them into skill objects.
+            // Finally, push the skill objects into the skills array.
+            results.push(result);
+        }
+   
+        if (currentDepthIndex === level_1_Index) {
+            // If it does not start with a digit... 
+            if (splitPath[level_1_Index].match(/^\d/) ===  null) {
+                // Pass the skill tree to the appropriate parser.
+                if (totalCategories === 1) {
+                    skill = parseOneCategory(results);
+                }
+                else if (totalCategories === 2) {
+                    skill = parseTwoCategories(results);
+                }
+                else if (totalCategories === 3) {
+                    skill = parseThreeCategories(results);
+                }
+                skills.push(skill);
+                // Reset results for the next skill.
+                results = [];
+            }
+        }   
+        if (currentDepthIndex === level_2_Index) {
+            // If it does not start with a digit... 
+            if (splitPath[level_2_Index].match(/^\d/) === null) {
+                totalCategories = 1;
+            }
+        } // Guaranteed to go at least this far throughout the entire life cycle of 
+        //  a skill.
+
+        // May or may not reach this far
+        if (currentDepthIndex === level_3_Index) {
+            // If it doesn't start with a digit...
+            if (splitPath[level_3_Index].match(/^\d/) === null) {
+                totalCategories = 2;
+            }
+            else {  // It does start with a digit...
+                totalCategories = 3;
+            }
+        }
+    })
+
+    console.log(skills);
+    return skills;
+}
+
+/*================================ GENERATE SKILL LISTING ================================*/
+
+
+function addSkillListingToPage(category, name, percentage){
+
+
     //  Skills data container
     let skillsData_divElement = document.createElement('div');
     skillsData_divElement.classList.add('skills__data');
 
         //  Titles container
-        let skillsTitles_divElement = document.createElement('div');
-        skillsTitles_divElement.classList.add('skills__titles');
-        skillsData_divElement.appendChild(skillsTitles_divElement);
+        let skillsTitle_divElement = document.createElement('div');
+        skillsTitle_divElement.classList.add('skills__titles');
+        skillsData_divElement.appendChild(skillsTitle_divElement);
             // Skills name
             let skillsName_h3Element = document.createElement('h3');
             skillsName_h3Element.classList.add('skills__name');
             skillsName_h3Element.innerText = name;
-            skillsTitles_divElement.appendChild(skillsName_h3Element);
-            // Skills number
+            skillsTitle_divElement.appendChild(skillsName_h3Element);
+            // Skills percent
             let skillsNumber_spanElement = document.createElement('span');
             skillsNumber_spanElement.classList.add('skills__number');
             skillsNumber_spanElement.innerText = percentage;
-            skillsTitles_divElement.appendChild(skillsNumber_spanElement);
+            skillsTitle_divElement.appendChild(skillsNumber_spanElement);
 
         //  Skills bar container
         let skillsBar_divElement = document.createElement('div');
@@ -86,8 +418,31 @@ function createSkillsDataListing(category, name, percentage){
     skillsList_containerDiv.appendChild(skillsData_divElement);
 }
 
-createSkillsDataListing('frontend','HTML','20%');
-createSkillsDataListing('frontend','CSS','70%');
+
+
+function parseReadme(skill) {
+    // // Get readme file data to calculate completed percentage for each skill.
+
+    //     let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${skill.category}/${skill.title}/README.md`;
+    //     const response = await fetch(url);
+    //     const result = await response.json();
+ 
+    // // parse readme file data to get count of lessons to calculate percentage.
+    //     //console.log(atob(result.content));
+    //     const readmeText = atob(result.content);
+    //     const flag = "count: ";
+    //     let flagPosition = readmeText.search(flag);
+    //     countPosition = flagPosition + flag.length;
+    //     const count = readmeText.slice(countPosition, readmeText.length);
+    //     console.log(count);
+
+    // Get numbers of lessons in skill directory.
+    addSkillListingToPage("frontend","skill.title","skill.percentage");
+}
+
+
+
+
 
 
 /*==================== QUALIFICATION TABS ====================*/
@@ -136,7 +491,7 @@ modalCloses.forEach((modalClose) => {
 /*==================== PORTFOLIO SWIPER  ====================*/
 let swiperPortfolio = new Swiper('.portfolio__container', {
     cssMode: true,
-    loop: true,
+    loop: false,
 
     navigation: {
       nextEl: '.swiper-button-next',
