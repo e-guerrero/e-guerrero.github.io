@@ -405,8 +405,8 @@ function addSkillListingToPage(skillData){
 
 
     //  Skill container
-    let skill = document.createElement('div');
-    skill.className = 'skill__data skill__close';
+    let skillListing = document.createElement('div');
+    skillListing.className = 'skill__data skill__close';
 
         //  Header container
         let header = document.createElement('div');
@@ -439,26 +439,24 @@ function addSkillListingToPage(skillData){
             book_content.innerText = "hello sir";
 
             // get book function call
-            if (skill.bookTreeDepth === 1) { }
-            if (skill.bookTreeDepth === 2) { }
-            if (skill.bookTreeDepth === 3) { }
+            if (skillData.bookTreeDepth === 1) { }
+            if (skillData.bookTreeDepth === 2) { }
+            if (skillData.bookTreeDepth === 3) { }
 
-
-    
-    skill.appendChild(header);
+    skillListing.appendChild(header);
     header.appendChild(title);
     header.appendChild(percentage);
-    skill.appendChild(skill_progress_bar);
+    skillListing.appendChild(skill_progress_bar);
     skill_progress_bar.appendChild(skill_progress);
-    skill.appendChild(book);
+    skillListing.appendChild(book);
     book.appendChild(book_content);
 
-    skill.addEventListener('click', toggleSkill);
+    skillListing.addEventListener('click', toggleSkill);
 
 
     // Add the element to webpage
     let skills_list = document.getElementById('skills-list-' + skillData.category);
-    skills_list.appendChild(skill);
+    skills_list.appendChild(skillListing);
 }
 
 
