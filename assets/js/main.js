@@ -128,7 +128,9 @@ class Part {
         this._title = title;
         this._sections = [];
     }
-    get sections() { return this._sections; }   
+
+    get sections() { return this._sections; }  
+    get title() { return this._title; } 
 }
 
 class Skill {
@@ -289,7 +291,7 @@ function parseThreeCategories(tree) {
             skill.category = splitPath[category_Index];
             skill.title = splitPath[skill_Index];
         }
-        if (currentDepthIndex === part_Index) {
+        if (currentDepthIndex === part_Index && index != tree.length - 1) {
             directoryTitle = splitPath[part_Index];
             skill.parts.push(new Part(directoryTitle));
         }
@@ -455,6 +457,11 @@ function addSkillListingToPage(skillData) {
 
 
 function getParts(skillData) {
+
+    skillData.parts.forEach(part => {
+        console.log(part.title);
+    })
+
 
     let blah = document.createElement('h3');
     blah.innerText = "Parts";
