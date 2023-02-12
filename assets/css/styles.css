@@ -472,6 +472,8 @@ img {
   display: flex;
   justify-content: space-between;
   margin-bottom: var(--mb-1);
+
+  cursor: pointer;
   
 }
 
@@ -506,11 +508,6 @@ img {
 
 .skill__category__open .skill__category__arrow {
   transform: rotate(-180deg);
-}
-
-
-.skill__data {
-  cursor: pointer;
 }
 
 .skill__book {
