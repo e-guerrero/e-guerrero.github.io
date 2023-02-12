@@ -428,13 +428,13 @@ function addSkillListingToPage(skillData) {
                 percentage.innerText = skillData.percentage;
 
             //  Skill bar container
-            let skill_progress_bar = document.createElement('div');
-            skill_progress_bar.classList.add('skill__progress__bar');
+            let progressBar = document.createElement('div');
+            progressBar.classList.add('skill__progress__bar');
             
                 // Skill bar fill
-                let skill_progress = document.createElement('span');
-                skill_progress.classList.add('skill__progress');
-                skill_progress.style.width = skillData.percentage;
+                let progress = document.createElement('span');
+                progress.classList.add('skill__progress');
+                progress.style.width = skillData.percentage;
             
         // Skill book container
         let book = document.createElement('div');
@@ -446,10 +446,10 @@ function addSkillListingToPage(skillData) {
     header.appendChild(title);
     header.appendChild(percentage);
     //skillListing.appendChild(skill_progress_bar);
-    skill_progress_bar.appendChild(skill_progress);
+    progressBar.appendChild(progress);
 
     skillButton.appendChild(header);
-    skillButton.appendChild(skill_progress_bar);
+    skillButton.appendChild(progressBar);
 
     skillListing.appendChild(skillButton);
     skillListing.appendChild(book);
@@ -462,8 +462,8 @@ function addSkillListingToPage(skillData) {
     skillButton.addEventListener('click', toggleSkill);
 
     // Add the element to webpage
-    let skills_list = document.getElementById('skills-list-' + skillData.category);
-    skills_list.appendChild(skillListing);
+    let skillsList = document.getElementById('skills-list-' + skillData.category);
+    skillsList.appendChild(skillListing);
 }
 
 
