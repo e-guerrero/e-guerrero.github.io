@@ -84,11 +84,11 @@ fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?
     })
     .then(result => {
         //console.log(result.tree)
-        return getSkills(result.tree);
+        return getSkillData(result.tree);
     })
-    .then(skills => {
-        skills.forEach(skill => {
-            addSkillListingToPage(skill);
+    .then(skillObjects => {
+        skillObjects.forEach(skillData => {
+            addSkillListingToPage(skillData);
         })
     });
 
@@ -341,7 +341,7 @@ function parseThreeCategories(tree) {
 
 /*================================ PARSE SKILLS ================================*/
 
-function getSkills(wholeTree) {
+function getSkillData(wholeTree) {
 
     //console.log(tree);
 
