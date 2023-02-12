@@ -472,7 +472,6 @@ img {
   display: flex;
   justify-content: space-between;
   margin-bottom: var(--mb-1);
-  cursor: pointer;
 }
 
 .skill__title {
@@ -506,6 +505,10 @@ img {
 
 .skill__category__open .skill__category__arrow {
   transform: rotate(-180deg);
+}
+
+.skill__button {
+  cursor: pointer;
 }
 
 .skill__book {

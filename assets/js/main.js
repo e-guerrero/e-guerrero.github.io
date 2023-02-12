@@ -410,37 +410,48 @@ function addSkillListingToPage(skillData) {
     let skillListing = document.createElement('div');
     skillListing.className = 'skill skill__close';
 
-        //  Header container
-        let header = document.createElement('div');
-        header.classList.add('skill__header');
+        // Skill Button
+        let skill__button = document.createElement('div');
+        skill__button.classList.add('skill__button');
 
-            // Skill name
-            let title = document.createElement('h3');
-            title.classList.add('skill__title');
-            title.innerText = skillData.title;
-            // Skill percentage
-            let percentage = document.createElement('span');
-            percentage.classList.add('skill__percentage');
-            percentage.innerText = skillData.percentage;
+            //  Header container
+            let header = document.createElement('div');
+            header.classList.add('skill__header');
 
-        //  Skill bar container
-        let skill_progress_bar = document.createElement('div');
-        skill_progress_bar.classList.add('skill__progress__bar');
-        
-            // Skill bar fill
-            let skill_progress = document.createElement('span');
-            skill_progress.classList.add('skill__progress');
-            skill_progress.style.width = skillData.percentage;
+                // Skill name
+                let title = document.createElement('h3');
+                title.classList.add('skill__title');
+                title.innerText = skillData.title;
+                // Skill percentage
+                let percentage = document.createElement('span');
+                percentage.classList.add('skill__percentage');
+                percentage.innerText = skillData.percentage;
+
+            //  Skill bar container
+            let skill_progress_bar = document.createElement('div');
+            skill_progress_bar.classList.add('skill__progress__bar');
+            
+                // Skill bar fill
+                let skill_progress = document.createElement('span');
+                skill_progress.classList.add('skill__progress');
+                skill_progress.style.width = skillData.percentage;
             
         // Skill book container
         let book = document.createElement('div');
         book.classList.add('skill__book');
 
-    skillListing.appendChild(header);
+    
+
+
     header.appendChild(title);
     header.appendChild(percentage);
-    skillListing.appendChild(skill_progress_bar);
+    //skillListing.appendChild(skill_progress_bar);
     skill_progress_bar.appendChild(skill_progress);
+
+    skill__button.appendChild(header);
+    skill__button.appendChild(skill_progress_bar);
+
+    skillListing.appendChild(skill__button);
     skillListing.appendChild(book);
 
     // Append the book contents to the book.
@@ -448,7 +459,7 @@ function addSkillListingToPage(skillData) {
     // if (skillData.bookTreeDepth === 2) { book.appendChild(getSections(skillData)); }
     if (skillData.bookTreeDepth === 3) { book.appendChild(getParts(skillData)); }
 
-    header.addEventListener('click', toggleSkill);
+    skill__button.addEventListener('click', toggleSkill);
 
     // Add the element to webpage
     let skills_list = document.getElementById('skills-list-' + skillData.category);
