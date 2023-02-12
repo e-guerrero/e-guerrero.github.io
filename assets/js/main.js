@@ -484,7 +484,9 @@ function partsToHTML(parts) {
 
     parts.forEach((partData) => {
         let part = document.createElement('div');
+        part.classList.add('skill__part');
             let partButton = document.createElement('div');
+            partButton.classList.add('skill__part__button');
                 let partHeader = document.createElement('div');
                     let partTitle = document.createElement('h3');
         partTitle.innerText = partData.title;
@@ -506,9 +508,9 @@ function sectionsToHTML(sections) {
     let sectionsList = document.createElement('div');
 
     sections.forEach((sectionData) => {
-     
         let section = document.createElement('div');
             let sectionButton = document.createElement('div');
+            sectionButton.classList.add('skill__section__button');
                 let sectionHeader = document.createElement('div');
                     let sectionTitle = document.createElement('h3');
             let articlesList = articlesToHTML(sectionData.articles);
@@ -530,9 +532,9 @@ function articlesToHTML(articles) {
     let articlesList = document.createElement('div');
 
     articles.forEach((articleData) => {
-     
         let article = document.createElement('div');
             let articleButton = document.createElement('div');
+            articleButton.classList.add('skill__article__button');
                 let articleHeader = document.createElement('div');
                     let articleTitle = document.createElement('h3');
         //let content = contentToHTML(articleData);

@@ -525,6 +525,22 @@ img {
   height: max-content;
 }
 
+.skill__part {
+  background-color: black;
+}
+
+.skill__part__button {
+  background-color: green;
+}
+
+.skill__section__button {
+  background-color: blue;
+}
+
+.skill__article__button {
+  background-color: salmon;
+}
+
 /*==================== QUALIFICATION ====================*/
 .qualification__tabs {
   display: flex;
