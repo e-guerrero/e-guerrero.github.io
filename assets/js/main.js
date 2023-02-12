@@ -468,17 +468,7 @@ function addSkillListingToPage(skillData) {
 
 function getParts(skillData) {
 
-    // let blah = document.createElement('h3');
-    // blah.innerText = "Parts";
-
-    // return blah;
-    
-    /*
-        Return a div that contains a list of h3 elements.
-        Title each with part.title.
-    */
-
-    let bookContent = document.createElement('div');
+    let partsList = document.createElement('div');
 
     skillData.parts.forEach((partData, index) => {
         // console.log(part.title);
@@ -492,10 +482,10 @@ function getParts(skillData) {
         let sectionsList = getSections(skillData, index);
         part.appendChild(sectionsList);
     
-        bookContent.appendChild(part);
+        partsList.appendChild(part);
     })
 
-    return bookContent;
+    return partsList;
 }
 
 function getSections(skillData, partIndex = null) {
