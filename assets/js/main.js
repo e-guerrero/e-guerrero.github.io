@@ -52,7 +52,6 @@ skill_category_headers.forEach((el) => {
 
 
 function toggleSkill(){
-    console.log('hello')
     const skill_data = document.getElementsByClassName('skill');
     let itemClass = this.parentNode.className;
 
@@ -114,6 +113,7 @@ class Article {
         this._snippets = []; // optional  
     }
     set hasReadme(hasReadme) { this._hasReadme = hasReadme; }
+    get title() { return this._title}
 }
 
 class Section {
@@ -122,6 +122,7 @@ class Section {
         this._articles = [];
     }
     get articles() { return this._articles; }
+    get title() { return this._title; }
 }
 
 class Part {
@@ -196,7 +197,7 @@ function parseOneCategory(tree) {
             skill.category = splitPath[category_Index];
             skill.title = splitPath[skill_Index];
         }
-        if (currentDepthIndex === article_Index) {
+        if (currentDepthIndex === article_Index  && index != tree.length - 1) {
             directoryTitle = splitPath[article_Index];
             skill.articles.push(new Article(directoryTitle));
 
@@ -241,7 +242,7 @@ function parseTwoCategories(tree) {
             skill.category = splitPath[category_Index];
             skill.title = splitPath[skill_Index];
         }
-        if (currentDepthIndex === section_Index) {
+        if (currentDepthIndex === section_Index && index != tree.length - 1) {
             directoryTitle = splitPath[section_Index];
             skill.sections.push(new Section(directoryTitle));
         }
@@ -453,9 +454,9 @@ function addSkillListingToPage(skillData) {
     skill.appendChild(book);
 
     // Append the book contents to the book.
-    // if (skillData.bookTreeDepth === 1) { book.appendChild(getArticles(skillData)); }
-    // if (skillData.bookTreeDepth === 2) { book.appendChild(getSections(skillData)); }
-    if (skillData.bookTreeDepth === 3) { book.appendChild(getParts(skillData)); }
+    if (skillData.bookTreeDepth === 1) { book.appendChild(articlesToHTML(skillData.articles)); }
+    if (skillData.bookTreeDepth === 2) { book.appendChild(sectionsToHTML(skillData.sections)); }
+    if (skillData.bookTreeDepth === 3) { book.appendChild(partsToHTML(skillData.parts)); }
 
     skillButton.addEventListener('click', toggleSkill);
 
@@ -466,20 +467,21 @@ function addSkillListingToPage(skillData) {
 
 
 
-function getParts(skillData) {
+function partsToHTML(parts) {
 
     let partsList = document.createElement('div');
 
-    skillData.parts.forEach((partData, index) => {
-        // console.log(part.title);
+    parts.forEach((partData) => {
         let part = document.createElement('div');
-        let partHeader = document.createElement('div');
-        let partTitle = document.createElement('h3');
+            let partButton = document.createElement('div');
+                let partHeader = document.createElement('div');
+                    let partTitle = document.createElement('h3');
         partTitle.innerText = partData.title;
         partHeader.appendChild(partTitle);
-        part.appendChild(partHeader);
+        partButton.appendChild(partHeader);
+        part.appendChild(partButton);
 
-        let sectionsList = getSections(skillData, index);
+        let sectionsList = sectionsToHTML(partData.sections);
         part.appendChild(sectionsList);
     
         partsList.appendChild(part);
@@ -488,20 +490,52 @@ function getParts(skillData) {
     return partsList;
 }
 
-function getSections(skillData, partIndex = null) {
+function sectionsToHTML(sections) {
 
-    let blah = document.createElement('h3');
-    blah.innerText = "Sections";
+    let sectionsList = document.createElement('div');
 
-    return blah;
+    sections.forEach((sectionData) => {
+     
+        let section = document.createElement('div');
+            let sectionButton = document.createElement('div');
+                let sectionHeader = document.createElement('div');
+                    let sectionTitle = document.createElement('h3');
+            let articlesList = articlesToHTML(sectionData.articles);
+        sectionTitle.innerText = sectionData.title;
+        sectionHeader.appendChild(sectionTitle);
+        sectionButton.appendChild(sectionHeader);
+
+        section.appendChild(sectionButton);
+        section.appendChild(articlesList);
+    
+        sectionsList.appendChild(section);
+    })
+
+    return sectionsList;
 }
 
-function getArticles(skillData, sectionIndex = null) {
+function articlesToHTML(articles) {
 
-    let blah = document.createElement('h3');
-    blah.innerText = "Articles";
+    let articlesList = document.createElement('div');
 
-    return blah;
+    articles.forEach((articleData) => {
+     
+        let article = document.createElement('div');
+            let articleButton = document.createElement('div');
+                let articleHeader = document.createElement('div');
+                    let articleTitle = document.createElement('h3');
+        //let content = contentToHTML(articleData);
+        articleTitle.innerText = articleData.title;
+        articleHeader.appendChild(articleTitle);
+        articleButton.appendChild(articleHeader);
+
+        article.appendChild(articleButton);
+        //article.appendChild(content);
+
+        articlesList.appendChild(article);
+    })
+
+    return articlesList;
 }
 
 
