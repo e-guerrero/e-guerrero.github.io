@@ -407,8 +407,8 @@ function getSkills(wholeTree) {
 function addSkillListingToPage(skillData) {
 
     //  Skill container
-    let skillListing = document.createElement('div');
-    skillListing.className = 'skill skill__close';
+    let skill = document.createElement('div');
+    skill.className = 'skill skill__close';
 
         // Skill Button
         let skillButton = document.createElement('div');
@@ -441,18 +441,16 @@ function addSkillListingToPage(skillData) {
         book.classList.add('skill__book');
 
     
-
-
     header.appendChild(title);
     header.appendChild(percentage);
-    //skillListing.appendChild(skill_progress_bar);
+
     progressBar.appendChild(progress);
 
     skillButton.appendChild(header);
     skillButton.appendChild(progressBar);
 
-    skillListing.appendChild(skillButton);
-    skillListing.appendChild(book);
+    skill.appendChild(skillButton);
+    skill.appendChild(book);
 
     // Append the book contents to the book.
     // if (skillData.bookTreeDepth === 1) { book.appendChild(getArticles(skillData)); }
@@ -463,7 +461,7 @@ function addSkillListingToPage(skillData) {
 
     // Add the element to webpage
     let skillsList = document.getElementById('skills-list-' + skillData.category);
-    skillsList.appendChild(skillListing);
+    skillsList.appendChild(skill);
 }
 
 
@@ -482,20 +480,25 @@ function getParts(skillData) {
 
     let bookContent = document.createElement('div');
 
-    skillData.parts.forEach(part => {
+    skillData.parts.forEach((partData, index) => {
         // console.log(part.title);
+        let part = document.createElement('div');
         let partHeader = document.createElement('div');
         let partTitle = document.createElement('h3');
-        partTitle.innerText = part.title;
+        partTitle.innerText = partData.title;
         partHeader.appendChild(partTitle);
+        part.appendChild(partHeader);
+
+        let sectionsList = getSections(skillData, index);
+        part.appendChild(sectionsList);
     
-        bookContent.appendChild(partHeader);
+        bookContent.appendChild(part);
     })
 
     return bookContent;
 }
 
-function getSections(skillData) {
+function getSections(skillData, partIndex = null) {
 
     let blah = document.createElement('h3');
     blah.innerText = "Sections";
@@ -503,7 +506,7 @@ function getSections(skillData) {
     return blah;
 }
 
-function getArticles(skillData) {
+function getArticles(skillData, sectionIndex = null) {
 
     let blah = document.createElement('h3');
     blah.innerText = "Articles";
