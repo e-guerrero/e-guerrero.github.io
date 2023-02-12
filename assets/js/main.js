@@ -53,15 +53,15 @@ skill_category_headers.forEach((el) => {
 
 function toggleSkill(){
     console.log('hello')
-    const skill_data = document.getElementsByClassName('skill__data');
+    const skill_data = document.getElementsByClassName('skill');
     let itemClass = this.parentNode.className;
 
     for(i = 0; i < skill_data.length; i++){
-        skill_data[i].className = 'skill__data skill__close'
+        skill_data[i].className = 'skill skill__close'
     }
     
-    if(itemClass === 'skill__data skill__close'){
-        this.parentNode.className = 'skill__data skill__open'
+    if(itemClass === 'skill skill__close'){
+        this.parentNode.className = 'skill skill__open'
     }
 }
 
@@ -408,7 +408,7 @@ function addSkillListingToPage(skillData) {
 
     //  Skill container
     let skillListing = document.createElement('div');
-    skillListing.className = 'skill__data skill__close';
+    skillListing.className = 'skill skill__close';
 
         //  Header container
         let header = document.createElement('div');
