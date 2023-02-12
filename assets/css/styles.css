@@ -438,6 +438,7 @@ img {
   align-items: center;
   margin-bottom: var(--mb-2-5);
   cursor: pointer;
+  /* scroll-margin-top: 200px; */
 }
 
 .skill__category__icon, .skill__category__arrow {

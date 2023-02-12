@@ -36,12 +36,18 @@ function toggleSkillCategories(){
     const skill_categories = document.getElementsByClassName('skill__category')
     let itemClass = this.parentNode.className
     
-    for(i = 0; i < skill_categories.length; i++){
-        skill_categories[i].className = 'skill__category skill__category__close'
-    }
+    // for(i = 0; i < skill_categories.length; i++){
+    //     skill_categories[i].className = 'skill__category skill__category__close'
+    // }
     if(itemClass === 'skill__category skill__category__close'){
         this.parentNode.className = 'skill__category skill__category__open'
     }
+    if(itemClass === 'skill__category skill__category__open'){
+        this.parentNode.className = 'skill__category skill__category__close'
+    }
+
+
+    // this.scrollIntoView({block: 'start'});
 }
 
 let skill_category_headers = document.querySelectorAll('.skill__category__header')
@@ -50,18 +56,23 @@ skill_category_headers.forEach((el) => {
 })
 
 
-
 function toggleSkill(){
     const skill_data = document.getElementsByClassName('skill');
     let itemClass = this.parentNode.className;
 
-    for(i = 0; i < skill_data.length; i++){
-        skill_data[i].className = 'skill skill__close'
-    }
+    // for(i = 0; i < skill_data.length; i++){
+    //     skill_data[i].className = 'skill skill__close'
+    // }
     
     if(itemClass === 'skill skill__close'){
         this.parentNode.className = 'skill skill__open'
     }
+    if(itemClass === 'skill skill__open'){
+        this.parentNode.className = 'skill skill__close'
+    }
+    
+
+   // this.parentNode.scrollIntoView({behavior: "smooth", block: 'start'});
 }
 
 
