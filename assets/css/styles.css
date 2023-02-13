@@ -526,40 +526,43 @@ img {
 }
 
 
-.skill__part {
-  background-color: black;
-}
 
 .skill__part__button {
   background-color: green;
   cursor: pointer;
 }
 
-.skill__part__header {
-  background-color: green;
-}
-
-.skill__part__title {
-  background-color: green;
-}
-
-
-.skill__part__close .skill__part__sections__list {
+.skill__part__close .skill__sections__list {
   height: 0px;
   overflow: hidden;
 }
 
-.skill__part__open .skill__part__sections__list {
+.skill__part__open .skill__sections__list {
   height: max-content;
 }
 
 
+
 .skill__section__button {
   background-color: blue;
+  cursor: pointer;
 }
+
+.skill__section__close .skill__articles__list {
+  height: 0px;
+  overflow: hidden;
+}
+
+.skill__section__open .skill__articles__list {
+  height: max-content;
+}
+
+
+
 
 .skill__article__button {
   background-color: salmon;
+  color: black;
 }
 
 /*==================== QUALIFICATION ====================*/

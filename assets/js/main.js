@@ -94,6 +94,25 @@ function toggleSkillPart(){
    // this.parentNode.scrollIntoView({behavior: "smooth", block: 'start'});
 }
 
+function toggleSkillSection(){
+    // const skill_data = document.getElementsByClassName('skill__part');
+    let itemClass = this.parentNode.className;
+
+    // for(i = 0; i < skill_data.length; i++){
+    //     skill_data[i].className = 'skill skill__close'
+    // }
+    
+    if(itemClass === 'skill__section skill__section__close'){
+        this.parentNode.className = 'skill__section skill__section__open'
+    }
+    if(itemClass === 'skill__section skill__section__open'){
+        this.parentNode.className = 'skill__section skill__section__close'
+    }
+    
+
+   // this.parentNode.scrollIntoView({behavior: "smooth", block: 'start'});
+}
+
 
 /*========================= DYNAMICALLY GENERATED SKILLS =======================*/
 
@@ -498,9 +517,7 @@ function addSkillListingToPage(skillData) {
 
 
 function partsToHTML(parts) {
-
     let partsList = document.createElement('div');
-
     parts.forEach((partData) => {
         let part = document.createElement('div');
         part.classList.add('skill__part');
@@ -508,31 +525,26 @@ function partsToHTML(parts) {
             let partButton = document.createElement('div');
             partButton.classList.add('skill__part__button');
                 let partHeader = document.createElement('div');
-                partHeader.classList.add('skill__part__header');
                     let partTitle = document.createElement('h3');
                     partTitle.classList.add('skill__part__title');
+            let sectionsList = sectionsToHTML(partData.sections);
         partTitle.innerText = partData.title;
         partHeader.appendChild(partTitle);
         partButton.appendChild(partHeader);
         partButton.addEventListener('click', toggleSkillPart);
         part.appendChild(partButton);
-
-        let sectionsList = sectionsToHTML(partData.sections);
-        sectionsList.classList.add('skill__part__sections__list');
         part.appendChild(sectionsList);
-    
         partsList.appendChild(part);
     })
-
     return partsList;
 }
 
 function sectionsToHTML(sections) {
-
     let sectionsList = document.createElement('div');
-
     sections.forEach((sectionData) => {
         let section = document.createElement('div');
+        section.classList.add('skill__section');
+        section.classList.add('skill__section__close');
             let sectionButton = document.createElement('div');
             sectionButton.classList.add('skill__section__button');
                 let sectionHeader = document.createElement('div');
@@ -541,13 +553,12 @@ function sectionsToHTML(sections) {
         sectionTitle.innerText = sectionData.title;
         sectionHeader.appendChild(sectionTitle);
         sectionButton.appendChild(sectionHeader);
-
+        sectionButton.addEventListener('click', toggleSkillSection);
         section.appendChild(sectionButton);
         section.appendChild(articlesList);
-    
         sectionsList.appendChild(section);
     })
-
+    sectionsList.classList.add('skill__sections__list');
     return sectionsList;
 }
 
@@ -560,7 +571,7 @@ function articlesToHTML(articles) {
             let articleButton = document.createElement('div');
             articleButton.classList.add('skill__article__button');
                 let articleHeader = document.createElement('div');
-                    let articleTitle = document.createElement('h3');
+                    let articleTitle = document.createElement('h4');
         //let content = contentToHTML(articleData);
         articleTitle.innerText = articleData.title;
         articleHeader.appendChild(articleTitle);
@@ -571,7 +582,7 @@ function articlesToHTML(articles) {
 
         articlesList.appendChild(article);
     })
-
+    articlesList.classList.add('skill__articles__list');
     return articlesList;
 }
 
