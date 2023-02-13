@@ -57,7 +57,7 @@ skill_category_headers.forEach((el) => {
 
 
 function toggleSkill(){
-    const skill_data = document.getElementsByClassName('skill');
+    // const skill_data = document.getElementsByClassName('skill');
     let itemClass = this.parentNode.className;
 
     // for(i = 0; i < skill_data.length; i++){
@@ -69,6 +69,25 @@ function toggleSkill(){
     }
     if(itemClass === 'skill skill__open'){
         this.parentNode.className = 'skill skill__close'
+    }
+    
+
+   // this.parentNode.scrollIntoView({behavior: "smooth", block: 'start'});
+}
+
+function toggleSkillPart(){
+    // const skill_data = document.getElementsByClassName('skill__part');
+    let itemClass = this.parentNode.className;
+
+    // for(i = 0; i < skill_data.length; i++){
+    //     skill_data[i].className = 'skill skill__close'
+    // }
+    
+    if(itemClass === 'skill__part skill__part__close'){
+        this.parentNode.className = 'skill__part skill__part__open'
+    }
+    if(itemClass === 'skill__part skill__part__open'){
+        this.parentNode.className = 'skill__part skill__part__close'
     }
     
 
@@ -485,16 +504,21 @@ function partsToHTML(parts) {
     parts.forEach((partData) => {
         let part = document.createElement('div');
         part.classList.add('skill__part');
+        part.classList.add('skill__part__close');
             let partButton = document.createElement('div');
             partButton.classList.add('skill__part__button');
                 let partHeader = document.createElement('div');
+                partHeader.classList.add('skill__part__header');
                     let partTitle = document.createElement('h3');
+                    partTitle.classList.add('skill__part__title');
         partTitle.innerText = partData.title;
         partHeader.appendChild(partTitle);
         partButton.appendChild(partHeader);
+        partButton.addEventListener('click', toggleSkillPart);
         part.appendChild(partButton);
 
         let sectionsList = sectionsToHTML(partData.sections);
+        sectionsList.classList.add('skill__part__sections__list');
         part.appendChild(sectionsList);
     
         partsList.appendChild(part);
