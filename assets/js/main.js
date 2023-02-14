@@ -621,7 +621,7 @@ async function toggleSkillArticle(event){
         // for each of the files.
         let ha = document.createElement('h2');
         ha.innerText = "No Readme";
-        this.appendChild(ha); 
+        this.parentNode.appendChild(ha); 
     }
     // Manual Mode
     if (event.currentTarget.articleData.hasReadme === true) {
@@ -635,7 +635,7 @@ async function toggleSkillArticle(event){
 
         let ha = document.createElement('h2');
         ha.innerText = readmeText;
-        this.appendChild(ha); 
+        this.parentNode.appendChild(ha);
     }
 }
 
