@@ -596,10 +596,11 @@ function articlesToHTML(articles) {
     return articlesList;
 }
 
-function toggleSkillArticle(event){
-    console.log(event.currentTarget.articleData.title);
+async function toggleSkillArticle(event){
+    console.log(event.currentTarget);
     // const skill_data = document.getElementsByClassName('skill__part');
     let itemClass = this.parentNode.className;
+
 
     // for(i = 0; i < skill_data.length; i++){
     //     skill_data[i].className = 'skill skill__close'
@@ -616,10 +617,25 @@ function toggleSkillArticle(event){
     // Auto Mode
     if (event.currentTarget.articleData.hasReadme === false) {
         console.log('false');
+        // Show all file names in the article and the content
+        // for each of the files.
+        let ha = document.createElement('h2');
+        ha.innerText = "No Readme";
+        this.appendChild(ha); 
     }
     // Manual Mode
     if (event.currentTarget.articleData.hasReadme === true) {
         console.log("true");
+
+        let url = "https://api.github.com/repos/edwinguerrerotech/spell-book/contents/frontend/03. JavaScript/05. Scripture | Manual Snippet With 1 File and No Tree/README.md";
+        const response = await fetch(url);
+        const result = await response.json();
+        readmeText = atob(result.content);
+        // console.log(readmeText);
+
+        let ha = document.createElement('h2');
+        ha.innerText = readmeText;
+        this.appendChild(ha); 
     }
 }
 
