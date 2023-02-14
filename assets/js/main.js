@@ -585,8 +585,9 @@ function articlesToHTML(articles) {
         articleTitle.innerText = articleData.title;
         articleHeader.appendChild(articleTitle);
         articleButton.appendChild(articleHeader);
-        articleButton.addEventListener('click', toggleSkillArticle);
         articleButton.articleData = articleData;
+        articleButton.addEventListener('click', toggleSkillArticle);
+        
         
         article.appendChild(articleButton);
         article.appendChild(articleContent);
