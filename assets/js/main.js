@@ -578,19 +578,17 @@ function articlesToHTML(articles) {
         article.classList.add('skill__article__close');
             let articleButton = document.createElement('div');
             articleButton.classList.add('skill__article__button');
+            articleButton.articleData = articleData;
                 let articleHeader = document.createElement('div');
                     let articleTitle = document.createElement('h4');
-            let articleContent = document.createElement('div');
-            articleContent.classList.add('skill__article__content');
+            // let articleContent = document.createElement('div');
+            // articleContent.classList.add('skill__article__content');
         articleTitle.innerText = articleData.title;
         articleHeader.appendChild(articleTitle);
         articleButton.appendChild(articleHeader);
-        articleButton.articleData = articleData;
         articleButton.addEventListener('click', toggleSkillArticle);
-        
-        
         article.appendChild(articleButton);
-        article.appendChild(articleContent);
+        // article.appendChild(articleContent);
         articlesList.appendChild(article);
     })
     articlesList.classList.add('skill__articles__list');
