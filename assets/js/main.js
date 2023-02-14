@@ -114,6 +114,7 @@ function toggleSkillSection(){
 }
 
 
+
 /*========================= DYNAMICALLY GENERATED SKILLS =======================*/
 
 fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?recursive=1")
@@ -161,8 +162,11 @@ class Article {
         // If auto, you would display all code from each file as snippets.
         this._snippets = []; // optional  
     }
-    set hasReadme(hasReadme) { this._hasReadme = hasReadme; }
     get title() { return this._title}
+    set hasReadme(hasReadme) { this._hasReadme = hasReadme; }
+    get hasReadme() { return this._hasReadme; }
+    set youtubeURL(youtubeURL) { this._youtubeURL = youtubeURL; }
+    get youtubeURL() { return this._youtubeURL; }
 }
 
 class Section {
@@ -255,7 +259,7 @@ function parseOneCategory(tree) {
         }
         if (currentDepthIndex === content_index) {
             // Check for README.md file.
-            if (splitPath[level_2_Index].search("README.md") >= 0){
+            if (splitPath[content_index].search("README.md") >= 0){
                 currentArticle = skill.articles.length - 1;
                 skill.articles[currentArticle].hasReadme = true;
             }
@@ -284,6 +288,7 @@ function parseTwoCategories(tree) {
     skill.bookTreeDepth = 2;
 
     tree.forEach(function(result, index) {
+      
         splitPath = result.path.split("/");
         currentDepthIndex = splitPath.length - 1;
 
@@ -299,13 +304,14 @@ function parseTwoCategories(tree) {
             directoryTitle = splitPath[article_Index];
             currentSection = skill.sections.length - 1;
             skill.sections[currentSection].articles.push(new Article(directoryTitle));
-
+            
             // Keep count of total articles for bar percentage calculation.
             articleCount++;
         }
         if (currentDepthIndex === content_index) {
+            
             // Check for README.md file.
-            if (splitPath[level_2_Index].search("README.md") >= 0){
+            if (splitPath[content_index].search("README.md") >= 0){
                 currentArticle = skill.sections[currentSection].articles.length - 1;
                 skill.sections[currentSection].articles[currentArticle].hasReadme = true;
             }
@@ -361,7 +367,7 @@ function parseThreeCategories(tree) {
         }
         if (currentDepthIndex === content_index) {
             // Check for README.md file.
-            if (splitPath[level_2_Index].search("README.md") >= 0){
+            if (splitPath[content_index].search("README.md") >= 0){
                 currentArticle = skill.parts[currentPart].sections[currentSection].articles.length - 1;
                 skill.parts[currentPart].sections[currentSection].articles[currentArticle].hasReadme = true;
             }
@@ -568,27 +574,77 @@ function articlesToHTML(articles) {
 
     articles.forEach((articleData) => {
         let article = document.createElement('div');
+        article.classList.add('skill__article');
+        article.classList.add('skill__article__close');
             let articleButton = document.createElement('div');
             articleButton.classList.add('skill__article__button');
                 let articleHeader = document.createElement('div');
                     let articleTitle = document.createElement('h4');
-        //let content = contentToHTML(articleData);
+            let articleContent = document.createElement('div');
+            articleContent.classList.add('skill__article__content');
         articleTitle.innerText = articleData.title;
         articleHeader.appendChild(articleTitle);
         articleButton.appendChild(articleHeader);
-
+        articleButton.addEventListener('click', toggleSkillArticle);
+        articleButton.articleData = articleData;
+        
         article.appendChild(articleButton);
-        //article.appendChild(content);
-
+        article.appendChild(articleContent);
         articlesList.appendChild(article);
     })
     articlesList.classList.add('skill__articles__list');
     return articlesList;
 }
 
+function toggleSkillArticle(event){
+    console.log(event.currentTarget.articleData.title);
+    // const skill_data = document.getElementsByClassName('skill__part');
+    let itemClass = this.parentNode.className;
+
+    // for(i = 0; i < skill_data.length; i++){
+    //     skill_data[i].className = 'skill skill__close'
+    // }
+    
+    if(itemClass === 'skill__article skill__article__close'){
+        this.parentNode.className = 'skill__article skill__article__open'
+    }
+    if(itemClass === 'skill__article skill__article__open'){
+        this.parentNode.className = 'skill__article skill__article__close'
+    }
+    // NEXT... make github api call to get content of readme file.
+
+    // Auto Mode
+    if (event.currentTarget.articleData.hasReadme === false) {
+        console.log('false');
+    }
+    // Manual Mode
+    if (event.currentTarget.articleData.hasReadme === true) {
+        console.log("true");
+    }
+}
 
 
 
+
+function getReadmeData(skill) {
+    // // Get readme file data to calculate completed percentage for each skill.
+
+    //     let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${skill.category}/${skill.title}/README.md`;
+    //     const response = await fetch(url);
+    //     const result = await response.json();
+ 
+    // // parse readme file data to get count of lessons to calculate percentage.
+    //     //console.log(atob(result.content));
+    //     const readmeText = atob(result.content);
+    //     const flag = "count: ";
+    //     let flagPosition = readmeText.search(flag);
+    //     countPosition = flagPosition + flag.length;
+    //     const count = readmeText.slice(countPosition, readmeText.length);
+    //     console.log(count);
+
+    // Get numbers of lessons in skill directory.
+    addSkillListingToPage("frontend","skill.title","skill.percentage");
+}
 
 
 
