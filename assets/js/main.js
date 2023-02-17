@@ -30,88 +30,9 @@ function linkAction(){
 }
 navLink.forEach(n => n.addEventListener('click', linkAction))
 
-/*==================== ACCORDION SKILLS ====================*/
-
-function toggleSkillCategories(){
-    const skill_categories = document.getElementsByClassName('skill__category')
-    let itemClass = this.parentNode.className
-    
-    // for(i = 0; i < skill_categories.length; i++){
-    //     skill_categories[i].className = 'skill__category skill__category__close'
-    // }
-    if(itemClass === 'skill__category skill__category__close'){
-        this.parentNode.className = 'skill__category skill__category__open'
-    }
-    if(itemClass === 'skill__category skill__category__open'){
-        this.parentNode.className = 'skill__category skill__category__close'
-    }
 
 
-    // this.scrollIntoView({block: 'start'});
-}
 
-let skill_category_headers = document.querySelectorAll('.skill__category__header')
-skill_category_headers.forEach((el) => {
-    el.addEventListener('click', toggleSkillCategories)
-})
-
-
-function toggleSkill(){
-    // const skill_data = document.getElementsByClassName('skill');
-    let itemClass = this.parentNode.className;
-
-    // for(i = 0; i < skill_data.length; i++){
-    //     skill_data[i].className = 'skill skill__close'
-    // }
-    
-    if(itemClass === 'skill skill__close'){
-        this.parentNode.className = 'skill skill__open'
-    }
-    if(itemClass === 'skill skill__open'){
-        this.parentNode.className = 'skill skill__close'
-    }
-    
-
-   // this.parentNode.scrollIntoView({behavior: "smooth", block: 'start'});
-}
-
-function toggleSkillPart(){
-    // const skill_data = document.getElementsByClassName('skill__part');
-    let itemClass = this.parentNode.className;
-
-    // for(i = 0; i < skill_data.length; i++){
-    //     skill_data[i].className = 'skill skill__close'
-    // }
-    
-    if(itemClass === 'skill__part skill__part__close'){
-        this.parentNode.className = 'skill__part skill__part__open'
-    }
-    if(itemClass === 'skill__part skill__part__open'){
-        this.parentNode.className = 'skill__part skill__part__close'
-    }
-    
-
-   // this.parentNode.scrollIntoView({behavior: "smooth", block: 'start'});
-}
-
-function toggleSkillSection(){
-    // const skill_data = document.getElementsByClassName('skill__part');
-    let itemClass = this.parentNode.className;
-
-    // for(i = 0; i < skill_data.length; i++){
-    //     skill_data[i].className = 'skill skill__close'
-    // }
-    
-    if(itemClass === 'skill__section skill__section__close'){
-        this.parentNode.className = 'skill__section skill__section__open'
-    }
-    if(itemClass === 'skill__section skill__section__open'){
-        this.parentNode.className = 'skill__section skill__section__close'
-    }
-    
-
-   // this.parentNode.scrollIntoView({behavior: "smooth", block: 'start'});
-}
 
 
 
@@ -130,9 +51,6 @@ fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?
             addSkillListingToPage(skillData);
         })
     });
-
-
-
 
 let Range = {
     startLine: 0,
@@ -224,6 +142,79 @@ class Skill {
     
 } 
 
+/*================================ PARSE SKILLS */
+
+function getSkillData(wholeTree) {
+
+    // console.log(tree);
+
+    // Skill object
+    let skill = new Skill();
+    // For gradually saving all the skills.
+    let results = [];
+    let skills = [];
+    let bookTreeDepth = 0; // 1-3
+    // Path as an array of strings seperated by "/".
+    let splitPath = [];
+    let currentDepthIndex = 0;
+
+    wholeTree.shift(); // trim off .gitignore
+    wholeTree.shift(); // trim off README.md at 
+
+
+    wholeTree.forEach(function(result) {
+        splitPath = result.path.split("/");
+        currentDepthIndex = splitPath.length - 1;
+
+        // Don't include results that only contain the category.
+        // This overcomplicates the parsing algorithms.
+        if (currentDepthIndex != category_Index) {
+            // Keep saving results until end of skill is reached.
+            // Then take the results for each skill and parse them into skill objects.
+            // Finally, push the skill objects into the skills array.
+            results.push(result);
+        }
+   
+        if (currentDepthIndex === level_1_Index) {
+            // If it does not start with a digit... 
+            if (splitPath[level_1_Index].match(/^\d/) ===  null) {
+                // Pass the skill tree to the appropriate parser.
+                if (bookTreeDepth === 1) {
+                    skill = parseOneCategory(results);
+                }
+                else if (bookTreeDepth === 2) {
+                    skill = parseTwoCategories(results);
+                }
+                else if (bookTreeDepth === 3) {
+                    skill = parseThreeCategories(results);
+                }
+                skills.push(skill);
+                // Reset results for the next skill.
+                results = [];
+            }
+        }   
+        if (currentDepthIndex === level_2_Index) {
+            // If it does not start with a digit... 
+            if (splitPath[level_2_Index].match(/^\d/) === null) {
+                bookTreeDepth = 1;
+            }
+        } // Guaranteed to go at least this far throughout the entire life cycle of 
+        //  a skill.
+
+        // May or may not reach this far
+        if (currentDepthIndex === level_3_Index) {
+            // If it doesn't start with a digit...
+            if (splitPath[level_3_Index].match(/^\d/) === null) {
+                bookTreeDepth = 2;
+            }
+            else {  // It does start with a digit...
+                bookTreeDepth = 3;
+            }
+        }
+    })
+
+    return skills;
+}
 
 const category_Index = 0;
 const skill_Index = 1;
@@ -382,83 +373,7 @@ function parseThreeCategories(tree) {
     return skill;
 }
 
-
-/*================================ PARSE SKILLS ================================*/
-
-function getSkillData(wholeTree) {
-
-    //console.log(tree);
-
-    // Skill object
-    let skill = new Skill();
-    // For gradually saving all the skills.
-    let results = [];
-    let skills = [];
-    let bookTreeDepth = 0; // 1-3
-    // Path as an array of strings seperated by "/".
-    let splitPath = [];
-    let currentDepthIndex = 0;
-
-    wholeTree.shift(); // trim off .gitignore
-    wholeTree.shift(); // trim off README.md
-
-
-    wholeTree.forEach(function(result) {
-        splitPath = result.path.split("/");
-        currentDepthIndex = splitPath.length - 1;
-
-        // Don't include results that only contain the category.
-        // This overcomplicates the parsing algorithms.
-        if (currentDepthIndex != category_Index) {
-            // Keep saving results until end of skill is reached.
-            // Then take the results for each skill and parse them into skill objects.
-            // Finally, push the skill objects into the skills array.
-            results.push(result);
-        }
-   
-        if (currentDepthIndex === level_1_Index) {
-            // If it does not start with a digit... 
-            if (splitPath[level_1_Index].match(/^\d/) ===  null) {
-                // Pass the skill tree to the appropriate parser.
-                if (bookTreeDepth === 1) {
-                    skill = parseOneCategory(results);
-                }
-                else if (bookTreeDepth === 2) {
-                    skill = parseTwoCategories(results);
-                }
-                else if (bookTreeDepth === 3) {
-                    skill = parseThreeCategories(results);
-                }
-                skills.push(skill);
-                // Reset results for the next skill.
-                results = [];
-            }
-        }   
-        if (currentDepthIndex === level_2_Index) {
-            // If it does not start with a digit... 
-            if (splitPath[level_2_Index].match(/^\d/) === null) {
-                bookTreeDepth = 1;
-            }
-        } // Guaranteed to go at least this far throughout the entire life cycle of 
-        //  a skill.
-
-        // May or may not reach this far
-        if (currentDepthIndex === level_3_Index) {
-            // If it doesn't start with a digit...
-            if (splitPath[level_3_Index].match(/^\d/) === null) {
-                bookTreeDepth = 2;
-            }
-            else {  // It does start with a digit...
-                bookTreeDepth = 3;
-            }
-        }
-    })
-
-    return skills;
-}
-
-/*================================ GENERATE SKILL LISTING ================================*/
-
+/*================================ GENERATE SKILL BUTTON */
 
 function addSkillListingToPage(skillData) {
 
@@ -519,8 +434,6 @@ function addSkillListingToPage(skillData) {
     let skillsList = document.getElementById('skills-list-' + skillData.category);
     skillsList.appendChild(skill);
 }
-
-
 
 function partsToHTML(parts) {
     let partsList = document.createElement('div');
@@ -595,6 +508,89 @@ function articlesToHTML(articles) {
     return articlesList;
 }
 
+/*==================== TOGGLE SKILL & BOOK */
+
+let skill_category_headers = document.querySelectorAll('.skill__category__header')
+
+skill_category_headers.forEach((el) => {
+    el.addEventListener('click', toggleSkillType)
+})
+
+function toggleSkillType(){
+    const skill_categories = document.getElementsByClassName('skill__category')
+    let itemClass = this.parentNode.className
+    
+    // for(i = 0; i < skill_categories.length; i++){
+    //     skill_categories[i].className = 'skill__category skill__category__close'
+    // }
+    if(itemClass === 'skill__category skill__category__close'){
+        this.parentNode.className = 'skill__category skill__category__open'
+    }
+    if(itemClass === 'skill__category skill__category__open'){
+        this.parentNode.className = 'skill__category skill__category__close'
+    }
+
+
+    // this.scrollIntoView({block: 'start'});
+}
+
+function toggleSkill(){
+    // const skill_data = document.getElementsByClassName('skill');
+    let itemClass = this.parentNode.className;
+
+    // for(i = 0; i < skill_data.length; i++){
+    //     skill_data[i].className = 'skill skill__close'
+    // }
+    
+    if(itemClass === 'skill skill__close'){
+        this.parentNode.className = 'skill skill__open'
+    }
+    if(itemClass === 'skill skill__open'){
+        this.parentNode.className = 'skill skill__close'
+    }
+    
+
+   // this.parentNode.scrollIntoView({behavior: "smooth", block: 'start'});
+}
+
+function toggleSkillPart(){
+    // const skill_data = document.getElementsByClassName('skill__part');
+    let itemClass = this.parentNode.className;
+
+    // for(i = 0; i < skill_data.length; i++){
+    //     skill_data[i].className = 'skill skill__close'
+    // }
+    
+    if(itemClass === 'skill__part skill__part__close'){
+        this.parentNode.className = 'skill__part skill__part__open'
+    }
+    if(itemClass === 'skill__part skill__part__open'){
+        this.parentNode.className = 'skill__part skill__part__close'
+    }
+    
+
+   // this.parentNode.scrollIntoView({behavior: "smooth", block: 'start'});
+}
+
+function toggleSkillSection(){
+    // const skill_data = document.getElementsByClassName('skill__part');
+    let itemClass = this.parentNode.className;
+
+    // for(i = 0; i < skill_data.length; i++){
+    //     skill_data[i].className = 'skill skill__close'
+    // }
+    
+    if(itemClass === 'skill__section skill__section__close'){
+        this.parentNode.className = 'skill__section skill__section__open'
+    }
+    if(itemClass === 'skill__section skill__section__open'){
+        this.parentNode.className = 'skill__section skill__section__close'
+    }
+    
+
+   // this.parentNode.scrollIntoView({behavior: "smooth", block: 'start'});
+}
+
 async function toggleSkillArticle(event){
     console.log(event.currentTarget);
     // const skill_data = document.getElementsByClassName('skill__part');
@@ -610,8 +606,7 @@ async function toggleSkillArticle(event){
     }
     if(itemClass === 'skill__article skill__article__open'){
         this.parentNode.className = 'skill__article skill__article__close'
-    }
-    // NEXT... make github api call to get content of readme file.
+    } 
 
     // Auto Mode
     if (event.currentTarget.articleData.hasReadme === false) {
@@ -638,8 +633,7 @@ async function toggleSkillArticle(event){
     }
 }
 
-
-
+/*================================ SKILL README */
 
 function getReadmeData(skill) {
     // // Get readme file data to calculate completed percentage for each skill.
@@ -658,10 +652,8 @@ function getReadmeData(skill) {
     //     console.log(count);
 
     // Get numbers of lessons in skill directory.
-    addSkillListingToPage("frontend","skill.title","skill.percentage");
+    // addSkillListingToPage("frontend","skill.title","skill.percentage");
 }
-
-
 
 function parseReadme(skill) {
     // // Get readme file data to calculate completed percentage for each skill.
@@ -680,8 +672,10 @@ function parseReadme(skill) {
     //     console.log(count);
 
     // Get numbers of lessons in skill directory.
-    addSkillListingToPage("frontend","skill.title","skill.percentage");
+    // addSkillListingToPage("frontend","skill.title","skill.percentage");
 }
+
+
 
 
 
