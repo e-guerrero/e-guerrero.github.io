@@ -52,98 +52,6 @@ fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?
         })
     });
 
-let Range = {
-    startLine: 0,
-    endLine: 0
-}
-
-let Snippet = {
-        filePath: "",
-        ranges: []
-}
-
-class Article {
-    constructor(title) {
-        this._title = title; // mandatory
-        this._hasReadme = false;
-
-        this._youtubeURL = ""; // optional
-        this._bloggerURL = ""; // optional
-        // Just because there is a Github link, doesn't mean there should be 
-        //  a value here. Only fill this in...
-        //      
-        //      if article file tree is >1 level deep.
-        //      if there's >= 1 snippet.
-        //      
-        this._githubURL = ""; // conditional  
-        // Optional but If no snippets and only 1 level deep: auto 
-        // If auto, you would display all code from each file as snippets.
-        this._snippets = []; // optional  
-    }
-    get title() { return this._title}
-    set hasReadme(hasReadme) { this._hasReadme = hasReadme; }
-    get hasReadme() { return this._hasReadme; }
-    set youtubeURL(youtubeURL) { this._youtubeURL = youtubeURL; }
-    get youtubeURL() { return this._youtubeURL; }
-}
-
-class Section {
-    constructor(title) {
-        this._title = title;
-        this._articles = [];
-    }
-    get articles() { return this._articles; }
-    get title() { return this._title; }
-}
-
-class Part {
-    constructor(title) {
-        this._title = title;
-        this._sections = [];
-    }
-
-    get sections() { return this._sections; }  
-    get title() { return this._title; } 
-}
-
-class Skill {
-      
-    constructor() {
-        this._title = "";
-        this._category = ""; // backend, frontend, design ....
-        this._parts = [];
-        this._sections = [];
-        this._articles = [];
-        this._bookTreeDepth = 0; // 1 - 3 Part | Section | Article
-        this._articleCount = 0; 
-        this._totalArticleCount = 0;
-    }   
-
-    set title(title) { this._title = title; }
-    set category(category) { this._category = category; }
-
-    set bookTreeDepth(bookTreeDepth) { this._bookTreeDepth = bookTreeDepth; }
-    set articleCount(articleCount) { this._articleCount = articleCount; }
-    set totalArticleCount(totalArticleCount) { this._totalArticleCount = totalArticleCount; }
-    
-    get title() {
-    // Remove sequential numbers.
-        let nameCategoryArray = this._title.split(" ");
-        return nameCategoryArray[1];
-    }
-    get category() { return this._category; }
-    get parts() { return this._parts; }
-    get sections() { return this._sections; }
-    get articles() { return this._articles; } 
-    get percentage() { 
-        return Math.round((this._articleCount / this._totalArticleCount) * 100 ) + "%"; 
-    }
-    get bookTreeDepth() { return this._bookTreeDepth; }
-    
-} 
-
-/*================================ PARSE SKILLS */
-
 function getSkillData(wholeTree) {
 
     // console.log(tree);
@@ -174,7 +82,7 @@ function getSkillData(wholeTree) {
             // Finally, push the skill objects into the skills array.
             results.push(result);
         }
-   
+    
         if (currentDepthIndex === level_1_Index) {
             // If it does not start with a digit... 
             if (splitPath[level_1_Index].match(/^\d/) ===  null) {
@@ -215,6 +123,158 @@ function getSkillData(wholeTree) {
 
     return skills;
 }
+
+function addSkillListingToPage(skillData) {
+
+    //  Skill container
+    let skill = document.createElement('div');
+    skill.className = 'skill skill__close';
+
+        // Skill Button
+        let skillButton = document.createElement('div');
+        skillButton.classList.add('skill__button');
+
+            //  Header container
+            let header = document.createElement('div');
+            header.classList.add('skill__header');
+
+                // Skill name
+                let title = document.createElement('h3');
+                title.classList.add('skill__title');
+                title.innerText = skillData.title;
+                // Skill percentage
+                let percentage = document.createElement('span');
+                percentage.classList.add('skill__percentage');
+                percentage.innerText = skillData.percentage;
+
+            //  Skill bar container
+            let progressBar = document.createElement('div');
+            progressBar.classList.add('skill__progress__bar');
+            
+                // Skill bar fill
+                let progress = document.createElement('span');
+                progress.classList.add('skill__progress');
+                progress.style.width = skillData.percentage;
+            
+        // Skill book container
+        let book = document.createElement('div');
+        book.classList.add('skill__book');
+
+    
+    header.appendChild(title);
+    header.appendChild(percentage);
+
+    progressBar.appendChild(progress);
+
+    skillButton.appendChild(header);
+    skillButton.appendChild(progressBar);
+
+    skill.appendChild(skillButton);
+    skill.appendChild(book);
+
+    // Append the book contents to the book.
+    if (skillData.bookTreeDepth === 1) { book.appendChild(articlesToHTML(skillData.articles)); }
+    if (skillData.bookTreeDepth === 2) { book.appendChild(sectionsToHTML(skillData.sections)); }
+    if (skillData.bookTreeDepth === 3) { book.appendChild(partsToHTML(skillData.parts)); }
+
+    skillButton.addEventListener('click', toggleSkill);
+
+    // Add the element to webpage
+    let skillsList = document.getElementById('skills-list-' + skillData.category);
+    skillsList.appendChild(skill);
+}
+
+class Skill {
+      
+    constructor() {
+        this._title = "";
+        this._category = ""; // backend, frontend, design ....
+        this._parts = [];
+        this._sections = [];
+        this._articles = [];
+        this._bookTreeDepth = 0; // 1 - 3 Part | Section | Article
+        this._articleCount = 0; 
+        this._totalArticleCount = 0;
+    }   
+
+    set title(title) { this._title = title; }
+    set category(category) { this._category = category; }
+
+    set bookTreeDepth(bookTreeDepth) { this._bookTreeDepth = bookTreeDepth; }
+    set articleCount(articleCount) { this._articleCount = articleCount; }
+    set totalArticleCount(totalArticleCount) { this._totalArticleCount = totalArticleCount; }
+    
+    get title() {
+    // Remove sequential numbers.
+        let nameCategoryArray = this._title.split(" ");
+        return nameCategoryArray[1];
+    }
+    get category() { return this._category; }
+    get parts() { return this._parts; }
+    get sections() { return this._sections; }
+    get articles() { return this._articles; } 
+    get percentage() { 
+        return Math.round((this._articleCount / this._totalArticleCount) * 100 ) + "%"; 
+    }
+    get bookTreeDepth() { return this._bookTreeDepth; }
+    
+} 
+
+class Part {
+    constructor(title) {
+        this._title = title;
+        this._sections = [];
+    }
+
+    get sections() { return this._sections; }  
+    get title() { return this._title; } 
+}
+
+class Section {
+    constructor(title) {
+        this._title = title;
+        this._articles = [];
+    }
+    get articles() { return this._articles; }
+    get title() { return this._title; }
+}
+
+class Article {
+    constructor(title) {
+        this._title = title; // mandatory
+        this._hasReadme = false;
+
+        this._youtubeURL = ""; // optional
+        this._bloggerURL = ""; // optional
+        // Just because there is a Github link, doesn't mean there should be 
+        //  a value here. Only fill this in...
+        //      
+        //      if article file tree is >1 level deep.
+        //      if there's >= 1 snippet.
+        //      
+        this._githubURL = ""; // conditional  
+        // Optional but If no snippets and only 1 level deep: auto 
+        // If auto, you would display all code from each file as snippets.
+        this._snippets = []; // optional  
+    }
+    get title() { return this._title}
+    set hasReadme(hasReadme) { this._hasReadme = hasReadme; }
+    get hasReadme() { return this._hasReadme; }
+    set youtubeURL(youtubeURL) { this._youtubeURL = youtubeURL; }
+    get youtubeURL() { return this._youtubeURL; }
+}
+
+let Snippet = {
+    filePath: "",
+    ranges: []
+}
+
+let Range = {
+    startLine: 0,
+    endLine: 0
+}
+
+/*================================ PARSE SKILLS */
 
 const category_Index = 0;
 const skill_Index = 1;
@@ -373,67 +433,7 @@ function parseThreeCategories(tree) {
     return skill;
 }
 
-/*================================ GENERATE SKILL BUTTON */
-
-function addSkillListingToPage(skillData) {
-
-    //  Skill container
-    let skill = document.createElement('div');
-    skill.className = 'skill skill__close';
-
-        // Skill Button
-        let skillButton = document.createElement('div');
-        skillButton.classList.add('skill__button');
-
-            //  Header container
-            let header = document.createElement('div');
-            header.classList.add('skill__header');
-
-                // Skill name
-                let title = document.createElement('h3');
-                title.classList.add('skill__title');
-                title.innerText = skillData.title;
-                // Skill percentage
-                let percentage = document.createElement('span');
-                percentage.classList.add('skill__percentage');
-                percentage.innerText = skillData.percentage;
-
-            //  Skill bar container
-            let progressBar = document.createElement('div');
-            progressBar.classList.add('skill__progress__bar');
-            
-                // Skill bar fill
-                let progress = document.createElement('span');
-                progress.classList.add('skill__progress');
-                progress.style.width = skillData.percentage;
-            
-        // Skill book container
-        let book = document.createElement('div');
-        book.classList.add('skill__book');
-
-    
-    header.appendChild(title);
-    header.appendChild(percentage);
-
-    progressBar.appendChild(progress);
-
-    skillButton.appendChild(header);
-    skillButton.appendChild(progressBar);
-
-    skill.appendChild(skillButton);
-    skill.appendChild(book);
-
-    // Append the book contents to the book.
-    if (skillData.bookTreeDepth === 1) { book.appendChild(articlesToHTML(skillData.articles)); }
-    if (skillData.bookTreeDepth === 2) { book.appendChild(sectionsToHTML(skillData.sections)); }
-    if (skillData.bookTreeDepth === 3) { book.appendChild(partsToHTML(skillData.parts)); }
-
-    skillButton.addEventListener('click', toggleSkill);
-
-    // Add the element to webpage
-    let skillsList = document.getElementById('skills-list-' + skillData.category);
-    skillsList.appendChild(skill);
-}
+/*================================ GENERATE SKILL HTML */
 
 function partsToHTML(parts) {
     let partsList = document.createElement('div');
