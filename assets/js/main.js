@@ -43,16 +43,18 @@ fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?
         return response.json(); 
     })
     .then(result => {
-        //console.log(result.tree)
-        return getSkillData(result.tree);
+        return parseSkillTree(result.tree);
     })
-    .then(skillObjects => {
-        skillObjects.forEach(skillData => {
-            addSkillListingToPage(skillData);
+    .then(branches => {
+        branches.forEach(skillData => {
+            let skillButton = skillToButton(skillData);
+            // Add the element to webpage+
+            let skillList = document.getElementById('skill-list-' + skillData.category);
+            skillList.appendChild(skillButton);
         })
     });
 
-function getSkillData(wholeTree) {
+function parseSkillTree(tree) {
 
     // console.log(tree);
 
@@ -66,11 +68,11 @@ function getSkillData(wholeTree) {
     let splitPath = [];
     let currentDepthIndex = 0;
 
-    wholeTree.shift(); // trim off .gitignore
-    wholeTree.shift(); // trim off README.md at 
+    tree.shift(); // trim off .gitignore
+    tree.shift(); // trim off README.md at 
 
 
-    wholeTree.forEach(function(result) {
+    tree.forEach(function(result) {
         splitPath = result.path.split("/");
         currentDepthIndex = splitPath.length - 1;
 
@@ -88,13 +90,13 @@ function getSkillData(wholeTree) {
             if (splitPath[level_1_Index].match(/^\d/) ===  null) {
                 // Pass the skill tree to the appropriate parser.
                 if (bookTreeDepth === 1) {
-                    skill = parseOneCategory(results);
+                    skill = parseBook_1LevelDeep(results);
                 }
                 else if (bookTreeDepth === 2) {
-                    skill = parseTwoCategories(results);
+                    skill = parseBook_2LevelsDeep(results);
                 }
                 else if (bookTreeDepth === 3) {
-                    skill = parseThreeCategories(results);
+                    skill = parseBook_3LevelsDeep(results);
                 }
                 skills.push(skill);
                 // Reset results for the next skill.
@@ -124,7 +126,7 @@ function getSkillData(wholeTree) {
     return skills;
 }
 
-function addSkillListingToPage(skillData) {
+function skillToButton(skillData) {
 
     //  Skill container
     let skill = document.createElement('div');
@@ -173,15 +175,13 @@ function addSkillListingToPage(skillData) {
     skill.appendChild(book);
 
     // Append the book contents to the book.
-    if (skillData.bookTreeDepth === 1) { book.appendChild(articlesToHTML(skillData.articles)); }
-    if (skillData.bookTreeDepth === 2) { book.appendChild(sectionsToHTML(skillData.sections)); }
-    if (skillData.bookTreeDepth === 3) { book.appendChild(partsToHTML(skillData.parts)); }
+    if (skillData.bookTreeDepth === 1) { book.appendChild(articlesToButtonList(skillData.articles)); }
+    if (skillData.bookTreeDepth === 2) { book.appendChild(sectionsToButtonList(skillData.sections)); }
+    if (skillData.bookTreeDepth === 3) { book.appendChild(partsToButtonList(skillData.parts)); }
 
     skillButton.addEventListener('click', toggleSkill);
 
-    // Add the element to webpage
-    let skillsList = document.getElementById('skills-list-' + skillData.category);
-    skillsList.appendChild(skill);
+    return skill;
 }
 
 class Skill {
@@ -283,7 +283,7 @@ const level_2_Index = 3;
 const level_3_Index = 4;
 const level_4_Index = 5;
 
-function parseOneCategory(tree) {
+function parseBook_1LevelDeep(tree) {
     let skill = new Skill();
     const article_Index = level_1_Index;
     const content_index = level_2_Index;
@@ -326,7 +326,7 @@ function parseOneCategory(tree) {
 
 }
 
-function parseTwoCategories(tree) {
+function parseBook_2LevelsDeep(tree) {
     let skill = new Skill();
     const section_Index = level_1_Index;
     const article_Index = level_2_Index;
@@ -377,7 +377,7 @@ function parseTwoCategories(tree) {
     return skill;
 }
 
-function parseThreeCategories(tree) {
+function parseBook_3LevelsDeep(tree) {
     let skill = new Skill();
     const part_Index = level_1_Index;
     const section_Index = level_2_Index;
@@ -435,7 +435,7 @@ function parseThreeCategories(tree) {
 
 /*================================ GENERATE SKILL HTML */
 
-function partsToHTML(parts) {
+function partsToButtonList(parts) {
     let partsList = document.createElement('div');
     parts.forEach((partData) => {
         let part = document.createElement('div');
@@ -446,7 +446,7 @@ function partsToHTML(parts) {
                 let partHeader = document.createElement('div');
                     let partTitle = document.createElement('h3');
                     partTitle.classList.add('skill__part__title');
-            let sectionsList = sectionsToHTML(partData.sections);
+            let sectionsList = sectionsToButtonList(partData.sections);
         partTitle.innerText = partData.title;
         partHeader.appendChild(partTitle);
         partButton.appendChild(partHeader);
@@ -458,7 +458,7 @@ function partsToHTML(parts) {
     return partsList;
 }
 
-function sectionsToHTML(sections) {
+function sectionsToButtonList(sections) {
     let sectionsList = document.createElement('div');
     sections.forEach((sectionData) => {
         let section = document.createElement('div');
@@ -468,7 +468,7 @@ function sectionsToHTML(sections) {
             sectionButton.classList.add('skill__section__button');
                 let sectionHeader = document.createElement('div');
                     let sectionTitle = document.createElement('h3');
-            let articlesList = articlesToHTML(sectionData.articles);
+            let articlesList = articlesToButtonList(sectionData.articles);
         sectionTitle.innerText = sectionData.title;
         sectionHeader.appendChild(sectionTitle);
         sectionButton.appendChild(sectionHeader);
@@ -481,7 +481,7 @@ function sectionsToHTML(sections) {
     return sectionsList;
 }
 
-function articlesToHTML(articles) {
+function articlesToButtonList(articles) {
 
     let articlesList = document.createElement('div');
 
@@ -547,7 +547,7 @@ function toggleSkill(){
         this.parentNode.className = 'skill skill__close'
     }
 
-    // Load article header data...
+    // Load article header data if book depth is root...
 
    // this.parentNode.scrollIntoView({behavior: "smooth", block: 'start'});
 }
@@ -581,7 +581,7 @@ function toggleSkillSection(){
     
     if(itemClass === 'skill__section skill__section__close'){
         this.parentNode.className = 'skill__section skill__section__open'
-        // Load article header data...
+        // Load article header data if book depth is section...
     }
     if(itemClass === 'skill__section skill__section__open'){
         this.parentNode.className = 'skill__section skill__section__close'
@@ -653,7 +653,7 @@ function getReadmeData(skill) {
     //     console.log(count);
 
     // Get numbers of lessons in skill directory.
-    // addSkillListingToPage("frontend","skill.title","skill.percentage");
+    // skillToButton("frontend","skill.title","skill.percentage");
 }
 
 function parseReadme(skill) {
@@ -673,7 +673,7 @@ function parseReadme(skill) {
     //     console.log(count);
 
     // Get numbers of lessons in skill directory.
-    // addSkillListingToPage("frontend","skill.title","skill.percentage");
+    // skillToButton("frontend","skill.title","skill.percentage");
 }
 
 

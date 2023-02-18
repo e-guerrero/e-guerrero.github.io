@@ -464,7 +464,7 @@ img {
   transition: .4s;
 }
 
-.skills__list {
+.skill__list {
   row-gap: 1.5rem;
   padding-left: 2.7rem;
 }
@@ -494,12 +494,12 @@ img {
   background-color: var(--first-color);
 }
 
-.skill__category__close .skills__list {
+.skill__category__close .skill__list {
   height: 0px;
   overflow: hidden;
 }
 
-.skill__category__open .skills__list {
+.skill__category__open .skill__list {
   height: max-content;
   padding-bottom: var(--mb-3);
 }
