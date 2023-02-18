@@ -54,136 +54,6 @@ fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?
         })
     });
 
-function parseSkillTree(tree) {
-
-    // console.log(tree);
-
-    // Skill object
-    let skill = new Skill();
-    // For gradually saving all the skills.
-    let results = [];
-    let skills = [];
-    let bookTreeDepth = 0; // 1-3
-    // Path as an array of strings seperated by "/".
-    let splitPath = [];
-    let currentDepthIndex = 0;
-
-    tree.shift(); // trim off .gitignore
-    tree.shift(); // trim off README.md at 
-
-
-    tree.forEach(function(result) {
-        splitPath = result.path.split("/");
-        currentDepthIndex = splitPath.length - 1;
-
-        // Don't include results that only contain the category.
-        // This overcomplicates the parsing algorithms.
-        if (currentDepthIndex != category_Index) {
-            // Keep saving results until end of skill is reached.
-            // Then take the results for each skill and parse them into skill objects.
-            // Finally, push the skill objects into the skills array.
-            results.push(result);
-        }
-    
-        if (currentDepthIndex === level_1_Index) {
-            // If it does not start with a digit... 
-            if (splitPath[level_1_Index].match(/^\d/) ===  null) {
-                // Pass the skill tree to the appropriate parser.
-                if (bookTreeDepth === 1) {
-                    skill = parseBook_1LevelDeep(results);
-                }
-                else if (bookTreeDepth === 2) {
-                    skill = parseBook_2LevelsDeep(results);
-                }
-                else if (bookTreeDepth === 3) {
-                    skill = parseBook_3LevelsDeep(results);
-                }
-                skills.push(skill);
-                // Reset results for the next skill.
-                results = [];
-            }
-        }   
-        if (currentDepthIndex === level_2_Index) {
-            // If it does not start with a digit... 
-            if (splitPath[level_2_Index].match(/^\d/) === null) {
-                bookTreeDepth = 1;
-            }
-        } // Guaranteed to go at least this far throughout the entire life cycle of 
-        //  a skill.
-
-        // May or may not reach this far
-        if (currentDepthIndex === level_3_Index) {
-            // If it doesn't start with a digit...
-            if (splitPath[level_3_Index].match(/^\d/) === null) {
-                bookTreeDepth = 2;
-            }
-            else {  // It does start with a digit...
-                bookTreeDepth = 3;
-            }
-        }
-    })
-
-    return skills;
-}
-
-function skillToButton(skillData) {
-
-    //  Skill container
-    let skill = document.createElement('div');
-    skill.className = 'skill skill__close';
-
-        // Skill Button
-        let skillButton = document.createElement('div');
-        skillButton.classList.add('skill__button');
-
-            //  Header container
-            let header = document.createElement('div');
-            header.classList.add('skill__header');
-
-                // Skill name
-                let title = document.createElement('h3');
-                title.classList.add('skill__title');
-                title.innerText = skillData.title;
-                // Skill percentage
-                let percentage = document.createElement('span');
-                percentage.classList.add('skill__percentage');
-                percentage.innerText = skillData.percentage;
-
-            //  Skill bar container
-            let progressBar = document.createElement('div');
-            progressBar.classList.add('skill__progress__bar');
-            
-                // Skill bar fill
-                let progress = document.createElement('span');
-                progress.classList.add('skill__progress');
-                progress.style.width = skillData.percentage;
-            
-        // Skill book container
-        let book = document.createElement('div');
-        book.classList.add('skill__book');
-
-    
-    header.appendChild(title);
-    header.appendChild(percentage);
-
-    progressBar.appendChild(progress);
-
-    skillButton.appendChild(header);
-    skillButton.appendChild(progressBar);
-
-    skill.appendChild(skillButton);
-    skill.appendChild(book);
-
-    // Append the book contents to the book.
-    if (skillData.bookTreeDepth === 1) { book.appendChild(articlesToButtonList(skillData.articles)); }
-    if (skillData.bookTreeDepth === 2) { book.appendChild(sectionsToButtonList(skillData.sections)); }
-    if (skillData.bookTreeDepth === 3) { book.appendChild(partsToButtonList(skillData.parts)); }
-
-    skillButton.addEventListener('click', toggleSkill);
-
-    return skill;
-}
-
 class Skill {
       
     constructor() {
@@ -274,7 +144,7 @@ let Range = {
     endLine: 0
 }
 
-/*================================ PARSE SKILLS */
+/*================================ PARSE SKILL TREE */
 
 const category_Index = 0;
 const skill_Index = 1;
@@ -282,6 +152,78 @@ const level_1_Index = 2;
 const level_2_Index = 3;
 const level_3_Index = 4;
 const level_4_Index = 5;
+
+function parseSkillTree(tree) {
+
+    // console.log(tree);
+
+    // Skill object
+    let skill = new Skill();
+    // For gradually saving all the skills.
+    let results = [];
+    let skills = [];
+    let bookTreeDepth = 0; // 1-3
+    // Path as an array of strings seperated by "/".
+    let splitPath = [];
+    let currentDepthIndex = 0;
+
+    tree.shift(); // trim off .gitignore
+    tree.shift(); // trim off README.md at 
+
+
+    tree.forEach(function(result) {
+        splitPath = result.path.split("/");
+        currentDepthIndex = splitPath.length - 1;
+
+        // Don't include results that only contain the category.
+        // This overcomplicates the parsing algorithms.
+        if (currentDepthIndex != category_Index) {
+            // Keep saving results until end of skill is reached.
+            // Then take the results for each skill and parse them into skill objects.
+            // Finally, push the skill objects into the skills array.
+            results.push(result);
+        }
+    
+        if (currentDepthIndex === level_1_Index) {
+            // If it does not start with a digit... 
+            if (splitPath[level_1_Index].match(/^\d/) ===  null) {
+                // Pass the skill tree to the appropriate parser.
+                if (bookTreeDepth === 1) {
+                    skill = parseBook_1LevelDeep(results);
+                }
+                else if (bookTreeDepth === 2) {
+                    skill = parseBook_2LevelsDeep(results);
+                }
+                else if (bookTreeDepth === 3) {
+                    skill = parseBook_3LevelsDeep(results);
+                }
+                skills.push(skill);
+                // Reset results for the next skill.
+                results = [];
+            }
+        }   
+        if (currentDepthIndex === level_2_Index) {
+            // If it does not start with a digit... 
+            if (splitPath[level_2_Index].match(/^\d/) === null) {
+                bookTreeDepth = 1;
+            }
+        } // Guaranteed to go at least this far throughout the entire life cycle of 
+        //  a skill.
+
+        // May or may not reach this far
+        if (currentDepthIndex === level_3_Index) {
+            // If it doesn't start with a digit...
+            if (splitPath[level_3_Index].match(/^\d/) === null) {
+                bookTreeDepth = 2;
+            }
+            else {  // It does start with a digit...
+                bookTreeDepth = 3;
+            }
+        }
+    })
+
+    return skills;
+}
 
 function parseBook_1LevelDeep(tree) {
     let skill = new Skill();
@@ -433,7 +375,65 @@ function parseBook_3LevelsDeep(tree) {
     return skill;
 }
 
-/*================================ GENERATE SKILL HTML */
+/*================================ GENERATE SKILL BUTTON/s */
+
+function skillToButton(skillData) {
+
+    //  Skill container
+    let skill = document.createElement('div');
+    skill.className = 'skill skill__close';
+
+        // Skill Button
+        let skillButton = document.createElement('div');
+        skillButton.classList.add('skill__button');
+
+            //  Header container
+            let header = document.createElement('div');
+            header.classList.add('skill__header');
+
+                // Skill name
+                let title = document.createElement('h3');
+                title.classList.add('skill__title');
+                title.innerText = skillData.title;
+                // Skill percentage
+                let percentage = document.createElement('span');
+                percentage.classList.add('skill__percentage');
+                percentage.innerText = skillData.percentage;
+
+            //  Skill bar container
+            let progressBar = document.createElement('div');
+            progressBar.classList.add('skill__progress__bar');
+            
+                // Skill bar fill
+                let progress = document.createElement('span');
+                progress.classList.add('skill__progress');
+                progress.style.width = skillData.percentage;
+            
+        // Skill book container
+        let book = document.createElement('div');
+        book.classList.add('skill__book');
+
+    
+    header.appendChild(title);
+    header.appendChild(percentage);
+
+    progressBar.appendChild(progress);
+
+    skillButton.appendChild(header);
+    skillButton.appendChild(progressBar);
+
+    skill.appendChild(skillButton);
+    skill.appendChild(book);
+
+    // Append the book contents to the book.
+    if (skillData.bookTreeDepth === 1) { book.appendChild(articlesToButtonList(skillData.articles)); }
+    if (skillData.bookTreeDepth === 2) { book.appendChild(sectionsToButtonList(skillData.sections)); }
+    if (skillData.bookTreeDepth === 3) { book.appendChild(partsToButtonList(skillData.parts)); }
+
+    skillButton.addEventListener('click', toggleSkill);
+
+    return skill;
+}
 
 function partsToButtonList(parts) {
     let partsList = document.createElement('div');
@@ -508,7 +508,7 @@ function articlesToButtonList(articles) {
     return articlesList;
 }
 
-/*==================== TOGGLE SKILL & BOOK */
+/*==================== TOGGLE SKILL HEADER & BOOK */
 
 let skill_category_headers = document.querySelectorAll('.skill__category__header')
 
@@ -633,6 +633,18 @@ async function toggleSkillArticle(event){
         this.parentNode.appendChild(ha);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*================================ SKILL README */
 
