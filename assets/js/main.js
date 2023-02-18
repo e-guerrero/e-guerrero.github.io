@@ -529,8 +529,6 @@ function toggleSkillType(){
     if(itemClass === 'skill__category skill__category__open'){
         this.parentNode.className = 'skill__category skill__category__close'
     }
-
-
     // this.scrollIntoView({block: 'start'});
 }
 
@@ -548,7 +546,8 @@ function toggleSkill(){
     if(itemClass === 'skill skill__open'){
         this.parentNode.className = 'skill skill__close'
     }
-    
+
+    // Load article header data...
 
    // this.parentNode.scrollIntoView({behavior: "smooth", block: 'start'});
 }
@@ -582,11 +581,13 @@ function toggleSkillSection(){
     
     if(itemClass === 'skill__section skill__section__close'){
         this.parentNode.className = 'skill__section skill__section__open'
+        // Load article header data...
     }
     if(itemClass === 'skill__section skill__section__open'){
         this.parentNode.className = 'skill__section skill__section__close'
     }
     
+    //
 
    // this.parentNode.scrollIntoView({behavior: "smooth", block: 'start'});
 }
