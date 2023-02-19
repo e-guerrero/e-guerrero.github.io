@@ -444,9 +444,9 @@ function skillToButton(skillData) {
 
     // Append the book contents to the book.
     if (skillData.bookTreeDepth === 1) { 
-        articleButtonList = articlesToButtonList(skillData.articles);
-        book.appendChild(articleButtonList); 
-        skillButton.articleButtonList = articleButtonList;
+        articleListContainer = articlesToButtonList(skillData.articles);
+        book.appendChild(articleListContainer); 
+        skillButton.articleListContainer = articleListContainer;
         skillButton.skillData = skillData;
         skillButton.addEventListener('click', loadArticleIcons);
     }
@@ -666,17 +666,24 @@ async function toggleSkillArticle(event){
 
 function loadArticleIcons(event) {
 
-    event.currentTarget.articleButtonList.childNodes.forEach((article, index) => {
+    let skillData = event.currentTarget.skillData;
+    let articleListContainer = event.currentTarget.articleListContainer;
+
+    articleListContainer.childNodes.forEach((article, index) => {
 
         // Reset icons in this article element.
                 // article > articleButton > articleHeader > title | icons
         let icons = article.firstChild.firstChild.lastChild;
-        while (icons.firstChild)
-        {
-            icons.removeChild(icons.firstChild);
-        }
+        while (icons.firstChild) { icons.removeChild(icons.firstChild); }
 
-        // Load icons.
+        // Load icons //////////////////////////
+
+        // Parse Readme
+        parseArticleReadme(skillData);
+
+        // Generate icons
+
+
         let icon = document.createElement('i');
         //icon.innerText = event.currentTarget.skillData.articles[index].hasReadme;
         icon.classList.add('uil');
@@ -685,27 +692,7 @@ function loadArticleIcons(event) {
     })
 }
 
-function getReadmeData(skill) {
-    // // Get readme file data to calculate completed percentage for each skill.
-
-    //     let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${skill.category}/${skill.title}/README.md`;
-    //     const response = await fetch(url);
-    //     const result = await response.json();
- 
-    // // parse readme file data to get count of lessons to calculate percentage.
-    //     //console.log(atob(result.content));
-    //     const readmeText = atob(result.content);
-    //     const flag = "count: ";
-    //     let flagPosition = readmeText.search(flag);
-    //     countPosition = flagPosition + flag.length;
-    //     const count = readmeText.slice(countPosition, readmeText.length);
-    //     console.log(count);
-
-    // Get numbers of lessons in skill directory.
-    // skillToButton("frontend","skill.title","skill.percentage");
-}
-
-function parseReadme(skill) {
+function parseArticleReadme(skillData) {
     // // Get readme file data to calculate completed percentage for each skill.
 
     //     let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${skill.category}/${skill.title}/README.md`;
