@@ -426,7 +426,13 @@ function skillToButton(skillData) {
     skill.appendChild(book);
 
     // Append the book contents to the book.
-    if (skillData.bookTreeDepth === 1) { book.appendChild(articlesToButtonList(skillData.articles)); }
+    if (skillData.bookTreeDepth === 1) { 
+        articleButtonList = articlesToButtonList(skillData.articles);
+        book.appendChild(articleButtonList); 
+        skillButton.articleButtonList = articleButtonList;
+        skillButton.skillData = skillData;
+        skillButton.addEventListener('click', loadArticleIcons);
+    }
     if (skillData.bookTreeDepth === 2) { book.appendChild(sectionsToButtonList(skillData.sections)); }
     if (skillData.bookTreeDepth === 3) { book.appendChild(partsToButtonList(skillData.parts)); }
 
@@ -593,7 +599,6 @@ function toggleSkillSection(){
 }
 
 async function toggleSkillArticle(event){
-    console.log(event.currentTarget);
     // const skill_data = document.getElementsByClassName('skill__part');
     let itemClass = this.parentNode.className;
 
@@ -611,7 +616,6 @@ async function toggleSkillArticle(event){
 
     // Auto Mode
     if (event.currentTarget.articleData.hasReadme === false) {
-        console.log('false');
         // Show all file names in the article and the content
         // for each of the files.
         let ha = document.createElement('h2');
@@ -620,7 +624,6 @@ async function toggleSkillArticle(event){
     }
     // Manual Mode
     if (event.currentTarget.articleData.hasReadme === true) {
-        console.log("true");
 
         let url = "https://api.github.com/repos/edwinguerrerotech/spell-book/contents/frontend/03. JavaScript/05. Scripture | Manual Snippet With 1 File and No Tree/README.md";
         const response = await fetch(url);
@@ -634,19 +637,16 @@ async function toggleSkillArticle(event){
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 /*================================ SKILL README */
+
+function loadArticleIcons(event) {
+
+    event.currentTarget.articleButtonList.childNodes.forEach((button, index) => {
+        let icon = document.createElement('h1');
+        icon.innerText = event.currentTarget.skillData.articles[index].title;
+        button.appendChild(icon);
+    })
+}
 
 function getReadmeData(skill) {
     // // Get readme file data to calculate completed percentage for each skill.
