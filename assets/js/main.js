@@ -649,7 +649,6 @@ async function toggleSkillArticle(event){
 
 function loadArticleIcons(event) {
 
-    //                  articleButtonList > article > articleButton > articleHeader > title | icons
     event.currentTarget.articleButtonList.childNodes.forEach((article, index) => {
 
         // Reset icons in this article element.
