@@ -499,11 +499,19 @@ function articlesToButtonList(articles) {
             articleButton.classList.add('skill__article__button');
             articleButton.articleData = articleData;
                 let articleHeader = document.createElement('div');
+                articleHeader.classList.add('skill__article__header')
                     let articleTitle = document.createElement('h4');
+                    articleTitle.classList.add('skill__article__title');
+                    let articleIcons = document.createElement('div');
+                    articleIcons.classList.add('skill__article__icons');
+                        let articleIcon = document.createElement('span');
+                        articleIcon.classList.add('skill__article__icon');
             // let articleContent = document.createElement('div');
             // articleContent.classList.add('skill__article__content');
         articleTitle.innerText = articleData.title;
         articleHeader.appendChild(articleTitle);
+        articleHeader.appendChild(articleIcons);
+        articleIcons.appendChild(articleIcon);
         articleButton.appendChild(articleHeader);
         articleButton.addEventListener('click', toggleSkillArticle);
         article.appendChild(articleButton);
@@ -614,7 +622,7 @@ async function toggleSkillArticle(event){
         this.parentNode.className = 'skill__article skill__article__close'
     } 
 
-    // Auto Mode
+    // Auto Mode 
     if (event.currentTarget.articleData.hasReadme === false) {
         // Show all file names in the article and the content
         // for each of the files.
@@ -641,10 +649,21 @@ async function toggleSkillArticle(event){
 
 function loadArticleIcons(event) {
 
-    event.currentTarget.articleButtonList.childNodes.forEach((button, index) => {
-        let icon = document.createElement('h1');
-        icon.innerText = event.currentTarget.skillData.articles[index].title;
-        button.appendChild(icon);
+    //                  articleButtonList > article > articleButton > articleHeader > title | icons
+    event.currentTarget.articleButtonList.childNodes.forEach((article, index) => {
+
+        // Reset icons in this article element.
+                // article > articleButton > articleHeader > title | icons
+        let icons = article.firstChild.firstChild.lastChild;
+        while (icons.firstChild)
+        {
+            icons.removeChild(icons.firstChild);
+        }
+
+        // Load icons.
+        let icon = document.createElement('span');
+        icon.innerText = event.currentTarget.skillData.articles[index].hasReadme;
+        icons.appendChild(icon);
     })
 }
 

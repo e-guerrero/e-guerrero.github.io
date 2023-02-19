@@ -558,10 +558,29 @@ img {
 }
 
 
+.skill__article {
+  margin-top: 5px;
+}
 
 .skill__article__button {
   background-color: salmon;
   color: black;
+}
+
+.skill__article__header {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.skill__article__title {
+  background-color: black;
+}
+
+.skill__article__icons {
+  background-color: blue;
+  margin-left: 10px;
+  color: #FFF;
 }
 
 /*==================== QUALIFICATION ====================*/
