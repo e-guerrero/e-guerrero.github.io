@@ -36,6 +36,23 @@ navLink.forEach(n => n.addEventListener('click', linkAction))
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*========================= DYNAMICALLY GENERATED SKILLS =======================*/
 
 fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?recursive=1")
@@ -504,7 +521,7 @@ function articlesToButtonList(articles) {
                     articleTitle.classList.add('skill__article__title');
                     let articleIcons = document.createElement('div');
                     articleIcons.classList.add('skill__article__icons');
-                        let articleIcon = document.createElement('span');
+                        let articleIcon = document.createElement('i');
                         articleIcon.classList.add('skill__article__icon');
             // let articleContent = document.createElement('div');
             // articleContent.classList.add('skill__article__content');
@@ -660,8 +677,10 @@ function loadArticleIcons(event) {
         }
 
         // Load icons.
-        let icon = document.createElement('span');
-        icon.innerText = event.currentTarget.skillData.articles[index].hasReadme;
+        let icon = document.createElement('i');
+        //icon.innerText = event.currentTarget.skillData.articles[index].hasReadme;
+        icon.classList.add('uil');
+        icon.classList.add('uil-github');
         icons.appendChild(icon);
     })
 }
@@ -705,6 +724,21 @@ function parseReadme(skill) {
     // Get numbers of lessons in skill directory.
     // skillToButton("frontend","skill.title","skill.percentage");
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
