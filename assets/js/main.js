@@ -671,7 +671,8 @@ async function toggleSkillArticle(event){
 
 function loadIconsForArticles(event) {
 
-    skillData = event.currentTarget.skillData;
+    let skillData = event.currentTarget.skillData;
+    let articleElementListContainer = event.currentTarget.articleElementListContainer;
     let articleObjects = null;
 
     if (skillData.bookTreeDepth === 1)
@@ -679,7 +680,6 @@ function loadIconsForArticles(event) {
         articleObjects = skillData.articles;
     }
     
-    let articleElementListContainer = event.currentTarget.articleElementListContainer;
     articleElementListContainer.childNodes.forEach((article, index) => {
 
         // Reset icons in this article element.
