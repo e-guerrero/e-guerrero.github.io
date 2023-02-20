@@ -690,7 +690,7 @@ function loadIconsForArticles(event) {
         // Load icons //////////////////////////
 
         // Parse Readme
-        let readme = parseArticleReadme(skillData, articleObjects[index]);
+        let iconData = parseIconData(skillData, articleObjects[index]);
 
         // Generate icons
 
@@ -702,7 +702,7 @@ function loadIconsForArticles(event) {
     })
 }
 
-async function parseArticleReadme(skillData, articleObject) {
+async function parseIconData(skillData, articleObject) {
     // // Get readme file data to calculate completed percentage for each skill.
 
     if (articleObject.hasReadme) {
@@ -710,13 +710,17 @@ async function parseArticleReadme(skillData, articleObject) {
         const response = await fetch(url);
         const result = await response.json();
         console.log(result);
+
+        const readmeText = atob(result.content);
+        const gitHubflag = "$github";
+        // Get index of 1st bracket, and then get index of the 2nd bracket.
+        //  Finally, get the string between those brackets and trim any 
+        //  empty space from each side.
+        let flagPosition = readmeText.search(gitHubflag);
     }
+    else { return null; }
  
-    // // parse readme file data to get count of lessons to calculate percentage.
-    //     //console.log(atob(result.content));
-    //     const readmeText = atob(result.content);
-    //     const flag = "count: ";
-    //     let flagPosition = readmeText.search(flag);
+    
     //     countPosition = flagPosition + flag.length;
     //     const count = readmeText.slice(countPosition, readmeText.length);
     //     console.log(count);
