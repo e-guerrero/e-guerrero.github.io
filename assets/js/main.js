@@ -96,6 +96,7 @@ class Skill {
         let nameCategoryArray = this._title.split(" ");
         return nameCategoryArray[1];
     }
+    get pathTitle() { return this._title; }
     get category() { return this._category; }
     get parts() { return this._parts; }
     get sections() { return this._sections; }
@@ -689,7 +690,7 @@ function loadIconsForArticles(event) {
         // Load icons //////////////////////////
 
         // Parse Readme
-        let readme = parseArticleReadme(articleObjects[index]);
+        let readme = parseArticleReadme(skillData, articleObjects[index]);
 
         // Generate icons
 
@@ -701,12 +702,15 @@ function loadIconsForArticles(event) {
     })
 }
 
-function parseArticleReadme(articleObject) {
+async function parseArticleReadme(skillData, articleObject) {
     // // Get readme file data to calculate completed percentage for each skill.
 
-    //     let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${skill.category}/${skill.title}/README.md`;
-    //     const response = await fetch(url);
-    //     const result = await response.json();
+    if (articleObject.hasReadme) {
+        let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${skillData.category}/${skillData.pathTitle}/${articleObject.title}/README.md`;
+        const response = await fetch(url);
+        const result = await response.json();
+        console.log(result);
+    }
  
     // // parse readme file data to get count of lessons to calculate percentage.
     //     //console.log(atob(result.content));
