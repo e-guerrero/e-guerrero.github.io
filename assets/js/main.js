@@ -64,10 +64,10 @@ fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?
     })
     .then(branches => {
         branches.forEach(skillData => {
-            let skillButton = skillToButton(skillData);
+            let skillDiv = skillToDiv(skillData);
             // Add the element to webpage+
             let skillList = document.getElementById('skill-list-' + skillData.category);
-            skillList.appendChild(skillButton);
+            skillList.appendChild(skillDiv);
         })
     });
 
@@ -394,11 +394,11 @@ function parseBook_3LevelsDeep(tree) {
 
 /*================================ GENERATE SKILL BUTTON/s */
 
-function skillToButton(skillData) {
+function skillToDiv(skillData) {
 
     //  Skill container
-    let skill = document.createElement('div');
-    skill.className = 'skill skill__close';
+    let skillDiv = document.createElement('div');
+    skillDiv.className = 'skill skill__close';
 
         // Skill Button
         let skillButton = document.createElement('div');
@@ -439,8 +439,8 @@ function skillToButton(skillData) {
     skillButton.appendChild(header);
     skillButton.appendChild(progressBar);
 
-    skill.appendChild(skillButton);
-    skill.appendChild(book);
+    skillDiv.appendChild(skillButton);
+    skillDiv.appendChild(book);
 
     // Append the book contents to the book.
     if (skillData.bookTreeDepth === 1) { 
@@ -455,7 +455,7 @@ function skillToButton(skillData) {
 
     skillButton.addEventListener('click', toggleSkill);
 
-    return skill;
+    return skillDiv;
 }
 
 function partsToButtonList(parts) {
@@ -714,7 +714,7 @@ function parseArticleReadme(articleObject) {
     //     console.log(count);
 
     // Get numbers of lessons in skill directory.
-    // skillToButton("frontend","skill.title","skill.percentage");
+    // skillToDiv("frontend","skill.title","skill.percentage");
     return true;
 }
 
