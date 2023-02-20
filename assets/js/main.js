@@ -444,11 +444,15 @@ function skillToDiv(skillData) {
 
     // Append the book contents to the book.
     if (skillData.bookTreeDepth === 1) { 
+        // Add event listener to skillButton to make it load icon
+        //  data for each of it's articles as soon as skillButton is clicked.
+        // The other way it needs to be loaded for the other bookTreeDepths,
+        //  is to call loadIconsForArticles(event) in toggleSkillSection()
         articleElementListContainer = articlesToButtonList(skillData.articles);
         book.appendChild(articleElementListContainer); 
-        skillButton.articleElementListContainer = articleElementListContainer;
         skillButton.skillData = skillData;
-        skillButton.addEventListener('click', loadArticleIcons);
+        skillButton.articleElementListContainer = articleElementListContainer;
+        skillButton.addEventListener('click', loadIconsForArticles);
     }
     if (skillData.bookTreeDepth === 2) { book.appendChild(sectionsToButtonList(skillData.sections)); }
     if (skillData.bookTreeDepth === 3) { book.appendChild(partsToButtonList(skillData.parts)); }
@@ -664,7 +668,7 @@ async function toggleSkillArticle(event){
 
 /*================================ SKILL README */
 
-function loadArticleIcons(event) {
+function loadIconsForArticles(event) {
 
     skillData = event.currentTarget.skillData;
     let articleObjects = null;
