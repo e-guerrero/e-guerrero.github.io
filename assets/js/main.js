@@ -79,7 +79,7 @@ class Skill {
         this._parts = [];
         this._sections = [];
         this._articles = [];
-        this._bookTreeDepth = 0; // 1 - 3 Part | Section | Article
+        this._bookTreeDepth = 0; // 1-3 Article | Section |  Part
         this._articleCount = 0; 
         this._totalArticleCount = 0;
     }   
@@ -444,9 +444,9 @@ function skillToButton(skillData) {
 
     // Append the book contents to the book.
     if (skillData.bookTreeDepth === 1) { 
-        articleListContainer = articlesToButtonList(skillData.articles);
-        book.appendChild(articleListContainer); 
-        skillButton.articleListContainer = articleListContainer;
+        articleElementListContainer = articlesToButtonList(skillData.articles);
+        book.appendChild(articleElementListContainer); 
+        skillButton.articleElementListContainer = articleElementListContainer;
         skillButton.skillData = skillData;
         skillButton.addEventListener('click', loadArticleIcons);
     }
@@ -666,10 +666,16 @@ async function toggleSkillArticle(event){
 
 function loadArticleIcons(event) {
 
-    let skillData = event.currentTarget.skillData;
-    let articleListContainer = event.currentTarget.articleListContainer;
+    skillData = event.currentTarget.skillData;
+    let articleObjects = null;
 
-    articleListContainer.childNodes.forEach((article, index) => {
+    if (skillData.bookTreeDepth === 1)
+    {
+        articleObjects = skillData.articles;
+    }
+    
+    let articleElementListContainer = event.currentTarget.articleElementListContainer;
+    articleElementListContainer.childNodes.forEach((article, index) => {
 
         // Reset icons in this article element.
                 // article > articleButton > articleHeader > title | icons
@@ -679,10 +685,9 @@ function loadArticleIcons(event) {
         // Load icons //////////////////////////
 
         // Parse Readme
-        parseArticleReadme(skillData);
+        let readme = parseArticleReadme(articleObjects[index]);
 
         // Generate icons
-
 
         let icon = document.createElement('i');
         //icon.innerText = event.currentTarget.skillData.articles[index].hasReadme;
@@ -692,7 +697,7 @@ function loadArticleIcons(event) {
     })
 }
 
-function parseArticleReadme(skillData) {
+function parseArticleReadme(articleObject) {
     // // Get readme file data to calculate completed percentage for each skill.
 
     //     let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${skill.category}/${skill.title}/README.md`;
@@ -710,6 +715,7 @@ function parseArticleReadme(skillData) {
 
     // Get numbers of lessons in skill directory.
     // skillToButton("frontend","skill.title","skill.percentage");
+    return true;
 }
 
 
