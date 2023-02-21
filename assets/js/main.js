@@ -447,11 +447,12 @@ function skillToDiv(skillData) {
     if (skillData.bookTreeDepth === 1) { 
         // Add event listener to skillButton to make it load icon
         //  data for each of it's articles as soon as skillButton is clicked.
-        // The other way it needs to be loaded for the other bookTreeDepths,
-        //  is to call loadIconsForArticles(event) in toggleSkillSection()
-        articleElementListContainer = articlesToButtonList(skillData.articles);
+        // The other way that the other bookTreeDepths need to be loaded,
+        //  is to call loadIconsForArticles(event) in toggleSkillSection().
+        articleElementListContainer = articlesToElementList(skillData.articles);
         book.appendChild(articleElementListContainer); 
-        skillButton.skillData = skillData;
+
+        skillButton.articles = skillData.articles;
         skillButton.articleElementListContainer = articleElementListContainer;
         skillButton.addEventListener('click', loadIconsForArticles);
     }
@@ -496,11 +497,16 @@ function sectionsToButtonList(sections) {
             sectionButton.classList.add('skill__section__button');
                 let sectionHeader = document.createElement('div');
                     let sectionTitle = document.createElement('h3');
-            let articlesList = articlesToButtonList(sectionData.articles);
+            let articlesList = articlesToElementList(sectionData.articles);
         sectionTitle.innerText = sectionData.title;
         sectionHeader.appendChild(sectionTitle);
         sectionButton.appendChild(sectionHeader);
+
+        sectionButton.articles = sectionData.articles;
+        sectionButton.articleElementListContainer = articlesList;
+        sectionButton.addEventListener('click', loadIconsForArticles);
         sectionButton.addEventListener('click', toggleSkillSection);
+
         section.appendChild(sectionButton);
         section.appendChild(articlesList);
         sectionsList.appendChild(section);
@@ -509,7 +515,7 @@ function sectionsToButtonList(sections) {
     return sectionsList;
 }
 
-function articlesToButtonList(articles) {
+function articlesToElementList(articles) {
 
     let articlesList = document.createElement('div');
 
@@ -671,15 +677,9 @@ async function toggleSkillArticle(event){
 
 function loadIconsForArticles(event) {
 
-    let skillData = event.currentTarget.skillData;
+    let articles = event.currentTarget.articles;
     let articleElementListContainer = event.currentTarget.articleElementListContainer;
-    let articleObjects = null;
 
-    if (skillData.bookTreeDepth === 1)
-    {
-        articleObjects = skillData.articles;
-    }
-    
     articleElementListContainer.childNodes.forEach((article, index) => {
 
         // Reset icons in this article element.
@@ -690,7 +690,7 @@ function loadIconsForArticles(event) {
         // Load icons //////////////////////////
 
         // Parse Readme
-        let iconData = parseIconData(skillData, articleObjects[index]);
+        let iconData = parseIconData(articles[index]);
 
         // Generate icons
 
@@ -702,7 +702,7 @@ function loadIconsForArticles(event) {
     })
 }
 
-async function parseIconData(skillData, articleObject) {
+async function parseIconData(articleObject) {
     // // Get readme file data to calculate completed percentage for each skill.
 
     if (articleObject.hasReadme) {
