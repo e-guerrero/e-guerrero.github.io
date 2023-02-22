@@ -74,8 +74,8 @@ fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?
 class Skill {
       
     constructor() {
-        this._title = "";
-        this._category = ""; // backend, frontend, design ....
+        this._pathTitle = "";
+        this._pathCategory = ""; // backend, frontend, design ....
         this._parts = [];
         this._sections = [];
         this._articles = [];
@@ -84,20 +84,20 @@ class Skill {
         this._totalArticleCount = 0;
     }   
 
-    set title(title) { this._title = title; }
-    set category(category) { this._category = category; }
+    set pathTitle(pathTitle) { this._pathTitle = pathTitle; }
+    set pathCategory(pathCategory) { this._pathCategory = pathCategory; }
 
     set bookTreeDepth(bookTreeDepth) { this._bookTreeDepth = bookTreeDepth; }
     set articleCount(articleCount) { this._articleCount = articleCount; }
     set totalArticleCount(totalArticleCount) { this._totalArticleCount = totalArticleCount; }
     
+    get pathTitle() { return this._pathTitle; }
+    get pathCategory() { return this._pathCategory; }
+    // Return without the sequential numbers.
     get title() {
-    // Remove sequential numbers.
-        let nameCategoryArray = this._title.split(" ");
-        return nameCategoryArray[1];
-    }
-    get pathTitle() { return this._title; }
-    get category() { return this._category; }
+            let nameCategoryArray = this._pathTitle.split(" ");
+            return nameCategoryArray[1];
+        }
     get parts() { return this._parts; }
     get sections() { return this._sections; }
     get articles() { return this._articles; } 
@@ -109,27 +109,29 @@ class Skill {
 } 
 
 class Part {
-    constructor(title) {
-        this._title = title;
+    constructor(pathTitle) {
+        this._pathTitle = pathTitle;
         this._sections = [];
     }
 
     get sections() { return this._sections; }  
-    get title() { return this._title; } 
+    get pathTitle() { return this._pathTitle; } 
 }
 
 class Section {
-    constructor(title) {
-        this._title = title;
+    constructor(pathTitle) {
+        this._pathTitle = pathTitle;
         this._articles = [];
     }
     get articles() { return this._articles; }
-    get title() { return this._title; }
+    get pathTitle() { return this._pathTitle; }
 }
 
 class Article {
-    constructor(title) {
-        this._title = title; // mandatory
+    constructor(path, pathTitle) {
+        // includes path title, but doesn't include anything before category.
+        this._path = path; 
+        this._pathTitle = pathTitle; // mandatory
         this._hasReadme = false;
 
         this._youtubeURL = ""; // optional
@@ -145,7 +147,8 @@ class Article {
         // If auto, you would display all code from each file as snippets.
         this._snippets = []; // optional  
     }
-    get title() { return this._title}
+    get path() { return this._path }
+    get pathTitle() { return this._pathTitle }
     set hasReadme(hasReadme) { this._hasReadme = hasReadme; }
     get hasReadme() { return this._hasReadme; }
     set youtubeURL(youtubeURL) { this._youtubeURL = youtubeURL; }
@@ -173,8 +176,6 @@ const level_4_Index = 5;
 
 function parseSkillTree(tree) {
 
-    // console.log(tree);
-
     // Skill object
     let skill = new Skill();
     // For gradually saving all the skills.
@@ -186,7 +187,7 @@ function parseSkillTree(tree) {
     let currentDepthIndex = 0;
 
     tree.shift(); // trim off .gitignore
-    tree.shift(); // trim off README.md at 
+    tree.shift(); // trim off README.md 
 
 
     tree.forEach(function(result) {
@@ -247,10 +248,11 @@ function parseBook_1LevelDeep(tree) {
     let skill = new Skill();
     const article_Index = level_1_Index;
     const content_index = level_2_Index;
-    let directoryTitle = "";
+    let pathTitle = "";
     let currentArticle = -1;
     let articleCount = 0;
     let totalArticleCount = 0;
+    let path = '';
     skill.bookTreeDepth = 1;
 
     tree.forEach(function(result, index) {
@@ -259,11 +261,13 @@ function parseBook_1LevelDeep(tree) {
 
         if (splitPath.length === 2) {
             skill.category = splitPath[category_Index];
-            skill.title = splitPath[skill_Index];
+            skill.pathTitle = splitPath[skill_Index];
         }
         if (currentDepthIndex === article_Index  && index != tree.length - 1) {
-            directoryTitle = splitPath[article_Index];
-            skill.articles.push(new Article(directoryTitle));
+            pathTitle = splitPath[article_Index];
+            path = skill.category + '/' + skill.pathTitle + '/' + pathTitle;
+            // Add the url path to article object when creatng it.
+            skill.articles.push(new Article(path, pathTitle));
 
             // Keep count of total articles for bar percentage calculation.
             articleCount++;
@@ -291,11 +295,12 @@ function parseBook_2LevelsDeep(tree) {
     const section_Index = level_1_Index;
     const article_Index = level_2_Index;
     const content_index = level_3_Index;
-    let directoryTitle = "";
+    let pathTitle = "";
     let currentSection = -1;
     let currentArticle = -1;
     let articleCount = 0;
     let totalArticleCount = 0;
+    let path = "";
     skill.bookTreeDepth = 2;
 
     tree.forEach(function(result, index) {
@@ -305,16 +310,23 @@ function parseBook_2LevelsDeep(tree) {
 
         if (splitPath.length === 2) {
             skill.category = splitPath[category_Index];
-            skill.title = splitPath[skill_Index];
+            skill.pathTitle = splitPath[skill_Index];
+
+            path = skill.category + '/' + skill.pathTitle;
         }
         if (currentDepthIndex === section_Index && index != tree.length - 1) {
-            directoryTitle = splitPath[section_Index];
-            skill.sections.push(new Section(directoryTitle));
+            pathTitle = splitPath[section_Index];
+            path += '/';
+            path += pathTitle;
+            skill.sections.push(new Section(pathTitle));
         }
         if (currentDepthIndex === article_Index) {
-            directoryTitle = splitPath[article_Index];
+
+            pathTitle = splitPath[article_Index];
+            path += '/';
+            path += pathTitle;
             currentSection = skill.sections.length - 1;
-            skill.sections[currentSection].articles.push(new Article(directoryTitle));
+            skill.sections[currentSection].articles.push(new Article(path, pathTitle));
             
             // Keep count of total articles for bar percentage calculation.
             articleCount++;
@@ -343,12 +355,13 @@ function parseBook_3LevelsDeep(tree) {
     const section_Index = level_2_Index;
     const article_Index = level_3_Index;
     const content_index = level_4_Index;
-    let directoryTitle = "";
+    let pathTitle = "";
     let currentPart = -1;
     let currentSection = -1;
     let currentArticle = -1;
     let articleCount = 0;
     let totalArticleCount = 0;
+    let path = '';
     skill.bookTreeDepth = 3;
 
     tree.forEach(function(result, index) {
@@ -357,21 +370,28 @@ function parseBook_3LevelsDeep(tree) {
 
         if (splitPath.length === 2) {
             skill.category = splitPath[category_Index];
-            skill.title = splitPath[skill_Index];
+            skill.pathTitle = splitPath[skill_Index];
+            path = skill.category + "/" + skill.pathTitle; 
         }
         if (currentDepthIndex === part_Index && index != tree.length - 1) {
-            directoryTitle = splitPath[part_Index];
-            skill.parts.push(new Part(directoryTitle));
+            pathTitle = splitPath[part_Index];
+            path += '/';
+            path += pathTitle;
+            skill.parts.push(new Part(pathTitle));
         }
         if (currentDepthIndex === section_Index) {
-            directoryTitle = splitPath[section_Index];
+            pathTitle = splitPath[section_Index];
+            path += '/';
+            path += pathTitle;
             currentPart = skill.parts.length - 1;
-            skill.parts[currentPart].sections.push(new Section(directoryTitle));
+            skill.parts[currentPart].sections.push(new Section(pathTitle));
         }
         if (currentDepthIndex === article_Index) {
-            directoryTitle = splitPath[article_Index];
+            pathTitle = splitPath[article_Index];
+            path += '/';
+            path += pathTitle;
             currentSection = skill.parts[currentPart].sections.length - 1;
-            skill.parts[currentPart].sections[currentSection].articles.push(new Article(directoryTitle));
+            skill.parts[currentPart].sections[currentSection].articles.push(new Article(path, pathTitle));
 
             // Keep count of total articles for bar percentage calculation.
             articleCount++;
@@ -412,7 +432,7 @@ function skillToDiv(skillData) {
                 // Skill name
                 let title = document.createElement('h3');
                 title.classList.add('skill__title');
-                title.innerText = skillData.title;
+                title.innerText = skillData.pathTitle;
                 // Skill percentage
                 let percentage = document.createElement('span');
                 percentage.classList.add('skill__percentage');
@@ -476,7 +496,7 @@ function partsToButtonList(parts) {
                     let partTitle = document.createElement('h3');
                     partTitle.classList.add('skill__part__title');
             let sectionsList = sectionsToButtonList(partData.sections);
-        partTitle.innerText = partData.title;
+        partTitle.innerText = partData.pathTitle;
         partHeader.appendChild(partTitle);
         partButton.appendChild(partHeader);
         partButton.addEventListener('click', toggleSkillPart);
@@ -498,7 +518,7 @@ function sectionsToButtonList(sections) {
                 let sectionHeader = document.createElement('div');
                     let sectionTitle = document.createElement('h3');
             let articlesList = articlesToElementList(sectionData.articles);
-        sectionTitle.innerText = sectionData.title;
+        sectionTitle.innerText = sectionData.pathTitle;
         sectionHeader.appendChild(sectionTitle);
         sectionButton.appendChild(sectionHeader);
 
@@ -536,7 +556,7 @@ function articlesToElementList(articles) {
                         articleIcon.classList.add('skill__article__icon');
             // let articleContent = document.createElement('div');
             // articleContent.classList.add('skill__article__content');
-        articleTitle.innerText = articleData.title;
+        articleTitle.innerText = articleData.pathTitle;
         articleHeader.appendChild(articleTitle);
         articleHeader.appendChild(articleIcons);
         articleIcons.appendChild(articleIcon);
