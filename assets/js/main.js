@@ -726,12 +726,11 @@ async function parseIconData(articleObject) {
     // // Get readme file data to calculate completed percentage for each skill.
 
     if (articleObject.hasReadme) {
-        let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${skillData.pathCategory}/${skillData.pathTitle}/${articleObject.title}/README.md`;
+        let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${articleObject.path}/README.md`;
         const response = await fetch(url);
         const result = await response.json();
-        console.log(result);
-
         const readmeText = atob(result.content);
+        console.log("README: " + readmeText + '\n');
         const gitHubflag = "$github";
         // Get index of 1st bracket, and then get index of the 2nd bracket.
         //  Finally, get the string between those brackets and trim any 
