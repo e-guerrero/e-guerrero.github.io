@@ -66,7 +66,7 @@ fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?
         branches.forEach(skillData => {
             let skillDiv = skillToDiv(skillData);
             // Add the element to webpage+
-            let skillList = document.getElementById('skill-list-' + skillData.category);
+            let skillList = document.getElementById('skill-list-' + skillData.pathCategory);
             skillList.appendChild(skillDiv);
         })
     });
@@ -260,12 +260,12 @@ function parseBook_1LevelDeep(tree) {
         currentDepthIndex = splitPath.length - 1;
 
         if (splitPath.length === 2) {
-            skill.category = splitPath[category_Index];
+            skill.pathCategory = splitPath[category_Index];
             skill.pathTitle = splitPath[skill_Index];
         }
         if (currentDepthIndex === article_Index  && index != tree.length - 1) {
             pathTitle = splitPath[article_Index];
-            path = skill.category + '/' + skill.pathTitle + '/' + pathTitle;
+            path = skill.pathCategory + '/' + skill.pathTitle + '/' + pathTitle;
             // Add the url path to article object when creatng it.
             skill.articles.push(new Article(path, pathTitle));
 
@@ -309,10 +309,10 @@ function parseBook_2LevelsDeep(tree) {
         currentDepthIndex = splitPath.length - 1;
 
         if (splitPath.length === 2) {
-            skill.category = splitPath[category_Index];
+            skill.pathCategory = splitPath[category_Index];
             skill.pathTitle = splitPath[skill_Index];
 
-            path = skill.category + '/' + skill.pathTitle;
+            path = skill.pathCategory + '/' + skill.pathTitle;
         }
         if (currentDepthIndex === section_Index && index != tree.length - 1) {
             pathTitle = splitPath[section_Index];
@@ -369,9 +369,9 @@ function parseBook_3LevelsDeep(tree) {
         currentDepthIndex = splitPath.length - 1;
 
         if (splitPath.length === 2) {
-            skill.category = splitPath[category_Index];
+            skill.pathCategory = splitPath[category_Index];
             skill.pathTitle = splitPath[skill_Index];
-            path = skill.category + "/" + skill.pathTitle; 
+            path = skill.pathCategory + "/" + skill.pathTitle; 
         }
         if (currentDepthIndex === part_Index && index != tree.length - 1) {
             pathTitle = splitPath[part_Index];
@@ -726,7 +726,7 @@ async function parseIconData(articleObject) {
     // // Get readme file data to calculate completed percentage for each skill.
 
     if (articleObject.hasReadme) {
-        let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${skillData.category}/${skillData.pathTitle}/${articleObject.title}/README.md`;
+        let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${skillData.pathCategory}/${skillData.pathTitle}/${articleObject.title}/README.md`;
         const response = await fetch(url);
         const result = await response.json();
         console.log(result);
