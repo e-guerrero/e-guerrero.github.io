@@ -273,8 +273,8 @@ function parseBook_1LevelDeep(tree) {
             articleCount++;
         }
         if (currentDepthIndex === content_index) {
-            // Check for README.md file.
-            if (splitPath[content_index].search("README.md") >= 0){
+            // Check for config.yml file.
+            if (splitPath[content_index].search("config.yml") >= 0){
                 currentArticle = skill.articles.length - 1;
                 skill.articles[currentArticle].hasReadme = true;
             }
@@ -333,8 +333,8 @@ function parseBook_2LevelsDeep(tree) {
         }
         if (currentDepthIndex === content_index) {
             
-            // Check for README.md file.
-            if (splitPath[content_index].search("README.md") >= 0){
+            // Check for config.yml file.
+            if (splitPath[content_index].search("config.yml") >= 0){
                 currentArticle = skill.sections[currentSection].articles.length - 1;
                 skill.sections[currentSection].articles[currentArticle].hasReadme = true;
             }
@@ -397,8 +397,8 @@ function parseBook_3LevelsDeep(tree) {
             articleCount++;
         }
         if (currentDepthIndex === content_index) {
-            // Check for README.md file.
-            if (splitPath[content_index].search("README.md") >= 0){
+            // Check for config.yml file.
+            if (splitPath[content_index].search("config.yml") >= 0){
                 currentArticle = skill.parts[currentPart].sections[currentSection].articles.length - 1;
                 skill.parts[currentPart].sections[currentSection].articles[currentArticle].hasReadme = true;
             }
@@ -670,27 +670,27 @@ async function toggleSkillArticle(event){
         this.parentNode.className = 'skill__article skill__article__close'
     } 
 
-    // Auto Mode 
-    if (event.currentTarget.articleData.hasReadme === false) {
-        // Show all file names in the article and the content
-        // for each of the files.
-        let ha = document.createElement('h2');
-        ha.innerText = "No Readme";
-        this.parentNode.appendChild(ha); 
-    }
-    // Manual Mode
-    if (event.currentTarget.articleData.hasReadme === true) {
+    // // Auto Mode 
+    // if (event.currentTarget.articleData.hasReadme === false) {
+    //     // Show all file names in the article and the content
+    //     // for each of the files.
+    //     let ha = document.createElement('h2');
+    //     ha.innerText = "No Readme";
+    //     this.parentNode.appendChild(ha); 
+    // }
+    // // Manual Mode
+    // if (event.currentTarget.articleData.hasReadme === true) {
 
-        let url = "https://api.github.com/repos/edwinguerrerotech/spell-book/contents/frontend/03. JavaScript/05. Scripture | Manual Snippet With 1 File and No Tree/README.md";
-        const response = await fetch(url);
-        const result = await response.json();
-        readmeText = atob(result.content);
-        // console.log(readmeText);
+    //     let url = "https://api.github.com/repos/edwinguerrerotech/spell-book/contents/frontend/03. JavaScript/05. Scripture | Manual Snippet With 1 File and No Tree/README.md";
+    //     const response = await fetch(url);
+    //     const result = await response.json();
+    //     readmeText = atob(result.content);
+    //     // console.log(readmeText);
 
-        let ha = document.createElement('h2');
-        ha.innerText = readmeText;
-        this.parentNode.appendChild(ha);
-    }
+    //     let ha = document.createElement('h2');
+    //     ha.innerText = readmeText;
+    //     this.parentNode.appendChild(ha);
+    // }
 }
 
 /*================================ SKILL README */
@@ -726,7 +726,7 @@ async function parseIconData(articleObject) {
     // // Get readme file data to calculate completed percentage for each skill.
     const YAML = require('yaml');
     if (articleObject.hasReadme) {
-        let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${articleObject.path}/README.md`;
+        let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${articleObject.path}/config.yml`;
         const response = await fetch(url);
         const result = await response.yaml();
         let yaml = atob(result.content);
