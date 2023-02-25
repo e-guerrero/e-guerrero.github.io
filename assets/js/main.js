@@ -737,10 +737,7 @@ async function parseIconData(articleObject) {
         
     }
     else { return null; }
- 
 
-    const YAML = require('yaml');
-    let yaml = YAML.parse();
 
     return true;
 }
