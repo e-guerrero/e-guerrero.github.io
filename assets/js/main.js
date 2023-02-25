@@ -724,74 +724,24 @@ function loadIconsForArticles(event) {
 
 async function parseIconData(articleObject) {
     // // Get readme file data to calculate completed percentage for each skill.
-
+    const YAML = require('yaml');
     if (articleObject.hasReadme) {
         let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${articleObject.path}/README.md`;
         const response = await fetch(url);
-        const result = await response.json();
-        let readmeText = atob(result.content);
-        // console.log("README: " + readmeText + '\n');
-        const githubFlag = "$github";
-        const youtubeFlag = "$youtube";
-        const bloggerFlag = "$blogger";
-        const snippetFlag = "$snippet";
+        const result = await response.yaml();
+        let yaml = atob(result.content);
+        console.log("YAML: " + yaml + '\n');
 
-        /*
-
-            $github {
-                github.com/edwinguerrerotech/spell-book
-            }
-
-            $youtube {
-                youtube.com
-            }
-
-            $blogger {
-                blogger.com
-            }
-
-            $snippet {
-                path: /styles.css,
-                lines: 50-60
-            }
-
-            $snippet { path: /assets/js/main.js }
-
-            $snippet { 
-                path: /index.html,
-                lines: 10-14
-            }
-
-            $snippet { 
-                path: /assets/css/styles.css,
-                lines: 50-60
-            }
-
-        */
-
-        // Get index of 1st bracket, and then get index of the 2nd bracket.
-        //  Finally, get the string between those brackets and trim any 
-        //  empty space from each side.
-
-        // Search only one time for github, youtube, and blogger. Any extras 
-        //  will be ignored. There should only be one of each per readme.
-        //  The only thing that should be found multiple times is snippet.
-
-        let githubFlagIndex = readmeText.search(githubFlag);
-        let youtubeFlagIndex = readmeText.search(youtubeFlag);
-        let bloggerFlagIndex = readmeText.search(bloggerFlag);
-
-        // While not at the end of the readme file, keep searching for snippets.
+        let yamlObject = YAML.parse(yaml);
+        console.log("YAML PARSED: " + yamlObject + '\n');
+        
     }
     else { return null; }
  
-    
-    //     countPosition = flagPosition + flag.length;
-    //     const count = readmeText.slice(countPosition, readmeText.length);
-    //     console.log(count);
 
-    // Get numbers of lessons in skill directory.
-    // skillToDiv("frontend","skill.title","skill.percentage");
+    const YAML = require('yaml');
+    let yaml = YAML.parse();
+
     return true;
 }
 
