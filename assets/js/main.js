@@ -723,17 +723,13 @@ function loadIconsForArticles(event) {
 }
 
 async function parseIconData(articleObject) {
-    // // Get readme file data to calculate completed percentage for each skill.
-    const YAML = require('yaml');
+   
     if (articleObject.hasReadme) {
         let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${articleObject.path}/config.yml`;
         const response = await fetch(url);
         const result = await response.yaml();
         let yaml = atob(result.content);
         console.log("YAML: " + yaml + '\n');
-
-        let yamlObject = YAML.parse(yaml);
-        console.log("YAML PARSED: " + yamlObject + '\n');
         
     }
     else { return null; }
