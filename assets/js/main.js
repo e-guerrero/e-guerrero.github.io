@@ -729,15 +729,12 @@ async function parseIconData(articleObject) {
         const response = await fetch(url);
         const result = await response.json();
         let yaml = atob(result.content);
+        // Parser in assets/js/js-yaml.min.js 
+        //  from https://github.com/shockey/js-yaml-browser
         let doc = jsyaml.load(yaml);
         doc.snippets.forEach((d) => {
             console.log(d);
         })
-        
-
-        // jsyaml.loadAll(yaml, function(doc) {
-        //     console.log(doc);
-        // })
         
     }
     else { return null; }
