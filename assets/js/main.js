@@ -52,7 +52,6 @@ navLink.forEach(n => n.addEventListener('click', linkAction))
 
 
 
-
 /*========================= DYNAMICALLY GENERATED SKILLS =======================*/
 
 fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?recursive=1")
@@ -723,10 +722,10 @@ function loadIconsForArticles(event) {
 
 // Render means to make visible and usable. Allocate space in the HTML document
 //  for the element and it's content, then display that content.
-async function renderIcons(articleObject, icons) {
+async function renderIcons(articleData, icons) {
    
-    if (articleObject.hasYAML) {
-        let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${articleObject.path}/config.yml`;
+    if (articleData.hasYAML) {
+        let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${articleData.path}/config.yml`;
         const response = await fetch(url);
         const result = await response.json();
         let data = atob(result.content);
