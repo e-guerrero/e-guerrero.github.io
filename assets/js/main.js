@@ -727,9 +727,17 @@ async function parseIconData(articleObject) {
     if (articleObject.hasReadme) {
         let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${articleObject.path}/config.yml`;
         const response = await fetch(url);
-        const result = await response.yaml();
+        const result = await response.json();
         let yaml = atob(result.content);
-        console.log("YAML: " + yaml + '\n');
+        let doc = jsyaml.load(yaml);
+        doc.snippets.forEach((d) => {
+            console.log(d);
+        })
+        
+
+        // jsyaml.loadAll(yaml, function(doc) {
+        //     console.log(doc);
+        // })
         
     }
     else { return null; }
