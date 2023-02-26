@@ -132,7 +132,7 @@ class Article {
         // includes path title, but doesn't include anything before category.
         this._path = path; 
         this._pathTitle = pathTitle; // mandatory
-        this._hasReadme = false;
+        this._hasYAML = false;
 
         this._youtubeURL = ""; // optional
         this._bloggerURL = ""; // optional
@@ -149,8 +149,8 @@ class Article {
     }
     get path() { return this._path }
     get pathTitle() { return this._pathTitle }
-    set hasReadme(hasReadme) { this._hasReadme = hasReadme; }
-    get hasReadme() { return this._hasReadme; }
+    set hasYAML(hasYAML) { this._hasYAML = hasYAML; }
+    get hasYAML() { return this._hasYAML; }
     set youtubeURL(youtubeURL) { this._youtubeURL = youtubeURL; }
     get youtubeURL() { return this._youtubeURL; }
 }
@@ -276,7 +276,7 @@ function parseBook_1LevelDeep(tree) {
             // Check for config.yml file.
             if (splitPath[content_index].search("config.yml") >= 0){
                 currentArticle = skill.articles.length - 1;
-                skill.articles[currentArticle].hasReadme = true;
+                skill.articles[currentArticle].hasYAML = true;
             }
         }
         if (index === tree.length - 1) {
@@ -336,7 +336,7 @@ function parseBook_2LevelsDeep(tree) {
             // Check for config.yml file.
             if (splitPath[content_index].search("config.yml") >= 0){
                 currentArticle = skill.sections[currentSection].articles.length - 1;
-                skill.sections[currentSection].articles[currentArticle].hasReadme = true;
+                skill.sections[currentSection].articles[currentArticle].hasYAML = true;
             }
         }
         if (index === tree.length - 1) {
@@ -400,7 +400,7 @@ function parseBook_3LevelsDeep(tree) {
             // Check for config.yml file.
             if (splitPath[content_index].search("config.yml") >= 0){
                 currentArticle = skill.parts[currentPart].sections[currentSection].articles.length - 1;
-                skill.parts[currentPart].sections[currentSection].articles[currentArticle].hasReadme = true;
+                skill.parts[currentPart].sections[currentSection].articles[currentArticle].hasYAML = true;
             }
         }
         if (index === tree.length - 1) {
@@ -671,7 +671,7 @@ async function toggleSkillArticle(event){
     } 
 
     // // Auto Mode 
-    // if (event.currentTarget.articleData.hasReadme === false) {
+    // if (event.currentTarget.articleData.hasYAML === false) {
     //     // Show all file names in the article and the content
     //     // for each of the files.
     //     let ha = document.createElement('h2');
@@ -679,7 +679,7 @@ async function toggleSkillArticle(event){
     //     this.parentNode.appendChild(ha); 
     // }
     // // Manual Mode
-    // if (event.currentTarget.articleData.hasReadme === true) {
+    // if (event.currentTarget.articleData.hasYAML === true) {
 
     //     let url = "https://api.github.com/repos/edwinguerrerotech/spell-book/contents/frontend/03. JavaScript/05. Scripture | Manual Snippet With 1 File and No Tree/README.md";
     //     const response = await fetch(url);
@@ -695,52 +695,66 @@ async function toggleSkillArticle(event){
 
 /*================================ SKILL README */
 
+
+// Call a load function first, then parse, and finally render.
+// Load means that, not only has the DOM structure been built, but all resources 
+//  are available for use.
+// Change this to parseArticleIcons.
+// Parse means the act of reading/processing. In this case it's first downloading 
+//  and reading data, and then create HTML.
 function loadIconsForArticles(event) {
 
     let articles = event.currentTarget.articles;
     let articleElementListContainer = event.currentTarget.articleElementListContainer;
 
-    articleElementListContainer.childNodes.forEach((article, index) => {
+    articleElementListContainer.childNodes.forEach( (article, index) => {
 
         // Reset icons in this article element.
                 // article > articleButton > articleHeader > title | icons
         let icons = article.firstChild.firstChild.lastChild;
         while (icons.firstChild) { icons.removeChild(icons.firstChild); }
 
-        // Load icons //////////////////////////
-
-        // Parse Readme
-        let iconData = parseIconData(articles[index]);
-
-        // Generate icons
-
-        let icon = document.createElement('i');
-        //icon.innerText = event.currentTarget.skillData.articles[index].hasReadme;
-        icon.classList.add('uil');
-        icon.classList.add('uil-github');
-        icons.appendChild(icon);
+        // Render icons //////////////////////////
+        // If article has YAML file, parse it.
+        renderIcons(articles[index], icons);
+        
     })
 }
 
-async function parseIconData(articleObject) {
+// Render means to make visible and usable. Allocate space in the HTML document
+//  for the element and it's content, then display that content.
+async function renderIcons(articleObject, icons) {
    
-    if (articleObject.hasReadme) {
+    if (articleObject.hasYAML) {
         let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${articleObject.path}/config.yml`;
         const response = await fetch(url);
         const result = await response.json();
-        let yaml = atob(result.content);
+        let data = atob(result.content);
+        console.log(data)
         // Parser in assets/js/js-yaml.min.js 
         //  from https://github.com/shockey/js-yaml-browser
-        let doc = jsyaml.load(yaml);
-        doc.snippets.forEach((d) => {
-            console.log(d);
-        })
-        
+        let yaml = jsyaml.load(data);
+
+        // Render icons
+        if(yaml.icons.github){
+            let icon = document.createElement('i');
+            icon.classList.add('uil');
+            icon.classList.add('uil-github');
+            icons.appendChild(icon);
+        }
+        if(yaml.icons.youtube){
+            let icon = document.createElement('i');
+            icon.classList.add('uil');
+            icon.classList.add('uil-youtube');
+            icons.appendChild(icon);
+        }
+        if(yaml.icons.blogger){
+            let icon = document.createElement('i');
+            icon.classList.add('uil');
+            icon.classList.add('uil-blogger');
+            icons.appendChild(icon);
+        }
     }
-    else { return null; }
-
-
-    return true;
 }
 
 
