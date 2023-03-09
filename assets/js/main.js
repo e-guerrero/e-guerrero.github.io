@@ -59,10 +59,13 @@ fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?
         return response.json(); 
     })
     .then(result => {
+        console.log(result.tree);
         return parseSkillTree(result.tree);
     })
     .then(branches => {
+        
         branches.forEach(skillData => {
+            console.log(skillData);
             let skillDiv = skillToDiv(skillData);
             // Add the element to webpage+
             let skillList = document.getElementById('skill-list-' + skillData.pathCategory);
@@ -286,8 +289,8 @@ function parseBook_1LevelDeep(tree) {
     skill.totalArticleCount = totalArticleCount;
     skill.articleCount = articleCount;
     return skill;
-
 }
+
 
 function parseBook_2LevelsDeep(tree) {
     let skill = new Skill();
@@ -307,18 +310,24 @@ function parseBook_2LevelsDeep(tree) {
         splitPath = result.path.split("/");
         currentDepthIndex = splitPath.length - 1;
 
+        // Category and Skill Title
         if (splitPath.length === 2) {
             skill.pathCategory = splitPath[category_Index];
             skill.pathTitle = splitPath[skill_Index];
 
             path = skill.pathCategory + '/' + skill.pathTitle;
         }
+        // If path ends with the section title and not the TOTAL#.md file...
         if (currentDepthIndex === section_Index && index != tree.length - 1) {
             pathTitle = splitPath[section_Index];
             path += '/';
             path += pathTitle;
             skill.sections.push(new Section(pathTitle));
+            // Remove pathTitle to continue using the path containing this section.
+            var lastIndex = path.lastIndexOf("/");
+            path = path.substring(0, lastIndex);
         }
+        // If path ends with the next level down from the section directory...
         if (currentDepthIndex === article_Index) {
 
             pathTitle = splitPath[article_Index];
@@ -326,10 +335,13 @@ function parseBook_2LevelsDeep(tree) {
             path += pathTitle;
             currentSection = skill.sections.length - 1;
             skill.sections[currentSection].articles.push(new Article(path, pathTitle));
-            
+            // Remove pathTitle to continue using the path containing this article.
+            var lastIndex = path.lastIndexOf("/");
+            path = path.substring(0, lastIndex);
             // Keep count of total articles for bar percentage calculation.
             articleCount++;
         }
+        // If path ends with the next level down from the article directory..
         if (currentDepthIndex === content_index) {
             
             // Check for config.yml file.
@@ -462,6 +474,7 @@ function skillToDiv(skillData) {
     skillDiv.appendChild(skillButton);
     skillDiv.appendChild(book);
 
+    //console.log(skillData.sections);
     // Append the book contents to the book.
     if (skillData.bookTreeDepth === 1) { 
         // Add event listener to skillButton to make it load icon
@@ -521,6 +534,7 @@ function sectionsToButtonList(sections) {
         sectionHeader.appendChild(sectionTitle);
         sectionButton.appendChild(sectionHeader);
 
+        //console.log(sectionData.articles);
         sectionButton.articles = sectionData.articles;
         sectionButton.articleElementListContainer = articlesList;
         sectionButton.addEventListener('click', loadIconsForArticles);
@@ -695,6 +709,8 @@ async function toggleSkillArticle(event){
 /*================================ SKILL README */
 
 
+
+
 // Call a load function first, then parse, and finally render.
 // Load means that, not only has the DOM structure been built, but all resources 
 //  are available for use.
@@ -703,56 +719,62 @@ async function toggleSkillArticle(event){
 //  and reading data, and then create HTML.
 function loadIconsForArticles(event) {
 
-    let articles = event.currentTarget.articles;
-    let articleElementListContainer = event.currentTarget.articleElementListContainer;
-
-    articleElementListContainer.childNodes.forEach( (article, index) => {
-
-        // Reset icons in this article element.
-                // article > articleButton > articleHeader > title | icons
-        let icons = article.firstChild.firstChild.lastChild;
-        while (icons.firstChild) { icons.removeChild(icons.firstChild); }
-
-        // Render icons //////////////////////////
-        // If article has YAML file, parse it.
-        renderIcons(articles[index], icons);
+    // let articles = event.currentTarget.articles;
+    // let childNodes = event.currentTarget.articleElementListContainer.childNodes;
+    // // let index = 0;
+    // // for (const article of childNodes) {
+    // //     // Reset icons in this article element.
+    // //             // article > articleButton > articleHeader > title | icons
+    // //     let icons = article.firstChild.firstChild.lastChild;
+    // //     //while (icons.firstChild) { icons.removeChild(icons.firstChild); }
+    // //     // Render icons //////////////////////////
+    // //     // If article has YAML file, parse it.
+    // //     let articleData = articles[index++];
+    // //     console.log(articleData)
+    // //     console.log(articleData.path)
+    // //     renderIcons(articleData, icons);
         
-    })
+    // // }
+
+    // for (article of articles) {
+    //     //console.log(article.path + '\n')
+    // }
 }
 
 // Render means to make visible and usable. Allocate space in the HTML document
 //  for the element and it's content, then display that content.
 async function renderIcons(articleData, icons) {
-   
+    
     if (articleData.hasYAML) {
+        console.log(articleData.path)
         let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${articleData.path}/config.yml`;
         const response = await fetch(url);
         const result = await response.json();
-        let data = atob(result.content);
-        console.log(data)
+        //let data = atob(result.content);
+        //console.log(result.content)
         // Parser in assets/js/js-yaml.min.js 
         //  from https://github.com/shockey/js-yaml-browser
-        let yaml = jsyaml.load(data);
+        // let yaml = jsyaml.load(data);
 
-        // Render icons
-        if(yaml.icons.github){
-            let icon = document.createElement('i');
-            icon.classList.add('uil');
-            icon.classList.add('uil-github');
-            icons.appendChild(icon);
-        }
-        if(yaml.icons.youtube){
-            let icon = document.createElement('i');
-            icon.classList.add('uil');
-            icon.classList.add('uil-youtube');
-            icons.appendChild(icon);
-        }
-        if(yaml.icons.blogger){
-            let icon = document.createElement('i');
-            icon.classList.add('uil');
-            icon.classList.add('uil-blogger');
-            icons.appendChild(icon);
-        }
+        // // Render icons
+        // if(yaml.icons.github){
+        //     let icon = document.createElement('i');
+        //     icon.classList.add('uil');
+        //     icon.classList.add('uil-github');
+        //     icons.appendChild(icon);
+        // }
+        // if(yaml.icons.youtube){
+        //     let icon = document.createElement('i');
+        //     icon.classList.add('uil');
+        //     icon.classList.add('uil-youtube');
+        //     icons.appendChild(icon);
+        // }
+        // if(yaml.icons.blogger){
+        //     let icon = document.createElement('i');
+        //     icon.classList.add('uil');
+        //     icon.classList.add('uil-blogger');
+        //     icons.appendChild(icon);
+        // }
     }
 }
 
