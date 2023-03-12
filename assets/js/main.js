@@ -183,6 +183,7 @@ function parseSkillTree(tree) {
     // For gradually saving all the skills.
     let book_branches = [];
     let parsedSkillBooks = [];
+    // To know which parser to use.
     let bookTreeDepth = 0; // 1-3
     // Path as an array of strings seperated by "/".
     let splitPath = [];
@@ -197,6 +198,7 @@ function parseSkillTree(tree) {
         currentDepthIndex = splitPath.length - 1;
 
         // Keep pushing into the array as long as it isn't a path with just the category.
+        // I don't want any of the parsers worrying about that.
         if (currentDepthIndex != category_Index) {
             book_branches.push(branch);
         }
