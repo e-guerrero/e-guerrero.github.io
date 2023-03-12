@@ -371,6 +371,7 @@ function parseBook_3LevelsDeep(tree) {
     let url = null;
     let articleCount = 0;
     let hasYAML = false;
+    let book = new Skill();
 
     for (i = 0; i < tree.length;) {
         // Get category and skill titles.
@@ -407,6 +408,7 @@ function parseBook_3LevelsDeep(tree) {
                             if (path[5].search('config.yml') >= 0) {
                                 hasYAML = true;
                             }
+                            else { hasYAML = false; }
                         }
                     }
                 }
