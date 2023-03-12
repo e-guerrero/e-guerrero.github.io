@@ -246,7 +246,7 @@ function parseSkillTree(tree) {
     // return skill_books;
 }
 
-function parseBook_1LevelDeep(tree) {
+function parseBook_1LevelDeep(branches) {
     let skill = new Skill();
     const article_Index = level_1_Index;
     const content_index = level_2_Index;
@@ -257,7 +257,7 @@ function parseBook_1LevelDeep(tree) {
     let path = '';
     skill.bookTreeDepth = 1;
 
-    tree.forEach(function(result, index) {
+    branches.forEach(function(result, index) {
         splitPath = result.path.split("/");
         currentDepthIndex = splitPath.length - 1;
 
@@ -265,7 +265,7 @@ function parseBook_1LevelDeep(tree) {
             skill.pathCategory = splitPath[category_Index];
             skill.pathTitle = splitPath[skill_Index];
         }
-        if (currentDepthIndex === article_Index  && index != tree.length - 1) {
+        if (currentDepthIndex === article_Index  && index != branches.length - 1) {
             pathTitle = splitPath[article_Index];
             path = skill.pathCategory + '/' + skill.pathTitle + '/' + pathTitle;
             // Add the url path to article object when creatng it.
@@ -281,7 +281,7 @@ function parseBook_1LevelDeep(tree) {
                 skill.articles[currentArticle].hasYAML = true;
             }
         }
-        if (index === tree.length - 1) {
+        if (index === branches.length - 1) {
             totalArticleCount = splitPath[level_1_Index].match(/\d+/g);
         }
     })
@@ -292,7 +292,7 @@ function parseBook_1LevelDeep(tree) {
 }
 
 
-function parseBook_2LevelsDeep(tree) {
+function parseBook_2LevelsDeep(branches) {
     let skill = new Skill();
     const section_Index = level_1_Index;
     const article_Index = level_2_Index;
@@ -305,7 +305,7 @@ function parseBook_2LevelsDeep(tree) {
     let path = "";
     skill.bookTreeDepth = 2;
 
-    tree.forEach(function(result, index) {
+    branches.forEach(function(result, index) {
       
         splitPath = result.path.split("/");
         currentDepthIndex = splitPath.length - 1;
@@ -318,7 +318,7 @@ function parseBook_2LevelsDeep(tree) {
             path = skill.pathCategory + '/' + skill.pathTitle;
         }
         // If path ends with the section title and not the TOTAL#.md file...
-        if (currentDepthIndex === section_Index && index != tree.length - 1) {
+        if (currentDepthIndex === section_Index && index != branches.length - 1) {
             pathTitle = splitPath[section_Index];
             path += '/';
             path += pathTitle;
@@ -350,7 +350,7 @@ function parseBook_2LevelsDeep(tree) {
                 skill.sections[currentSection].articles[currentArticle].hasYAML = true;
             }
         }
-        if (index === tree.length - 1) {
+        if (index === branches.length - 1) {
             totalArticleCount = splitPath[level_1_Index].match(/\d+/g);
         }
     })
@@ -360,7 +360,7 @@ function parseBook_2LevelsDeep(tree) {
     return skill;
 }
 
-function parseBook_3LevelsDeep(tree) {
+function parseBook_3LevelsDeep(branches) {
     let skill = new Skill();
     const part_Index = level_1_Index;
     const section_Index = level_2_Index;
@@ -375,7 +375,7 @@ function parseBook_3LevelsDeep(tree) {
     let path = '';
     skill.bookTreeDepth = 3;
 
-    tree.forEach(function(result, index) {
+    branches.forEach(function(result, index) {
         splitPath = result.path.split("/");
         currentDepthIndex = splitPath.length - 1;
 
@@ -384,7 +384,7 @@ function parseBook_3LevelsDeep(tree) {
             skill.pathTitle = splitPath[skill_Index];
             path = skill.pathCategory + "/" + skill.pathTitle; 
         }
-        if (currentDepthIndex === part_Index && index != tree.length - 1) {
+        if (currentDepthIndex === part_Index && index != branches.length - 1) {
             pathTitle = splitPath[part_Index];
             path += '/';
             path += pathTitle;
@@ -414,7 +414,7 @@ function parseBook_3LevelsDeep(tree) {
                 skill.parts[currentPart].sections[currentSection].articles[currentArticle].hasYAML = true;
             }
         }
-        if (index === tree.length - 1) {
+        if (index === branches.length - 1) {
             totalArticleCount = splitPath[level_1_Index].match(/\d+/g);
         }
     })
