@@ -181,7 +181,7 @@ function parseSkillTree(tree) {
     // Skill object
     let skill_book = new Skill();
     // For gradually saving all the skills.
-    let branches = [];
+    let book_branches = [];
     let skill_books = [];
     let bookTreeDepth = 0; // 1-3
     // Path as an array of strings seperated by "/".
@@ -202,7 +202,7 @@ function parseSkillTree(tree) {
             // Keep saving branches until end of skill is reached.
             // Then take the branches for each skill and parse them into skill objects.
             // Finally, push the skill objects into the skill_books array.
-            branches.push(branch);
+            book_branches.push(branch);
         }
     
         if (currentDepthIndex === level_1_Index) {
@@ -210,17 +210,17 @@ function parseSkillTree(tree) {
             if (splitPath[level_1_Index].match(/^\d/) ===  null) {
                 // Pass the skill tree to the appropriate parser.
                 if (bookTreeDepth === 1) {
-                    skill_book = parseBook_1LevelDeep(branches);
+                    skill_book = parseBook_1LevelDeep(book_branches);
                 }
                 else if (bookTreeDepth === 2) {
-                    skill_book = parseBook_2LevelsDeep(branches);
+                    skill_book = parseBook_2LevelsDeep(book_branches);
                 }
                 else if (bookTreeDepth === 3) {
-                    skill_book = parseBook_3LevelsDeep(branches);
+                    skill_book = parseBook_3LevelsDeep(book_branches);
                 }
                 skill_books.push(skill_book);
                 // Reset branches for the next skill.
-                branches = [];
+                book_branches = [];
             }
         }   
         if (currentDepthIndex === level_2_Index) {
@@ -246,7 +246,7 @@ function parseSkillTree(tree) {
     // return skill_books;
 }
 
-function parseBook_1LevelDeep(branches) {
+function parseBook_1LevelDeep(book_branches) {
     let skill = new Skill();
     const article_Index = level_1_Index;
     const content_index = level_2_Index;
@@ -257,7 +257,7 @@ function parseBook_1LevelDeep(branches) {
     let path = '';
     skill.bookTreeDepth = 1;
 
-    branches.forEach(function(result, index) {
+    book_branches.forEach(function(result, index) {
         splitPath = result.path.split("/");
         currentDepthIndex = splitPath.length - 1;
 
@@ -265,7 +265,7 @@ function parseBook_1LevelDeep(branches) {
             skill.pathCategory = splitPath[category_Index];
             skill.pathTitle = splitPath[skill_Index];
         }
-        if (currentDepthIndex === article_Index  && index != branches.length - 1) {
+        if (currentDepthIndex === article_Index  && index != book_branches.length - 1) {
             pathTitle = splitPath[article_Index];
             path = skill.pathCategory + '/' + skill.pathTitle + '/' + pathTitle;
             // Add the url path to article object when creatng it.
@@ -281,7 +281,7 @@ function parseBook_1LevelDeep(branches) {
                 skill.articles[currentArticle].hasYAML = true;
             }
         }
-        if (index === branches.length - 1) {
+        if (index === book_branches.length - 1) {
             totalArticleCount = splitPath[level_1_Index].match(/\d+/g);
         }
     })
@@ -292,7 +292,7 @@ function parseBook_1LevelDeep(branches) {
 }
 
 
-function parseBook_2LevelsDeep(branches) {
+function parseBook_2LevelsDeep(book_branches) {
     let skill = new Skill();
     const section_Index = level_1_Index;
     const article_Index = level_2_Index;
@@ -305,7 +305,7 @@ function parseBook_2LevelsDeep(branches) {
     let path = "";
     skill.bookTreeDepth = 2;
 
-    branches.forEach(function(result, index) {
+    book_branches.forEach(function(result, index) {
       
         splitPath = result.path.split("/");
         currentDepthIndex = splitPath.length - 1;
@@ -318,7 +318,7 @@ function parseBook_2LevelsDeep(branches) {
             path = skill.pathCategory + '/' + skill.pathTitle;
         }
         // If path ends with the section title and not the TOTAL#.md file...
-        if (currentDepthIndex === section_Index && index != branches.length - 1) {
+        if (currentDepthIndex === section_Index && index != book_branches.length - 1) {
             pathTitle = splitPath[section_Index];
             path += '/';
             path += pathTitle;
@@ -350,7 +350,7 @@ function parseBook_2LevelsDeep(branches) {
                 skill.sections[currentSection].articles[currentArticle].hasYAML = true;
             }
         }
-        if (index === branches.length - 1) {
+        if (index === book_branches.length - 1) {
             totalArticleCount = splitPath[level_1_Index].match(/\d+/g);
         }
     })
@@ -360,68 +360,71 @@ function parseBook_2LevelsDeep(branches) {
     return skill;
 }
 
-function parseBook_3LevelsDeep(branches) {
-    let skill = new Skill();
-    const part_Index = level_1_Index;
-    const section_Index = level_2_Index;
-    const article_Index = level_3_Index;
-    const content_index = level_4_Index;
-    let pathTitle = "";
-    let currentPart = -1;
-    let currentSection = -1;
-    let currentArticle = -1;
-    let articleCount = 0;
-    let totalArticleCount = 0;
-    let path = '';
-    skill.bookTreeDepth = 3;
+function parseBook_3LevelsDeep(book_branches) {
 
-    branches.forEach(function(result, index) {
-        splitPath = result.path.split("/");
-        currentDepthIndex = splitPath.length - 1;
 
-        if (splitPath.length === 2) {
-            skill.pathCategory = splitPath[category_Index];
-            skill.pathTitle = splitPath[skill_Index];
-            path = skill.pathCategory + "/" + skill.pathTitle; 
-        }
-        if (currentDepthIndex === part_Index && index != branches.length - 1) {
-            pathTitle = splitPath[part_Index];
-            path += '/';
-            path += pathTitle;
-            skill.parts.push(new Part(pathTitle));
-        }
-        if (currentDepthIndex === section_Index) {
-            pathTitle = splitPath[section_Index];
-            path += '/';
-            path += pathTitle;
-            currentPart = skill.parts.length - 1;
-            skill.parts[currentPart].sections.push(new Section(pathTitle));
-        }
-        if (currentDepthIndex === article_Index) {
-            pathTitle = splitPath[article_Index];
-            path += '/';
-            path += pathTitle;
-            currentSection = skill.parts[currentPart].sections.length - 1;
-            skill.parts[currentPart].sections[currentSection].articles.push(new Article(path, pathTitle));
 
-            // Keep count of total articles for bar percentage calculation.
-            articleCount++;
-        }
-        if (currentDepthIndex === content_index) {
-            // Check for config.yml file.
-            if (splitPath[content_index].search("config.yml") >= 0){
-                currentArticle = skill.parts[currentPart].sections[currentSection].articles.length - 1;
-                skill.parts[currentPart].sections[currentSection].articles[currentArticle].hasYAML = true;
-            }
-        }
-        if (index === branches.length - 1) {
-            totalArticleCount = splitPath[level_1_Index].match(/\d+/g);
-        }
-    })
+    // let skill = new Skill();
+    // const part_Index = level_1_Index;
+    // const section_Index = level_2_Index;
+    // const article_Index = level_3_Index;
+    // const content_index = level_4_Index;
+    // let pathTitle = "";
+    // let currentPart = -1;
+    // let currentSection = -1;
+    // let currentArticle = -1;
+    // let articleCount = 0;
+    // let totalArticleCount = 0;
+    // let path = '';
+    // skill.bookTreeDepth = 3;
 
-    skill.totalArticleCount = totalArticleCount;
-    skill.articleCount = articleCount;
-    return skill;
+    // book_branches.forEach(function(result, index) {
+    //     splitPath = result.path.split("/");
+    //     currentDepthIndex = splitPath.length - 1;
+
+    //     if (splitPath.length === 2) {
+    //         skill.pathCategory = splitPath[category_Index];
+    //         skill.pathTitle = splitPath[skill_Index];
+    //         path = skill.pathCategory + "/" + skill.pathTitle; 
+    //     }
+    //     if (currentDepthIndex === part_Index && index != book_branches.length - 1) {
+    //         pathTitle = splitPath[part_Index];
+    //         path += '/';
+    //         path += pathTitle;
+    //         skill.parts.push(new Part(pathTitle));
+    //     }
+    //     if (currentDepthIndex === section_Index) {
+    //         pathTitle = splitPath[section_Index];
+    //         path += '/';
+    //         path += pathTitle;
+    //         currentPart = skill.parts.length - 1;
+    //         skill.parts[currentPart].sections.push(new Section(pathTitle));
+    //     }
+    //     if (currentDepthIndex === article_Index) {
+    //         pathTitle = splitPath[article_Index];
+    //         path += '/';
+    //         path += pathTitle;
+    //         currentSection = skill.parts[currentPart].sections.length - 1;
+    //         skill.parts[currentPart].sections[currentSection].articles.push(new Article(path, pathTitle));
+
+    //         // Keep count of total articles for bar percentage calculation.
+    //         articleCount++;
+    //     }
+    //     if (currentDepthIndex === content_index) {
+    //         // Check for config.yml file.
+    //         if (splitPath[content_index].search("config.yml") >= 0){
+    //             currentArticle = skill.parts[currentPart].sections[currentSection].articles.length - 1;
+    //             skill.parts[currentPart].sections[currentSection].articles[currentArticle].hasYAML = true;
+    //         }
+    //     }
+    //     if (index === book_branches.length - 1) {
+    //         totalArticleCount = splitPath[level_1_Index].match(/\d+/g);
+    //     }
+    // })
+
+    // skill.totalArticleCount = totalArticleCount;
+    // skill.articleCount = articleCount;
+    // return skill;
 }
 
 /*================================ GENERATE SKILL BUTTON/s */
