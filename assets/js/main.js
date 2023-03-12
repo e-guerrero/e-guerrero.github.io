@@ -429,6 +429,7 @@ function parseBook_3LevelsDeep(tree) {
             }
         }
     }
+    return book;
 }
 
 /*================================ GENERATE SKILL BUTTON/s */
