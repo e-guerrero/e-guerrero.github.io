@@ -59,19 +59,19 @@ fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?
         return response.json(); 
     })
     .then(result => {
-        console.log(result.tree);
+        result.tree.forEach(branch => {
+            console.log(branch.path)
+        })
         return parseSkillTree(result.tree);
     })
-    .then(branches => {
-        
-        branches.forEach(skillData => {
-            console.log(skillData);
-            let skillDiv = skillToDiv(skillData);
-            // Add the element to webpage+
-            let skillList = document.getElementById('skill-list-' + skillData.pathCategory);
-            skillList.appendChild(skillDiv);
-        })
-    });
+    // .then(branches => {
+    //     branches.forEach(skillData => {
+    //         let skillDiv = skillToDiv(skillData);
+    //         // Add the element to webpage+
+    //         let skillList = document.getElementById('skill-list-' + skillData.pathCategory);
+    //         skillList.appendChild(skillDiv);
+    //     })
+    // });
 
 class Skill {
       
@@ -178,72 +178,72 @@ const level_4_Index = 5;
 
 function parseSkillTree(tree) {
 
-    // Skill object
-    let skill = new Skill();
-    // For gradually saving all the skills.
-    let results = [];
-    let skills = [];
-    let bookTreeDepth = 0; // 1-3
-    // Path as an array of strings seperated by "/".
-    let splitPath = [];
-    let currentDepthIndex = 0;
+    // // Skill object
+    // let skill = new Skill();
+    // // For gradually saving all the skills.
+    // let results = [];
+    // let skills = [];
+    // let bookTreeDepth = 0; // 1-3
+    // // Path as an array of strings seperated by "/".
+    // let splitPath = [];
+    // let currentDepthIndex = 0;
 
-    tree.shift(); // trim off .gitignore
-    tree.shift(); // trim off README.md 
+    // tree.shift(); // trim off .gitignore
+    // tree.shift(); // trim off README.md 
 
 
-    tree.forEach(function(result) {
-        splitPath = result.path.split("/");
-        currentDepthIndex = splitPath.length - 1;
+    // tree.forEach(function(result) {
+    //     splitPath = result.path.split("/");
+    //     currentDepthIndex = splitPath.length - 1;
 
-        // Don't include results that only contain the category.
-        // This overcomplicates the parsing algorithms.
-        if (currentDepthIndex != category_Index) {
-            // Keep saving results until end of skill is reached.
-            // Then take the results for each skill and parse them into skill objects.
-            // Finally, push the skill objects into the skills array.
-            results.push(result);
-        }
+    //     // Don't include results that only contain the category.
+    //     // This overcomplicates the parsing algorithms.
+    //     if (currentDepthIndex != category_Index) {
+    //         // Keep saving results until end of skill is reached.
+    //         // Then take the results for each skill and parse them into skill objects.
+    //         // Finally, push the skill objects into the skills array.
+    //         results.push(result);
+    //     }
     
-        if (currentDepthIndex === level_1_Index) {
-            // If it does not start with a digit... 
-            if (splitPath[level_1_Index].match(/^\d/) ===  null) {
-                // Pass the skill tree to the appropriate parser.
-                if (bookTreeDepth === 1) {
-                    skill = parseBook_1LevelDeep(results);
-                }
-                else if (bookTreeDepth === 2) {
-                    skill = parseBook_2LevelsDeep(results);
-                }
-                else if (bookTreeDepth === 3) {
-                    skill = parseBook_3LevelsDeep(results);
-                }
-                skills.push(skill);
-                // Reset results for the next skill.
-                results = [];
-            }
-        }   
-        if (currentDepthIndex === level_2_Index) {
-            // If it does not start with a digit... 
-            if (splitPath[level_2_Index].match(/^\d/) === null) {
-                bookTreeDepth = 1;
-            }
-        } // Guaranteed to go at least this far throughout the entire life cycle of 
-        //  a skill.
+    //     if (currentDepthIndex === level_1_Index) {
+    //         // If it does not start with a digit... 
+    //         if (splitPath[level_1_Index].match(/^\d/) ===  null) {
+    //             // Pass the skill tree to the appropriate parser.
+    //             if (bookTreeDepth === 1) {
+    //                 skill = parseBook_1LevelDeep(results);
+    //             }
+    //             else if (bookTreeDepth === 2) {
+    //                 skill = parseBook_2LevelsDeep(results);
+    //             }
+    //             else if (bookTreeDepth === 3) {
+    //                 skill = parseBook_3LevelsDeep(results);
+    //             }
+    //             skills.push(skill);
+    //             // Reset results for the next skill.
+    //             results = [];
+    //         }
+    //     }   
+    //     if (currentDepthIndex === level_2_Index) {
+    //         // If it does not start with a digit... 
+    //         if (splitPath[level_2_Index].match(/^\d/) === null) {
+    //             bookTreeDepth = 1;
+    //         }
+    //     } // Guaranteed to go at least this far throughout the entire life cycle of 
+    //     //  a skill.
 
-        // May or may not reach this far
-        if (currentDepthIndex === level_3_Index) {
-            // If it doesn't start with a digit...
-            if (splitPath[level_3_Index].match(/^\d/) === null) {
-                bookTreeDepth = 2;
-            }
-            else {  // It does start with a digit...
-                bookTreeDepth = 3;
-            }
-        }
-    })
+    //     // May or may not reach this far
+    //     if (currentDepthIndex === level_3_Index) {
+    //         // If it doesn't start with a digit...
+    //         if (splitPath[level_3_Index].match(/^\d/) === null) {
+    //             bookTreeDepth = 2;
+    //         }
+    //         else {  // It does start with a digit...
+    //             bookTreeDepth = 3;
+    //         }
+    //     }
+    // })
 
-    return skills;
+    // return skills;
 }
 
 function parseBook_1LevelDeep(tree) {
