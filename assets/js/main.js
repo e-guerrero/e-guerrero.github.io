@@ -76,7 +76,7 @@ fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?
 class Skill {
       
     constructor() {
-        this._pathTitle = "";
+        this._pathSkill = "";
         this._pathCategory = ""; // backend, frontend, design ....
         this._parts = [];
         this._sections = [];
@@ -86,19 +86,19 @@ class Skill {
         this._totalArticleCount = 0;
     }   
 
-    set pathTitle(pathTitle) { this._pathTitle = pathTitle; }
+    set pathSkill(pathSkill) { this._pathSkill = pathSkill; }
     set pathCategory(pathCategory) { this._pathCategory = pathCategory; }
 
     set bookTreeDepth(bookTreeDepth) { this._bookTreeDepth = bookTreeDepth; }
     set articleCount(articleCount) { this._articleCount = articleCount; }
     set totalArticleCount(totalArticleCount) { this._totalArticleCount = totalArticleCount; }
     
-    get pathTitle() { return this._pathTitle; }
+    get pathSkill() { return this._pathSkill; }
     get pathCategory() { return this._pathCategory; }
     // Return without the sequential numbers.
     get title() {
-            let nameCategoryArray = this._pathTitle.split(" ");
-            return nameCategoryArray[1];
+            let skillTitle = this._pathSkill.split(" ");
+            return skillTitle[1];
         }
     get parts() { return this._parts; }
     get sections() { return this._sections; }
@@ -363,13 +363,14 @@ function parseBook_2LevelsDeep(book_branches) {
 function parseBook_3LevelsDeep(tree) {
 
     let path = null;
-    let categoryTitle = null;
-    let skillTitle = null;
-    let partTitle = null;
-    let sectionTitle = null;
-    let articleTitle = null;
+    let pathPart = null;
+    let pathSection = null;
+    let pathArticle = null;
     let url = null;
+    // How many there are.
     let articleCount = 0;
+    // How many there should be.
+    let totalArticleCount = 0;
     let hasYAML = false;
     let book = new Skill();
 
@@ -377,25 +378,38 @@ function parseBook_3LevelsDeep(tree) {
     // The first path in the tree will always include both.
     for (i = 0; i < tree.length;) {
         path = tree[i++].path.split('/');
-        categoryTitle = path[0];
-        skillTitle = path[1];
+        // If the last item in the tree, parse the TOTAL#.md file. It's the 3rd item in the path.
+        if (i === tree.length - 1) { 
+            totalArticleCount = path[2].match(/\d+/g); 
+            book.articleCount = articleCount;
+            book.totalArticleCount = totalArticleCount;
+        }
+        book.pathCategory = path[0];
+        book.pathSkill = path[1];
 
         // Get part title.
-        for(;i < tree.length;) {
+        for(partIndex = 0; i < tree.length; partIndex++) {
             path = tree[i++].path.split('/');
-            partTitle = path[2];
+            pathPart = path[2];
+            book.parts.push(new Part(pathPart));
 
             // Get section title.
-            for (;i < tree.length;) {
+            for (sectionIndex = 0; i < tree.length; sectionIndex++) {
                 path = tree[i++].path.split('/');
-                sectionTitle = path[3];
+                pathSection = path[3];
+                book.parts[partIndex].sections.push(new Section(pathSection));
 
                 // Get article title and url.
                 for (;i < tree.length;) {
                     url = tree[i].url;
-                    articleCount++;
                     path = tree[i++].path.split('/');
-                    articleTitle = path[4];
+                    pathArticle = path[4];
+                    let pathDirectory = "";
+                    for (pathindex = 0; pathindex < path.length - 1; pathindex++) {
+                        pathDirectory += path[pathindex];
+                    }
+                    book.parts[partIndex].sections[sectionIndex].articles.push(new Article(pathDirectory, pathArticle));
+                    articleCount++;
 
                     // Search for config file in this article directory.
                     while (true) {
@@ -414,7 +428,6 @@ function parseBook_3LevelsDeep(tree) {
                 }
             }
         }
-
     }
 
     // let skill = new Skill();
