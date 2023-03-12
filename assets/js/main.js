@@ -59,9 +59,9 @@ fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?
         return response.json(); 
     })
     .then(result => {
-        result.tree.forEach(branch => {
-            console.log(branch.path)
-        })
+        // result.tree.forEach(branch => {
+        //     console.log(branch.path)
+        // })
         return parseSkillTree(result.tree);
     })
     // .then(branches => {
@@ -360,9 +360,60 @@ function parseBook_2LevelsDeep(book_branches) {
     return skill;
 }
 
-function parseBook_3LevelsDeep(book_branches) {
+function parseBook_3LevelsDeep(tree) {
 
+    let path = null;
+    let categoryTitle = null;
+    let skillTitle = null;
+    let partTitle = null;
+    let sectionTitle = null;
+    let articleTitle = null;
+    let url = null;
+    let articleCount = 0;
+    let hasYAML = false;
 
+    for (i = 0; i < tree.length;) {
+        // Get category and skill titles.
+        // The first path in the tree will always include both.
+        path = tree[i++].path.split('/');
+        categoryTitle = path[0];
+        skillTitle = path[1];
+
+        // Get part title.
+        for(;i < tree.length;) {
+            path = tree[i++].path.split('/');
+            partTitle = path[2];
+
+            // Get section title.
+            for (;i < tree.length;) {
+                path = tree[i++].path.split('/');
+                sectionTitle = path[3];
+
+                // Get article title and url.
+                for (;i < tree.length;) {
+                    url = tree[i].url;
+                    articleCount++;
+                    path = tree[i++].path.split('/');
+                    articleTitle = path[4];
+
+                    // Search for config file in this article directory.
+                    while (true) {
+                        path = tree[i++].path.split('/');
+                        // If there's no more article content, exit;
+                        if (path.length < 6) { 
+                            break;
+                        }
+                        else {
+                            if (path[5].search('config.yml') >= 0) {
+                                hasYAML = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
 
     // let skill = new Skill();
     // const part_Index = level_1_Index;
