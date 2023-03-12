@@ -179,10 +179,10 @@ const level_4_Index = 5;
 function parseSkillTree(tree) {
 
     // Skill object
-    let skill_book = new Skill();
+    let parsedSkillBook = new Skill();
     // For gradually saving all the skills.
     let book_branches = [];
-    let skill_books = [];
+    let parsedSkillBooks = [];
     let bookTreeDepth = 0; // 1-3
     // Path as an array of strings seperated by "/".
     let splitPath = [];
@@ -196,41 +196,11 @@ function parseSkillTree(tree) {
         splitPath = branch.path.split("/");
         currentDepthIndex = splitPath.length - 1;
 
-        // Don't include branches that only contain the category.
-        // This overcomplicates the parsing algorithms.
+        // Keep pushing into the array as long as it isn't a path with just the category.
         if (currentDepthIndex != category_Index) {
-            // Keep saving branches until end of skill is reached.
-            // Then take the branches for each skill and parse them into skill objects.
-            // Finally, push the skill objects into the skill_books array.
             book_branches.push(branch);
         }
     
-        if (currentDepthIndex === level_1_Index) {
-            // If it does not start with a digit... 
-            if (splitPath[level_1_Index].match(/^\d/) ===  null) {
-                // Pass the skill tree to the appropriate parser.
-                if (bookTreeDepth === 1) {
-                    skill_book = parseBook_1LevelDeep(book_branches);
-                }
-                else if (bookTreeDepth === 2) {
-                    skill_book = parseBook_2LevelsDeep(book_branches);
-                }
-                else if (bookTreeDepth === 3) {
-                    skill_book = parseBook_3LevelsDeep(book_branches);
-                }
-                skill_books.push(skill_book);
-                // Reset branches for the next skill.
-                book_branches = [];
-            }
-        }   
-        if (currentDepthIndex === level_2_Index) {
-            // If it does not start with a digit... 
-            if (splitPath[level_2_Index].match(/^\d/) === null) {
-                bookTreeDepth = 1;
-            }
-        } // Guaranteed to go at least this far throughout the entire life cycle of 
-        //  a skill.
-
         // May or may not reach this far
         if (currentDepthIndex === level_3_Index) {
             // If it doesn't start with a digit...
@@ -241,9 +211,37 @@ function parseSkillTree(tree) {
                 bookTreeDepth = 3;
             }
         }
+        
+        // Guaranteed to go at least this far throughout the entire life cycle of 
+        //  a skill.
+        if (currentDepthIndex === level_2_Index) {
+            // If it does not start with a digit... 
+            if (splitPath[level_2_Index].match(/^\d/) === null) {
+                bookTreeDepth = 1;
+            }
+        } 
+        
+        if (currentDepthIndex === level_1_Index) {
+            // If it does not start with a digit (TOTAL#.md file), you're on the last item of a skill.
+            if (splitPath[level_1_Index].match(/^\d/) ===  null) {
+                // Pass the skill tree to the appropriate parser.
+                if (bookTreeDepth === 1) {
+                    parsedSkillBook = parseBook_1LevelDeep(book_branches);
+                }
+                else if (bookTreeDepth === 2) {
+                    parsedSkillBook = parseBook_2LevelsDeep(book_branches);
+                }
+                else if (bookTreeDepth === 3) {
+                    parsedSkillBook = parseBook_3LevelsDeep(book_branches);
+                }
+                parsedSkillBooks.push(parsedSkillBook);
+                // Reset branches for the next skill.
+                book_branches = [];
+            }
+        }  
     })
 
-    // return skill_books;
+    // return parsedSkillBooks;
 }
 
 function parseBook_1LevelDeep(book_branches) {
