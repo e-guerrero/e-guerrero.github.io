@@ -429,68 +429,6 @@ function parseBook_3LevelsDeep(tree) {
             }
         }
     }
-
-    // let skill = new Skill();
-    // const part_Index = level_1_Index;
-    // const section_Index = level_2_Index;
-    // const article_Index = level_3_Index;
-    // const content_index = level_4_Index;
-    // let pathTitle = "";
-    // let currentPart = -1;
-    // let currentSection = -1;
-    // let currentArticle = -1;
-    // let articleCount = 0;
-    // let totalArticleCount = 0;
-    // let path = '';
-    // skill.bookTreeDepth = 3;
-
-    // book_branches.forEach(function(result, index) {
-    //     splitPath = result.path.split("/");
-    //     currentDepthIndex = splitPath.length - 1;
-
-    //     if (splitPath.length === 2) {
-    //         skill.pathCategory = splitPath[category_Index];
-    //         skill.pathTitle = splitPath[skill_Index];
-    //         path = skill.pathCategory + "/" + skill.pathTitle; 
-    //     }
-    //     if (currentDepthIndex === part_Index && index != book_branches.length - 1) {
-    //         pathTitle = splitPath[part_Index];
-    //         path += '/';
-    //         path += pathTitle;
-    //         skill.parts.push(new Part(pathTitle));
-    //     }
-    //     if (currentDepthIndex === section_Index) {
-    //         pathTitle = splitPath[section_Index];
-    //         path += '/';
-    //         path += pathTitle;
-    //         currentPart = skill.parts.length - 1;
-    //         skill.parts[currentPart].sections.push(new Section(pathTitle));
-    //     }
-    //     if (currentDepthIndex === article_Index) {
-    //         pathTitle = splitPath[article_Index];
-    //         path += '/';
-    //         path += pathTitle;
-    //         currentSection = skill.parts[currentPart].sections.length - 1;
-    //         skill.parts[currentPart].sections[currentSection].articles.push(new Article(path, pathTitle));
-
-    //         // Keep count of total articles for bar percentage calculation.
-    //         articleCount++;
-    //     }
-    //     if (currentDepthIndex === content_index) {
-    //         // Check for config.yml file.
-    //         if (splitPath[content_index].search("config.yml") >= 0){
-    //             currentArticle = skill.parts[currentPart].sections[currentSection].articles.length - 1;
-    //             skill.parts[currentPart].sections[currentSection].articles[currentArticle].hasYAML = true;
-    //         }
-    //     }
-    //     if (index === book_branches.length - 1) {
-    //         totalArticleCount = splitPath[level_1_Index].match(/\d+/g);
-    //     }
-    // })
-
-    // skill.totalArticleCount = totalArticleCount;
-    // skill.articleCount = articleCount;
-    // return skill;
 }
 
 /*================================ GENERATE SKILL BUTTON/s */
