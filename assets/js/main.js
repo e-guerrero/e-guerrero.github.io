@@ -373,9 +373,9 @@ function parseBook_3LevelsDeep(tree) {
     let hasYAML = false;
     let book = new Skill();
 
+    // Get category and skill titles.
+    // The first path in the tree will always include both.
     for (i = 0; i < tree.length;) {
-        // Get category and skill titles.
-        // The first path in the tree will always include both.
         path = tree[i++].path.split('/');
         categoryTitle = path[0];
         skillTitle = path[1];
