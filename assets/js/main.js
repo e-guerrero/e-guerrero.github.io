@@ -246,7 +246,7 @@ function parseSkillTree(tree) {
     return parsedSkillBooks;
 }
 
-function parseBook_1LevelDeep(book_branches) {
+function parseBook_1LevelDeep(tree) {
     let path = null;
     let pathArticle = null;
     let url = null;
@@ -256,7 +256,7 @@ function parseBook_1LevelDeep(book_branches) {
     let totalArticleCount = 0;
     let hasYAML = false;
     let book = new Skill();
-    book.bookTreeDepth(1);
+    book.bookTreeDepth = 1;
 
     // Iterate through the whole tree that belongs to this one skill book.
     for (i = 0; i < tree.length;) {
@@ -305,7 +305,7 @@ function parseBook_1LevelDeep(book_branches) {
 }
 
 
-function parseBook_2LevelsDeep(book_branches) {
+function parseBook_2LevelsDeep(tree) {
     let path = null;
     let pathSection = null;
     let pathArticle = null;
@@ -316,7 +316,7 @@ function parseBook_2LevelsDeep(book_branches) {
     let totalArticleCount = 0;
     let hasYAML = false;
     let book = new Skill();
-    book.bookTreeDepth(2);
+    book.bookTreeDepth = 2;
 
     // Iterate through the whole tree that belongs to this one skill book.
     for (i = 0; i < tree.length;) {
@@ -351,20 +351,20 @@ function parseBook_2LevelsDeep(book_branches) {
                 book.sections[sectionIndex].articles.push(new Article(pathDirectory, pathArticle));
                 articleCount++;
 
-                // Search for config file in this article directory.
-                while (true) {
-                    path = tree[i++].path.split('/');
-                    // If there's no more article content, exit;
-                    if (path.length < 6) { 
-                        break;
-                    }
-                    else {
-                        if (path[5].search('config.yml') >= 0) {
-                            hasYAML = true;
-                        }
-                        else { hasYAML = false; }
-                    }
-                }
+                // // Search for config file in this article directory.
+                // while (true) {
+                //     path = tree[i++].path.split('/');
+                //     // If there's no more article content, exit;
+                //     if (path.length < 6) { 
+                //         break;
+                //     }
+                //     else {
+                //         if (path[5].search('config.yml') >= 0) {
+                //             hasYAML = true;
+                //         }
+                //         else { hasYAML = false; }
+                //     }
+                // }
             }
         }
     }
@@ -384,7 +384,7 @@ function parseBook_3LevelsDeep(tree) {
     let totalArticleCount = 0;
     let hasYAML = false;
     let book = new Skill();
-    book.bookTreeDepth(3);
+    book.bookTreeDepth = 3;
 
     // Get category and skill titles.
     // The first path in the tree will always include both.
