@@ -271,7 +271,7 @@ function parseBook_1LevelDeep(tree) {
     let skill = path[1];
 
     path = maxTotalBranch.path.split("/");
-    let maxTotal = path[2];
+    let maxTotal = path[2].match(/\d+/g)[0]; // match() returns an array of matches.
 
     console.log(category);
     console.log(skill);
