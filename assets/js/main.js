@@ -276,16 +276,35 @@ function parseBook_1LevelDeep(tree) {
     console.log(category);
     console.log(skill);
     console.log(maxTotal);
-    console.log("\n\n\n");
+    console.log("\n");
 
-
+    let book = new Skill();
+    book.bookTreeDepth = 1;
+    book.pathCategory = category;
+    book.pathSkill = skill;
+    book.totalArticleCount = maxTotal;
+    
+    let articleCount = 0;
     console.log("NEW BOOK: \n\n");
     // Iterate through the whole tree that belongs to this one skill book.
     for (i = 0; i < tree.length; i++) {
         console.log(tree[i].path);
+        // If the path array only has 3 items, then save it as an article path title.
+        let articleBranch = tree[i];
+        let articlePath = articleBranch.path.split("/");
+        if(articlePath.length === 3) {
+            let article = articlePath.pop();
+            let directory = category + '/' + skill + '/';
+            book.articles.push(new Article(directory, article));
+            articleCount++;
+        }
     }
-    console.log("\n\n\n\n");
+    book.articleCount = articleCount;
+    console.log("\n");
 
+    console.log(book);
+
+    console.log("\n\n\n\n");
 
     // let path = null;
     // let pathArticle = null;
