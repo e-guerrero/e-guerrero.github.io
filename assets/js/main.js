@@ -230,12 +230,12 @@ function parseSkillTree(tree) {
                 if (bookTreeDepth === 1) {
                     parsedSkillBook = parseBook_1LevelDeep(book_branches);
                 }
-                else if (bookTreeDepth === 2) {
-                    parsedSkillBook = parseBook_2LevelsDeep(book_branches);
-                }
-                else if (bookTreeDepth === 3) {
-                    parsedSkillBook = parseBook_3LevelsDeep(book_branches);
-                }
+                // else if (bookTreeDepth === 2) {
+                //     parsedSkillBook = parseBook_2LevelsDeep(book_branches);
+                // }
+                // else if (bookTreeDepth === 3) {
+                //     parsedSkillBook = parseBook_3LevelsDeep(book_branches);
+                // }
                 parsedSkillBooks.push(parsedSkillBook);
                 // Reset branches for the next skill.
                 book_branches = [];
@@ -247,61 +247,62 @@ function parseSkillTree(tree) {
 }
 
 function parseBook_1LevelDeep(tree) {
-    let path = null;
-    let pathArticle = null;
-    let url = null;
-    // How many there are.
-    let articleCount = 0;
-    // How many there should be.
-    let totalArticleCount = 0;
-    let hasYAML = false;
-    let book = new Skill();
-    book.bookTreeDepth = 1;
+    // let path = null;
+    // let pathArticle = null;
+    // let url = null;
+    // // How many there are.
+    // let articleCount = 0;
+    // // How many there should be.
+    // let totalArticleCount = 0;
+    // let book = new Skill();
+    // book.bookTreeDepth = 1;
 
-    // Iterate through the whole tree that belongs to this one skill book.
-    for (i = 0; i < tree.length;) {
-        path = tree[i++].path.split('/');
-        // If the last item in the tree, parse the TOTAL#.md file. It's the 3rd item in the path.
-        if (i === tree.length - 1) { 
-            totalArticleCount = path[2].match(/\d+/g); 
-            book.articleCount = articleCount;
-            book.totalArticleCount = totalArticleCount;
-        }
-        // Get category and skill titles.
-        // The first path in the tree will always include both.
-        book.pathCategory = path[0];
-        book.pathSkill = path[1];
+    // // Iterate through the whole tree that belongs to this one skill book.
+    // for (i = 0; i < tree.length - 1;) {
+    //     path = tree[i++].path.split('/');
+    //     // Get category and skill titles.
+    //     // The first path in the tree will always include both.
+    //     book.pathCategory = path[0];
+    //     book.pathSkill = path[1];
 
-        // Get article title and url.
-        for (;i < tree.length;) {
-            url = tree[i].url;
-            path = tree[i++].path.split('/');
-            pathArticle = path[4];
-            // Get the full directory path but without the article title.
-            let pathDirectory = "";
-            for (pathIndex = 0; pathIndex < path.length - 1; pathIndex++) {
-                pathDirectory += path[pathIndex];
-            }
-            book.articles.push(new Article(pathDirectory, pathArticle));
-            articleCount++;
+    //     // Get article title and url.
+    //         url = tree[i].url;
+    //         path = tree[i++].path.split('/');
+    //         pathArticle = path[2];
+    //         // Get the full directory path but without the article title.
+    //         let pathDirectory = "";
+    //         path.pop();
+    //         for (pathIndex = 0; pathIndex < 2; pathIndex++) {
+    //             pathDirectory += path[pathIndex];
+    //             pathDirectory += "/";
+    //         }
+            
+    //         let article = new Article(pathDirectory, pathArticle);
+    //         // Search for config file in this article directory.
+    //         for(;i < tree.length - 1;) {
+            
+    //             console.log(i)
+         
+    //             // if (path[3].search('config.yml') >= 0) {
+    //             //     console.log("inside yaml")
+    //             //     article.hasYAML = true;
+    //             // }
+    //         }
 
-            // Search for config file in this article directory.
-            while (true) {
-                path = tree[i++].path.split('/');
-                // If there's no more article content, exit;
-                if (path.length < 6) { 
-                    break;
-                }
-                else {
-                    if (path[5].search('config.yml') >= 0) {
-                        hasYAML = true;
-                    }
-                    else { hasYAML = false; }
-                }
-            }
-        }
-    }
-    return book;
+    //         book.articles.push(article);
+    //         articleCount++;
+        
+    // }
+    
+    // // Parse the TOTAL#.md file. It's the 3rd item in the path.
+    // path = tree[tree.length - 1].path.split('/');
+    // totalArticleCount = path[2].match(/\d+/g); 
+    // book.articleCount = articleCount;
+    // book.totalArticleCount = totalArticleCount;
+
+    // console.log("Book: ");
+    // console.log(book);
+    // return book;
 }
 
 
@@ -351,20 +352,20 @@ function parseBook_2LevelsDeep(tree) {
                 book.sections[sectionIndex].articles.push(new Article(pathDirectory, pathArticle));
                 articleCount++;
 
-                // // Search for config file in this article directory.
-                // while (true) {
-                //     path = tree[i++].path.split('/');
-                //     // If there's no more article content, exit;
-                //     if (path.length < 6) { 
-                //         break;
-                //     }
-                //     else {
-                //         if (path[5].search('config.yml') >= 0) {
-                //             hasYAML = true;
-                //         }
-                //         else { hasYAML = false; }
-                //     }
-                // }
+                // Search for config file in this article directory.
+                for(done = false ;done = false;) {
+                    path = tree[i++].path.split('/');
+                    // If there's no more article content, exit;
+                    if (path.length < 6) { 
+                        done = true;
+                    }
+                    else {
+                        if (path[5].search('config.yml') >= 0) {
+                            hasYAML = true;
+                        }
+                        else { hasYAML = false; }
+                    }
+                }
             }
         }
     }
@@ -425,11 +426,11 @@ function parseBook_3LevelsDeep(tree) {
                     articleCount++;
 
                     // Search for config file in this article directory.
-                    while (true) {
+                    for(done = false ;done = false;) {
                         path = tree[i++].path.split('/');
                         // If there's no more article content, exit;
                         if (path.length < 6) { 
-                            break;
+                            done = true;
                         }
                         else {
                             if (path[5].search('config.yml') >= 0) {
