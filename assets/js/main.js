@@ -243,52 +243,65 @@ function parseSkillTree(tree) {
         }  
     })
 
-    // return parsedSkillBooks;
+    return parsedSkillBooks;
 }
 
 function parseBook_1LevelDeep(book_branches) {
-    let skill = new Skill();
-    const article_Index = level_1_Index;
-    const content_index = level_2_Index;
-    let pathTitle = "";
-    let currentArticle = -1;
+    let path = null;
+    let pathArticle = null;
+    let url = null;
+    // How many there are.
     let articleCount = 0;
+    // How many there should be.
     let totalArticleCount = 0;
-    let path = '';
-    skill.bookTreeDepth = 1;
+    let hasYAML = false;
+    let book = new Skill();
+    book.bookTreeDepth(1);
 
-    book_branches.forEach(function(result, index) {
-        splitPath = result.path.split("/");
-        currentDepthIndex = splitPath.length - 1;
-
-        if (splitPath.length === 2) {
-            skill.pathCategory = splitPath[category_Index];
-            skill.pathTitle = splitPath[skill_Index];
+    // Iterate through the whole tree that belongs to this one skill book.
+    for (i = 0; i < tree.length;) {
+        path = tree[i++].path.split('/');
+        // If the last item in the tree, parse the TOTAL#.md file. It's the 3rd item in the path.
+        if (i === tree.length - 1) { 
+            totalArticleCount = path[2].match(/\d+/g); 
+            book.articleCount = articleCount;
+            book.totalArticleCount = totalArticleCount;
         }
-        if (currentDepthIndex === article_Index  && index != book_branches.length - 1) {
-            pathTitle = splitPath[article_Index];
-            path = skill.pathCategory + '/' + skill.pathTitle + '/' + pathTitle;
-            // Add the url path to article object when creatng it.
-            skill.articles.push(new Article(path, pathTitle));
+        // Get category and skill titles.
+        // The first path in the tree will always include both.
+        book.pathCategory = path[0];
+        book.pathSkill = path[1];
 
-            // Keep count of total articles for bar percentage calculation.
+        // Get article title and url.
+        for (;i < tree.length;) {
+            url = tree[i].url;
+            path = tree[i++].path.split('/');
+            pathArticle = path[4];
+            // Get the full directory path but without the article title.
+            let pathDirectory = "";
+            for (pathIndex = 0; pathIndex < path.length - 1; pathIndex++) {
+                pathDirectory += path[pathIndex];
+            }
+            book.articles.push(new Article(pathDirectory, pathArticle));
             articleCount++;
-        }
-        if (currentDepthIndex === content_index) {
-            // Check for config.yml file.
-            if (splitPath[content_index].search("config.yml") >= 0){
-                currentArticle = skill.articles.length - 1;
-                skill.articles[currentArticle].hasYAML = true;
+
+            // Search for config file in this article directory.
+            while (true) {
+                path = tree[i++].path.split('/');
+                // If there's no more article content, exit;
+                if (path.length < 6) { 
+                    break;
+                }
+                else {
+                    if (path[5].search('config.yml') >= 0) {
+                        hasYAML = true;
+                    }
+                    else { hasYAML = false; }
+                }
             }
         }
-        if (index === book_branches.length - 1) {
-            totalArticleCount = splitPath[level_1_Index].match(/\d+/g);
-        }
-    })
-
-    skill.totalArticleCount = totalArticleCount;
-    skill.articleCount = articleCount;
-    return skill;
+    }
+    return book;
 }
 
 
@@ -303,6 +316,7 @@ function parseBook_2LevelsDeep(book_branches) {
     let totalArticleCount = 0;
     let hasYAML = false;
     let book = new Skill();
+    book.bookTreeDepth(2);
 
     // Iterate through the whole tree that belongs to this one skill book.
     for (i = 0; i < tree.length;) {
@@ -370,6 +384,7 @@ function parseBook_3LevelsDeep(tree) {
     let totalArticleCount = 0;
     let hasYAML = false;
     let book = new Skill();
+    book.bookTreeDepth(3);
 
     // Get category and skill titles.
     // The first path in the tree will always include both.
