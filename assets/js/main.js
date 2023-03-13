@@ -250,11 +250,41 @@ function parseSkillTree(tree) {
 
 function parseBook_1LevelDeep(tree) {
 
+    // This tree only contains one skill/book, therefore this function will only handle 
+    //  one Skill object.
+
+    //  - The tree starts with category and then category/skill.
+    //  - The tree ends with category/skill/total.md file.
+
+    //      1. Get the category, skill name and max total of articles. 
+    //      2. Then finally iterate through the rest off the tree to add data to the Skill object.
+
+    // Trim the tree.
+    let categoryBranch = tree.shift(); // Remove 1st element
+    let skillBranch = tree.shift(); // Remove 1st element
+    let maxTotalBranch = tree.pop(); // Remove last element
+
+    // Category path doesn't require splitting. Just throw in the whole path.
+    let category = categoryBranch.path;
+
+    let path = skillBranch.path.split("/");
+    let skill = path[1];
+
+    path = maxTotalBranch.path.split("/");
+    let maxTotal = path[2];
+
+    console.log(category);
+    console.log(skill);
+    console.log(maxTotal);
+    console.log("\n\n\n");
+
+
+    console.log("NEW BOOK: \n\n");
     // Iterate through the whole tree that belongs to this one skill book.
     for (i = 0; i < tree.length; i++) {
         console.log(tree[i].path);
     }
-
+    console.log("\n\n\n\n");
 
 
     // let path = null;
