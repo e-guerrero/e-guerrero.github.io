@@ -208,12 +208,13 @@ function parseSkillTree(tree) {
             // If it does not start with a digit (TOTAL#.md file), you're on the last item of a skill.
             if (splitPath[level_1_Index].match(/^\d/) ===  null) {
                 // Pass the skill tree to the appropriate parser.
-                if (bookTreeDepth === 1) {
-                    parsedSkillBook = parseBook_1LevelDeep(book_branches);
-                }
-                // else if (bookTreeDepth === 2) {
-                //     parsedSkillBook = parseBook_2LevelsDeep(book_branches);
+                // if (bookTreeDepth === 1) {
+                //     parsedSkillBook = parseBook_1LevelDeep(book_branches);
                 // }
+                //else 
+                if (bookTreeDepth === 2) {
+                    parsedSkillBook = parseBook_2LevelsDeep(book_branches);
+                }
                 // else if (bookTreeDepth === 3) {
                 //     parsedSkillBook = parseBook_3LevelsDeep(book_branches);
                 // }
@@ -309,7 +310,6 @@ function parseBook_1LevelDeep(tree) {
             console.log("\n");
         }
     }
-
     book.articleCount = articleCount;
     console.log("\n");
     console.log(book);
@@ -319,69 +319,40 @@ function parseBook_1LevelDeep(tree) {
 
 
 function parseBook_2LevelsDeep(tree) {
-    let path = null;
-    let pathSection = null;
-    let pathArticle = null;
-    let url = null;
-    // How many there are.
-    let articleCount = 0;
-    // How many there should be.
-    let totalArticleCount = 0;
-    let hasYAML = false;
-    let book = new Skill();
-    book.bookTreeDepth = 2;
+    // // Trim the tree.
+    // let categoryBranch = tree.shift(); // Remove 1st element
+    // let skillBranch = tree.shift(); // Remove 1st element
+    // let maxTotalBranch = tree.pop(); // Remove last element
+    // // Category path doesn't require splitting. Just throw in the whole path.
+    // let category = categoryBranch.path;
+    // // Skill title
+    // let path = skillBranch.path.split("/");
+    // let skill = path[1];
+    // // Max total
+    // path = maxTotalBranch.path.split("/");
+    // let maxTotal = path[2].match(/\d+/g)[0]; // match() returns an array of matches.
+    // console.log(category);
+    // console.log(skill);
+    // console.log(maxTotal);
+    // console.log("\n");
 
+    // let book = new Skill();
+    // book.bookTreeDepth = 1;
+    // book.pathCategory = category;
+    // book.pathSkill = skill;
+    // book.totalArticleCount = maxTotal;
+
+
+    console.log("NEW BOOK: \n\n");
     // Iterate through the whole tree that belongs to this one skill book.
-    for (i = 0; i < tree.length;) {
-        path = tree[i++].path.split('/');
-        // If the last item in the tree, parse the TOTAL#.md file. It's the 3rd item in the path.
-        if (i === tree.length - 1) { 
-            totalArticleCount = path[2].match(/\d+/g); 
-            book.articleCount = articleCount;
-            book.totalArticleCount = totalArticleCount;
-        }
-        // Get category and skill titles.
-        // The first path in the tree will always include both.
-        book.pathCategory = path[0];
-        book.pathSkill = path[1];
-
-        // Get section title.
-        for (sectionIndex = 0; i < tree.length; sectionIndex++) {
-            path = tree[i++].path.split('/');
-            pathSection = path[3];
-            book.sections.push(new Section(pathSection));
-
-            // Get article title and url.
-            for (;i < tree.length;) {
-                url = tree[i].url;
-                path = tree[i++].path.split('/');
-                pathArticle = path[4];
-                // Get the full directory path but without the article title.
-                let pathDirectory = "";
-                for (pathIndex = 0; pathIndex < path.length - 1; pathIndex++) {
-                    pathDirectory += path[pathIndex];
-                }
-                book.sections[sectionIndex].articles.push(new Article(pathDirectory, pathArticle));
-                articleCount++;
-
-                // Search for config file in this article directory.
-                for(done = false ;done = false;) {
-                    path = tree[i++].path.split('/');
-                    // If there's no more article content, exit;
-                    if (path.length < 6) { 
-                        done = true;
-                    }
-                    else {
-                        if (path[5].search('config.yml') >= 0) {
-                            hasYAML = true;
-                        }
-                        else { hasYAML = false; }
-                    }
-                }
-            }
-        }
+    for (i = 0; i < tree.length; i++) {
+        console.log(tree[i].path);
     }
-    return book;
+
+    //console.log("\n");
+    //console.log(book);
+    console.log("\n\n\n\n");
+    //return book;
 }
 
 function parseBook_3LevelsDeep(tree) {
