@@ -207,13 +207,13 @@ function parseSkillTree(tree) {
             // If it does not start with a digit (TOTAL#.md file), you're on the last item of a skill.
             if (splitPath[level_1_Index].match(/^\d/) ===  null) {
                 // Pass the skill tree to the appropriate parser.
-                if (bookTreeDepth === 1) {
-                    parsedSkillBook = parseBook_1LevelDeep(book_branches);
-                }
-                //else 
-                // if (bookTreeDepth === 2) {
-                //     parsedSkillBook = parseBook_2LevelsDeep(book_branches);
+                // if (bookTreeDepth === 1) {
+                //     parsedSkillBook = parseBook_1LevelDeep(book_branches);
                 // }
+                //else 
+                if (bookTreeDepth === 2) {
+                    parsedSkillBook = parseBook_2LevelsDeep(book_branches);
+                }
                 // else if (bookTreeDepth === 3) {
                 //     parsedSkillBook = parseBook_3LevelsDeep(book_branches);
                 // }
