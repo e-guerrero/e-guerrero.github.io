@@ -198,23 +198,22 @@ function parseSkillTree(tree) {
         splitPath = branch.path.split("/");
         currentDepthIndex = splitPath.length - 1;
 
-        // // Keep pushing into the array as long as it isn't a path with just the category.
-        // // I don't want any of the parsers worrying about that.
-        // if (currentDepthIndex != category_Index) {
-        //     book_branches.push(branch);
-        // }
-        book_branches.push(branch);
+        // Keep pushing into the array as long as it isn't a path with just the category.
+        // I don't want any of the parsers worrying about that. Too many logical errors.
+        if (currentDepthIndex != category_Index) {
+            book_branches.push(branch);
+        }
         if (currentDepthIndex === level_1_Index) {
             // If it does not start with a digit (TOTAL#.md file), you're on the last item of a skill.
             if (splitPath[level_1_Index].match(/^\d/) ===  null) {
                 // Pass the skill tree to the appropriate parser.
-                // if (bookTreeDepth === 1) {
-                //     parsedSkillBook = parseBook_1LevelDeep(book_branches);
-                // }
-                //else 
-                if (bookTreeDepth === 2) {
-                    parsedSkillBook = parseBook_2LevelsDeep(book_branches);
+                if (bookTreeDepth === 1) {
+                    parsedSkillBook = parseBook_1LevelDeep(book_branches);
                 }
+                //else 
+                // if (bookTreeDepth === 2) {
+                //     parsedSkillBook = parseBook_2LevelsDeep(book_branches);
+                // }
                 // else if (bookTreeDepth === 3) {
                 //     parsedSkillBook = parseBook_3LevelsDeep(book_branches);
                 // }
@@ -254,23 +253,19 @@ function parseBook_1LevelDeep(tree) {
     // This tree only contains one skill/book, therefore this function will only handle 
     //  one Skill object.
 
-    //  - The tree starts with category and then category/skill.
+    //  - The tree starts with category/skill.
     //  - The tree ends with category/skill/total.md file.
 
     //      1. Get the category, skill name and max total of articles. 
     //      2. Then finally iterate through the rest off the tree to add data to the Skill object.
 
     // Trim the tree.
-    let categoryBranch = tree.shift(); // Remove 1st element
-    let skillBranch = tree.shift(); // Remove 1st element
+    let categoryAndSkillBranch = tree.shift(); // Remove 1st element
     let maxTotalBranch = tree.pop(); // Remove last element
 
-    // Category path doesn't require splitting. Just throw in the whole path.
-    let category = categoryBranch.path;
-
-    let path = skillBranch.path.split("/");
+    let path = categoryAndSkillBranch.path.split("/");
+    let category = path[0];
     let skill = path[1];
-
     path = maxTotalBranch.path.split("/");
     let maxTotal = path[2].match(/\d+/g)[0]; // match() returns an array of matches.
 
