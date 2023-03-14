@@ -289,79 +289,32 @@ function parseBook_1LevelDeep(tree) {
     // Iterate through the whole tree that belongs to this one skill book.
     for (i = 0; i < tree.length; i++) {
         console.log(tree[i].path);
-        // If the path array only has 3 items, then save it as an article path title.
+        // Get the path.
         let articleBranch = tree[i];
         let articlePath = articleBranch.path.split("/");
+        // Get article directory.
         if(articlePath.length === 3) {
-            let article = articlePath.pop();
+            // Get article title and it's path.
+            let article = articlePath[2];
             let directory = category + '/' + skill + '/';
             book.articles.push(new Article(directory, article));
             articleCount++;
+        // Check for config.yml
+        }else if(articlePath.length === 4){
+            console.log("\nSCANNING: " + articlePath + "\n");
+            if (articlePath[3].search('config.yml') >= 0) {
+                console.log("* Has yaml *\n");
+                book.articles[book.articles.length-1].hasYAML = true;
+            }
+            console.log("\n");
         }
     }
+
     book.articleCount = articleCount;
     console.log("\n");
-
     console.log(book);
-
     console.log("\n\n\n\n");
-
-    // let path = null;
-    // let pathArticle = null;
-    // let url = null;
-    // // How many there are.
-    // let articleCount = 0;
-    // // How many there should be.
-    // let totalArticleCount = 0;
-    // let book = new Skill();
-    // book.bookTreeDepth = 1;
-
-    // // Iterate through the whole tree that belongs to this one skill book.
-    // for (i = 0; i < tree.length - 1;) {
-    //     path = tree[i++].path.split('/');
-    //     // Get category and skill titles.
-    //     // The first path in the tree will always include both.
-    //     book.pathCategory = path[0];
-    //     book.pathSkill = path[1];
-
-    //     // Get article title and url.
-    //         url = tree[i].url;
-    //         path = tree[i++].path.split('/');
-    //         pathArticle = path[2];
-    //         // Get the full directory path but without the article title.
-    //         let pathDirectory = "";
-    //         path.pop();
-    //         for (pathIndex = 0; pathIndex < 2; pathIndex++) {
-    //             pathDirectory += path[pathIndex];
-    //             pathDirectory += "/";
-    //         }
-            
-    //         let article = new Article(pathDirectory, pathArticle);
-    //         // Search for config file in this article directory.
-    //         for(;i < tree.length - 1;) {
-            
-    //             console.log(i)
-         
-    //             // if (path[3].search('config.yml') >= 0) {
-    //             //     console.log("inside yaml")
-    //             //     article.hasYAML = true;
-    //             // }
-    //         }
-
-    //         book.articles.push(article);
-    //         articleCount++;
-        
-    // }
-    
-    // // Parse the TOTAL#.md file. It's the 3rd item in the path.
-    // path = tree[tree.length - 1].path.split('/');
-    // totalArticleCount = path[2].match(/\d+/g); 
-    // book.articleCount = articleCount;
-    // book.totalArticleCount = totalArticleCount;
-
-    // console.log("Book: ");
-    // console.log(book);
-    // return book;
+    return book;
 }
 
 
