@@ -312,31 +312,21 @@ function parseBook_1LevelDeep(tree) {
     return book;
 }
 
-
 function parseBook_2LevelsDeep(tree) {
-    // // Trim the tree.
-    // let categoryBranch = tree.shift(); // Remove 1st element
-    // let skillBranch = tree.shift(); // Remove 1st element
-    // let maxTotalBranch = tree.pop(); // Remove last element
-    // // Category path doesn't require splitting. Just throw in the whole path.
-    // let category = categoryBranch.path;
-    // // Skill title
-    // let path = skillBranch.path.split("/");
-    // let skill = path[1];
-    // // Max total
-    // path = maxTotalBranch.path.split("/");
-    // let maxTotal = path[2].match(/\d+/g)[0]; // match() returns an array of matches.
-    // console.log(category);
-    // console.log(skill);
-    // console.log(maxTotal);
-    // console.log("\n");
+    // Trim the tree.
+    let categoryAndSkillBranch = tree.shift(); // Remove 1st element
+    let maxTotalBranch = tree.pop(); // Remove last element
 
-    // let book = new Skill();
-    // book.bookTreeDepth = 1;
-    // book.pathCategory = category;
-    // book.pathSkill = skill;
-    // book.totalArticleCount = maxTotal;
+    let path = categoryAndSkillBranch.path.split("/");
+    let category = path[0];
+    let skill = path[1];
+    path = maxTotalBranch.path.split("/");
+    let maxTotal = path[2].match(/\d+/g)[0]; // match() returns an array of matches.
 
+    console.log(category);
+    console.log(skill);
+    console.log(maxTotal);
+    console.log("\n");
 
     console.log("NEW BOOK: \n\n");
     // Iterate through the whole tree that belongs to this one skill book.
@@ -351,7 +341,6 @@ function parseBook_2LevelsDeep(tree) {
 }
 
 function parseBook_3LevelsDeep(tree) {
-
     let path = null;
     let pathPart = null;
     let pathSection = null;
