@@ -81,7 +81,6 @@ class Skill {
         this._parts = [];
         this._sections = [];
         this._articles = [];
-        this._bookTreeDepth = 0; // 1-3 Article | Section |  Part
         this._articleCount = 0; 
         this._totalArticleCount = 0;
     }   
@@ -89,7 +88,6 @@ class Skill {
     set pathSkill(pathSkill) { this._pathSkill = pathSkill; }
     set pathCategory(pathCategory) { this._pathCategory = pathCategory; }
 
-    set bookTreeDepth(bookTreeDepth) { this._bookTreeDepth = bookTreeDepth; }
     set articleCount(articleCount) { this._articleCount = articleCount; }
     set totalArticleCount(totalArticleCount) { this._totalArticleCount = totalArticleCount; }
     
@@ -106,8 +104,11 @@ class Skill {
     get percentage() { 
         return Math.round((this._articleCount / this._totalArticleCount) * 100 ) + "%"; 
     }
-    get bookTreeDepth() { return this._bookTreeDepth; }
-    
+    get bookTreeDepth() { 
+        if (this._parts.length > 0) { return 3; }
+        else if (this._sections.length > 0) { return 2; }
+        else { return 1; }
+    }
 } 
 
 class Part {
@@ -274,7 +275,6 @@ function parseBook_1LevelDeep(tree) {
     console.log("\n");
 
     let book = new Skill();
-    book.bookTreeDepth = 1;
     book.pathCategory = category;
     book.pathSkill = skill;
     book.totalArticleCount = maxTotal;
@@ -330,7 +330,6 @@ function parseBook_2LevelsDeep(tree) {
     console.log("\n");
 
     let book = new Skill();
-    book.bookTreeDepth = 2;
     book.pathCategory = category;
     book.pathSkill = skill;
     book.totalArticleCount = maxTotal;
@@ -397,7 +396,6 @@ function parseBook_3LevelsDeep(tree) {
     console.log("\n");
 
     let book = new Skill();
-    book.bookTreeDepth = 3;
     book.pathCategory = category;
     book.pathSkill = skill;
     book.totalArticleCount = maxTotal;
