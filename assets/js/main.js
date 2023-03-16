@@ -285,20 +285,20 @@ function parseBook_1LevelDeep(tree) {
     // Iterate through the whole tree that belongs to this one skill book.
     for (i = 0; i < tree.length; i++) {
         console.log(tree[i].path);
-        // Get the path.
-        let articleBranch = tree[i];
-        let articlePath = articleBranch.path.split("/");
+        // Get the full path.
+        let branch = tree[i];
+        let fullPath = branch.path.split("/");
         // Get article directory.
-        if(articlePath.length === 3) {
+        if(fullPath.length === 3) {
             // Get article title and it's path.
-            let article = articlePath[2];
+            let article = fullPath[2];
             let directory = category + '/' + skill + '/';
             book.articles.push(new Article(directory, article));
             articleCount++;
         // Check for config.yml
-        }else if(articlePath.length === 4){
-            console.log("\nSCANNING: " + articlePath + "\n");
-            if (articlePath[3].search('config.yml') >= 0) {
+        }else if(fullPath.length === 4){
+            console.log("\nSCANNING: " + fullPath + "\n");
+            if (fullPath[3].search('config.yml') >= 0) {
                 console.log("* Has yaml *\n");
                 book.articles[book.articles.length-1].hasYAML = true;
             }
@@ -328,12 +328,23 @@ function parseBook_2LevelsDeep(tree) {
     console.log(maxTotal);
     console.log("\n");
 
+    let book = new Skill();
+    book.bookTreeDepth = 1;
+    book.pathCategory = category;
+    book.pathSkill = skill;
+    book.totalArticleCount = maxTotal;
+
+    let articleCount = 0;
     console.log("NEW BOOK: \n\n");
     // Iterate through the whole tree that belongs to this one skill book.
     for (i = 0; i < tree.length; i++) {
         console.log(tree[i].path);
+        // Get the full path.
+        let branch = tree[i];
+        let fullPath = branch.path.split("/");
     }
 
+    book.articleCount = articleCount;
     //console.log("\n");
     //console.log(book);
     console.log("\n\n\n\n");
