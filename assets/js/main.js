@@ -63,14 +63,14 @@ fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?
         console.log(parsedSkills);
         return parsedSkills;
     })
-    // .then(branches => {
-    //     branches.forEach(skillData => {
-    //         let skillDiv = skillToDiv(skillData);
-    //         // Add the element to webpage+
-    //         let skillList = document.getElementById('skill-list-' + skillData.pathCategory);
-    //         skillList.appendChild(skillDiv);
-    //     })
-    // });
+    .then(parsedSkills => {
+        parsedSkills.forEach(skill => {
+            let skillDiv = skillToDiv(skill);
+            // Add the element to webpage+
+            let skillList = document.getElementById('skill-list-' + skill.pathCategory);
+            skillList.appendChild(skillDiv);
+        })
+    });
 
 class Skill {
       
@@ -430,7 +430,7 @@ function skillToDiv(skillData) {
                 // Skill name
                 let title = document.createElement('h3');
                 title.classList.add('skill__title');
-                title.innerText = skillData.pathTitle;
+                title.innerText = skillData.pathSkill;
                 // Skill percentage
                 let percentage = document.createElement('span');
                 percentage.classList.add('skill__percentage');
