@@ -159,6 +159,7 @@ class Article {
     }
     get path() { return this._path }
     get pathTitle() { return this._pathTitle }
+    get pathFull() { return this._path + this._pathTitle }
     set hasYAML(hasYAML) { this._hasYAML = hasYAML; }
     get hasYAML() { return this._hasYAML; }
     set youtubeURL(youtubeURL) { this._youtubeURL = youtubeURL; }
@@ -714,26 +715,21 @@ async function toggleSkillArticle(event){
 //  and reading data, and then create HTML.
 function loadIconsForArticles(event) {
 
-    // let articles = event.currentTarget.articles;
-    // let childNodes = event.currentTarget.articleElementListContainer.childNodes;
-    // // let index = 0;
-    // // for (const article of childNodes) {
-    // //     // Reset icons in this article element.
-    // //             // article > articleButton > articleHeader > title | icons
-    // //     let icons = article.firstChild.firstChild.lastChild;
-    // //     //while (icons.firstChild) { icons.removeChild(icons.firstChild); }
-    // //     // Render icons //////////////////////////
-    // //     // If article has YAML file, parse it.
-    // //     let articleData = articles[index++];
-    // //     console.log(articleData)
-    // //     console.log(articleData.path)
-    // //     renderIcons(articleData, icons);
+    let articles = event.currentTarget.articles;
+    let childNodes = event.currentTarget.articleElementListContainer.childNodes;
+    let index = 0;
+    for (const article of childNodes) {
+        // Reset icons in this article element.
+                // article > articleButton > articleHeader > title | icons
+        let icons = article.firstChild.firstChild.lastChild;
+        while (icons.firstChild) { icons.removeChild(icons.firstChild); }
+        // Render icons //////////////////////////
+        // If article has YAML file, parse it.
+        let articleData = articles[index++];
+        renderIcons(articleData, icons);
         
-    // // }
+    }
 
-    // for (article of articles) {
-    //     //console.log(article.path + '\n')
-    // }
 }
 
 // Render means to make visible and usable. Allocate space in the HTML document
@@ -741,35 +737,33 @@ function loadIconsForArticles(event) {
 async function renderIcons(articleData, icons) {
     
     if (articleData.hasYAML) {
-        console.log(articleData.path)
-        let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${articleData.path}/config.yml`;
+        let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${articleData.pathFull}/config.yml`;
         const response = await fetch(url);
         const result = await response.json();
-        //let data = atob(result.content);
-        //console.log(result.content)
+        let data = atob(result.content);
         // Parser in assets/js/js-yaml.min.js 
         //  from https://github.com/shockey/js-yaml-browser
-        // let yaml = jsyaml.load(data);
+        let yaml = jsyaml.load(data);
 
-        // // Render icons
-        // if(yaml.icons.github){
-        //     let icon = document.createElement('i');
-        //     icon.classList.add('uil');
-        //     icon.classList.add('uil-github');
-        //     icons.appendChild(icon);
-        // }
-        // if(yaml.icons.youtube){
-        //     let icon = document.createElement('i');
-        //     icon.classList.add('uil');
-        //     icon.classList.add('uil-youtube');
-        //     icons.appendChild(icon);
-        // }
-        // if(yaml.icons.blogger){
-        //     let icon = document.createElement('i');
-        //     icon.classList.add('uil');
-        //     icon.classList.add('uil-blogger');
-        //     icons.appendChild(icon);
-        // }
+        // Render icons
+        if(yaml.icons.github){
+            let icon = document.createElement('i');
+            icon.classList.add('uil');
+            icon.classList.add('uil-github');
+            icons.appendChild(icon);
+        }
+        if(yaml.icons.youtube){
+            let icon = document.createElement('i');
+            icon.classList.add('uil');
+            icon.classList.add('uil-youtube');
+            icons.appendChild(icon);
+        }
+        if(yaml.icons.blogger){
+            let icon = document.createElement('i');
+            icon.classList.add('uil');
+            icon.classList.add('uil-blogger');
+            icons.appendChild(icon);
+        }
     }
 }
 
