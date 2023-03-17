@@ -484,7 +484,7 @@ function skillToDiv(skillData) {
         //  is to call loadIconsForArticles(event) in toggleSkillSection().
         articleElementListContainer = articlesToElementList(skillData.articles);
         book.appendChild(articleElementListContainer); 
-
+        // Data to pass over to the event handler to load icons...
         skillButton.articles = skillData.articles;
         skillButton.articleElementListContainer = articleElementListContainer;
         skillButton.addEventListener('click', loadIconsForArticles);
