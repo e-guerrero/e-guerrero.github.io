@@ -56,7 +56,12 @@ navLink.forEach(n => n.addEventListener('click', linkAction))
 
 fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?recursive=1")
     .then(response => {
-        return response.json(); 
+        if(!response.ok) {
+            return response.text().then(text => { throw new Error(text) })
+        } 
+        else { 
+            return response.json();
+        }
     })
     .then(result => {
         let parsedSkills = parseSkillTree(result.tree);
@@ -70,6 +75,9 @@ fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?
             let skillList = document.getElementById('skill-list-' + skill.pathCategory);
             skillList.appendChild(skillDiv);
         })
+    })
+    .catch(err => {
+        console.log(err);
     });
 
 class Skill {
