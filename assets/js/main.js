@@ -744,7 +744,19 @@ function loadIconsForArticles(event) {
         // Render icons //////////////////////////
         // If article has YAML file, parse it.
         let articleData = articles[index++];
-        if (articleData.hasYAML) {
+
+        // AUTO MODE
+        if (articleData.hasYAML === false) {
+            // console.log("\nHas YAML:\n" + articleData.pathTitle);
+            // renderIcons(articleData, icons);
+            // console.log("\n");
+            let icon = document.createElement('i');
+            icon.classList.add('uil');
+            icon.classList.add('uil-github');
+            icons.appendChild(icon);
+        }
+        // MANUAL MODE
+        if (articleData.hasYAML === true) {
             console.log("\nHas YAML:\n" + articleData.pathTitle);
             renderIcons(articleData, icons);
             console.log("\n");
@@ -765,6 +777,7 @@ async function renderIcons(articleData, icons) {
     // Parser in assets/js/js-yaml.min.js 
     //  from https://github.com/shockey/js-yaml-browser
     let yaml = jsyaml.load(data);
+    console.log("YAML: ");
     console.log(yaml);
 
     // Render icons
