@@ -57,7 +57,7 @@ navLink.forEach(n => n.addEventListener('click', linkAction))
 fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?recursive=1")
     .then(response => {
         if(!response.ok) {
-            return response.text().then(text => { throw new Error(text) })
+            return response.text().then(text => { throw new Error(text) });
         } 
         else { 
             return response.json();
@@ -78,6 +78,24 @@ fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?
     })
     .catch(err => {
         console.log(err);
+        let frontendError = document.createElement('h5');
+        frontendError.style.maxWidth = "300px";
+        let backendError = document.createElement('h5');
+        let designError = document.createElement('h5');
+        let errorText = err.value();
+        let splitError = errorText.search(")");
+        errorText = splitError[0];
+
+        frontendError.innerText = errorText;
+        backendError.innerText = errorText;
+        designError.innerText = errorText;
+        // Add the element to webpage+
+        let frontend = document.getElementById('skill-list-frontend');
+        let backend = document.getElementById('skill-list-backend');
+        let design = document.getElementById('skill-list-design');
+        frontend.appendChild(frontendError);
+        backend.appendChild(backendError);
+        design.appendChild(designError);
     });
 
 class Skill {
@@ -726,8 +744,11 @@ function loadIconsForArticles(event) {
         // Render icons //////////////////////////
         // If article has YAML file, parse it.
         let articleData = articles[index++];
-        renderIcons(articleData, icons);
-        
+        if (articleData.hasYAML) {
+            console.log("\nHas YAML:\n" + articleData.pathTitle);
+            renderIcons(articleData, icons);
+            console.log("\n");
+        }
     }
 
 }
@@ -736,34 +757,34 @@ function loadIconsForArticles(event) {
 //  for the element and it's content, then display that content.
 async function renderIcons(articleData, icons) {
     
-    if (articleData.hasYAML) {
-        let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${articleData.pathFull}/config.yml`;
-        const response = await fetch(url);
-        const result = await response.json();
-        let data = atob(result.content);
-        // Parser in assets/js/js-yaml.min.js 
-        //  from https://github.com/shockey/js-yaml-browser
-        let yaml = jsyaml.load(data);
+    console.log("inside render\n")
+    let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${articleData.pathFull}/config.yml`;
+    const response = await fetch(url);
+    const result = await response.json();
+    let data = atob(result.content);
+    // Parser in assets/js/js-yaml.min.js 
+    //  from https://github.com/shockey/js-yaml-browser
+    let yaml = jsyaml.load(data);
+    console.log(yaml);
 
-        // Render icons
-        if(yaml.icons.github){
-            let icon = document.createElement('i');
-            icon.classList.add('uil');
-            icon.classList.add('uil-github');
-            icons.appendChild(icon);
-        }
-        if(yaml.icons.youtube){
-            let icon = document.createElement('i');
-            icon.classList.add('uil');
-            icon.classList.add('uil-youtube');
-            icons.appendChild(icon);
-        }
-        if(yaml.icons.blogger){
-            let icon = document.createElement('i');
-            icon.classList.add('uil');
-            icon.classList.add('uil-blogger');
-            icons.appendChild(icon);
-        }
+    // Render icons
+    if(yaml.icons.github){
+        let icon = document.createElement('i');
+        icon.classList.add('uil');
+        icon.classList.add('uil-github');
+        icons.appendChild(icon);
+    }
+    if(yaml.icons.youtube){
+        let icon = document.createElement('i');
+        icon.classList.add('uil');
+        icon.classList.add('uil-youtube');
+        icons.appendChild(icon);
+    }
+    if(yaml.icons.blogger){
+        let icon = document.createElement('i');
+        icon.classList.add('uil');
+        icon.classList.add('uil-blogger');
+        icons.appendChild(icon);
     }
 }
 
