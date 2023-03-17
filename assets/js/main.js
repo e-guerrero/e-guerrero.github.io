@@ -161,19 +161,6 @@ class Article {
         this._path = path; 
         this._pathTitle = pathTitle; // mandatory
         this._hasYAML = false;
-
-        this._youtubeURL = ""; // optional
-        this._bloggerURL = ""; // optional
-        // Just because there is a Github link, doesn't mean there should be 
-        //  a value here. Only fill this in...
-        //      
-        //      if article file tree is >1 level deep.
-        //      if there's >= 1 snippet.
-        //      
-        this._githubURL = ""; // conditional  
-        // Optional but If no snippets and only 1 level deep: auto 
-        // If auto, you would display all code from each file as snippets.
-        this._snippets = []; // optional  
     }
     get path() { return this._path }
     get pathTitle() { return this._pathTitle }
