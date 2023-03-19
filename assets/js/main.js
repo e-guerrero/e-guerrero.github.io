@@ -741,7 +741,9 @@ function loadIconsForArticles(event) {
         // Reset icons in this article element.
                 // article > articleButton > articleHeader > title | icons
         let iconsContainer = article.firstChild.firstChild.lastChild;
-        while (icons.firstChild) { icons.removeChild(icons.firstChild); }
+        while (iconsContainer.firstChild) { 
+            iconsContainer.removeChild(iconsContainer.firstChild); 
+        }
         
         // Render icons //////////////////////////
         // Get the article to check if it has a YAML file and then parse it.
@@ -755,12 +757,12 @@ function loadIconsForArticles(event) {
             let icon = document.createElement('i');
             icon.classList.add('uil');
             icon.classList.add('uil-github');
-            icons.appendChild(icon);
+            iconsContainer.appendChild(icon);
         }
         // MANUAL MODE
         if (articleData.hasYAML === true) {
             console.log("\nHas YAML:\n" + articleData.pathTitle);
-            renderIcons(articleData, icons);
+            renderIcons(articleData, iconsContainer);
             console.log("\n");
         }
     }
