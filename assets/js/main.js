@@ -161,14 +161,19 @@ class Article {
         this._path = path; 
         this._pathTitle = pathTitle; // mandatory
         this._hasYAML = false;
+        this._files_1stLevel = [];
+        this._hasTree = false;
     }
     get path() { return this._path }
     get pathTitle() { return this._pathTitle }
     get pathFull() { return this._path + this._pathTitle }
+    get files_1stLevel() { return this._files_1stLevel }
+    get hasTree() { return this._hasTree }
+
+    set hasTree(hasTree) { this._hasTree = hasTree; }
+
     set hasYAML(hasYAML) { this._hasYAML = hasYAML; }
     get hasYAML() { return this._hasYAML; }
-    set youtubeURL(youtubeURL) { this._youtubeURL = youtubeURL; }
-    get youtubeURL() { return this._youtubeURL; }
 }
 
 let Snippet = {
@@ -301,14 +306,23 @@ function parseBook_1LevelDeep(tree) {
             book.articles.push(new Article(directory, article));
             articleCount++;
         }
-        // Check for config.yml
+        // Check for config.yml and 1-level deep files.
         else if(fullPath.length === 4){
-            if (fullPath[3].search('config.yml') >= 0) {
+            if (fullPath[3].search('config.yml') >= 0 || fullPath[3].search('config.yaml') >= 0) {
                 book.articles[book.articles.length-1].hasYAML = true;
             }
+            // If it has a file extension then it's a file.
+            if (fullPath[3].indexOf('.') >= 0) {
+                book.articles[book.articles.length-1].files_1stLevel.push(branch.path);
+            }
+        }
+        else if(fullPath.length === 5){
+            book.articles[book.articles.length-1].hasTree = true;
         }
     }
     book.articleCount = articleCount;
+
+    console.log(book);
 
     return book;
 }
