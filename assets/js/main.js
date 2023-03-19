@@ -740,10 +740,11 @@ function loadIconsForArticles(event) {
     for (const article of childNodes) {
         // Reset icons in this article element.
                 // article > articleButton > articleHeader > title | icons
-        let icons = article.firstChild.firstChild.lastChild;
+        let iconsContainer = article.firstChild.firstChild.lastChild;
         while (icons.firstChild) { icons.removeChild(icons.firstChild); }
+        
         // Render icons //////////////////////////
-        // If article has YAML file, parse it.
+        // Get the article to check if it has a YAML file and then parse it.
         let articleData = articles[index++];
 
         // AUTO MODE
