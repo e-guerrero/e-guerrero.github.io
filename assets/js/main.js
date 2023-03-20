@@ -53,8 +53,9 @@ navLink.forEach(n => n.addEventListener('click', linkAction))
 
 
 /*========================= DYNAMICALLY GENERATED SKILLS =======================*/
-
-fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?recursive=1")
+const github_User = "edwinguerrerotech";
+const repo = "spell-book";
+fetch(`https://api.github.com/repos/${github_User}/${repo}/git/trees/main?recursive=1`)
     .then(response => {
         if(!response.ok) {
             return response.text().then(text => { throw new Error(text) });
@@ -157,8 +158,8 @@ class Section {
 class Article {
     constructor(path, pathTitle) {
         // includes path title, but doesn't include anything before category.
-        this._path = path; 
-        this._pathTitle = pathTitle; // mandatory
+        this._path = path; // frontend/01. HTML/
+        this._pathTitle = pathTitle; // 01. Article | Auto With 1 File and No Tree
         this._hasYAML = false;
         this._files_1stLevel = [];
         this._hasTree = false;
@@ -173,6 +174,11 @@ class Article {
 
     set hasYAML(hasYAML) { this._hasYAML = hasYAML; }
     get hasYAML() { return this._hasYAML; }
+    get githubURL() {
+        let base = `https://github.com/${github_User}/${repo}/tree/main/`;
+        let githubURL = base + encodeURIComponent(this.pathFull);
+        return githubURL;
+    }
 }
 
 let Snippet = {
@@ -760,6 +766,7 @@ function loadIconsForArticles(event) {
         // Render icons //////////////////////////
         // Get the article to check if it has a YAML file and then parse it.
         let articleData = articles[index++];
+        console.log(articleData.githubURL)
         renderIcons(articleData, iconsContainer);
 
     }
@@ -769,8 +776,6 @@ function loadIconsForArticles(event) {
 // Render means to make visible and usable. Allocate space in the HTML document
 //  for the element and it's content, then display that content.
 async function renderIcons(articleData, icons) {
-    
-    console.log("Inside renderIcons()\n")
 
     // AUTO MODE
     if (articleData.hasYAML === false) {
@@ -783,7 +788,7 @@ async function renderIcons(articleData, icons) {
     }
     // MANUAL MODE
     else if (articleData.hasYAML === true) {
-        let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${articleData.pathFull}/config.yml`;
+        let url = `https://api.github.com/repos/${github_User}/${repo}/contents/${articleData.pathFull}/config.yml`;
         const response = await fetch(url);
         const result = await response.json();
         let data = atob(result.content);
