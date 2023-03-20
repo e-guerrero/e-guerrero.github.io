@@ -65,7 +65,6 @@ fetch("https://api.github.com/repos/edwinguerrerotech/spell-book/git/trees/main?
     })
     .then(result => {
         let parsedSkills = parseSkillTree(result.tree);
-        console.log(parsedSkills);
         return parsedSkills;
     })
     .then(parsedSkills => {
@@ -322,8 +321,6 @@ function parseBook_1LevelDeep(tree) {
     }
     book.articleCount = articleCount;
 
-    console.log(book);
-
     return book;
 }
 
@@ -367,11 +364,19 @@ function parseBook_2LevelsDeep(tree) {
             articleIndex = book.sections[sectionIndex].articles.length-1;
             articleCount++;
         }
-        // Check for config.yml
+
+        // Check for config.yml and 1-level deep files.
         else if(fullPath.length === 5){
-            if (fullPath[4].search('config.yml') >= 0) {
+            if (fullPath[4].search('config.yml') >= 0 || fullPath[4].search('config.yaml') >= 0) {
                 book.sections[sectionIndex].articles[articleIndex].hasYAML = true;
             }
+            // If it has a file extension then it's a file.
+            if (fullPath[4].indexOf('.') >= 0) {
+                book.sections[sectionIndex].articles[articleIndex].files_1stLevel.push(branch.path);
+            }
+        }
+        else if(fullPath.length === 6){
+            book.sections[sectionIndex].articles[articleIndex].hasTree = true;
         }
     }
     book.articleCount = articleCount;
@@ -427,11 +432,18 @@ function parseBook_3LevelsDeep(tree) {
             articleIndex = book.parts[partIndex].sections[sectionIndex].articles.length-1;
             articleCount++;
         }
-        // Check for config.yml
+        // Check for config.yml and 1-level deep files.
         else if(fullPath.length === 6){
-            if (fullPath[5].search('config.yml') >= 0) {
+            if (fullPath[5].search('config.yml') >= 0 || fullPath[5].search('config.yaml') >= 0) {
                 book.parts[partIndex].sections[sectionIndex].articles[articleIndex].hasYAML = true;
             }
+            // If it has a file extension then it's a file.
+            if (fullPath[5].indexOf('.') >= 0) {
+                book.parts[partIndex].sections[sectionIndex].articles[articleIndex].files_1stLevel.push(branch.path);
+            }
+        }
+        else if(fullPath.length === 7){
+            book.parts[partIndex].sections[sectionIndex].articles[articleIndex].hasTree = true;
         }
     }
     book.articleCount = articleCount;
@@ -748,23 +760,8 @@ function loadIconsForArticles(event) {
         // Render icons //////////////////////////
         // Get the article to check if it has a YAML file and then parse it.
         let articleData = articles[index++];
+        renderIcons(articleData, iconsContainer);
 
-        // AUTO MODE
-        if (articleData.hasYAML === false) {
-            // console.log("\nHas YAML:\n" + articleData.pathTitle);
-            // renderIcons(articleData, icons);
-            // console.log("\n");
-            let icon = document.createElement('i');
-            icon.classList.add('uil');
-            icon.classList.add('uil-github');
-            iconsContainer.appendChild(icon);
-        }
-        // MANUAL MODE
-        if (articleData.hasYAML === true) {
-            console.log("\nHas YAML:\n" + articleData.pathTitle);
-            renderIcons(articleData, iconsContainer);
-            console.log("\n");
-        }
     }
 
 }
@@ -773,7 +770,7 @@ function loadIconsForArticles(event) {
 //  for the element and it's content, then display that content.
 async function renderIcons(articleData, icons) {
     
-    console.log("inside render\n")
+    console.log("Inside renderIcons()\n")
     let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${articleData.pathFull}/config.yml`;
     const response = await fetch(url);
     const result = await response.json();
@@ -781,8 +778,19 @@ async function renderIcons(articleData, icons) {
     // Parser in assets/js/js-yaml.min.js 
     //  from https://github.com/shockey/js-yaml-browser
     let yaml = jsyaml.load(data);
-    console.log("YAML: ");
-    console.log(yaml);
+
+    // AUTO MODE
+    if (articleData.hasYAML === false) {
+        // console.log("\nHas YAML:\n" + articleData.pathTitle);
+        // renderIcons(articleData, icons);
+        // console.log("\n");
+        
+        
+    }
+    // MANUAL MODE
+    if (articleData.hasYAML === true) {
+
+    }
 
     // Render icons
     if(yaml.icons.github){
