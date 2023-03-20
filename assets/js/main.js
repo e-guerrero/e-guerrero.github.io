@@ -771,45 +771,49 @@ function loadIconsForArticles(event) {
 async function renderIcons(articleData, icons) {
     
     console.log("Inside renderIcons()\n")
-    let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${articleData.pathFull}/config.yml`;
-    const response = await fetch(url);
-    const result = await response.json();
-    let data = atob(result.content);
-    // Parser in assets/js/js-yaml.min.js 
-    //  from https://github.com/shockey/js-yaml-browser
-    let yaml = jsyaml.load(data);
 
-    // AUTO MODE
     if (articleData.hasYAML === false) {
-        // console.log("\nHas YAML:\n" + articleData.pathTitle);
-        // renderIcons(articleData, icons);
-        // console.log("\n");
-        
-        
+        if (articleData.hasTree === true) {
+            let icon = document.createElement('i');
+            icon.classList.add('uil');
+            icon.classList.add('uil-github');
+            icons.appendChild(icon);
+        }
     }
     // MANUAL MODE
-    if (articleData.hasYAML === true) {
+    else if (articleData.hasYAML === true) {
+        let url = `https://api.github.com/repos/edwinguerrerotech/spell-book/contents/${articleData.pathFull}/config.yml`;
+        const response = await fetch(url);
+        const result = await response.json();
+        let data = atob(result.content);
+        // Parser in assets/js/js-yaml.min.js 
+        //  from https://github.com/shockey/js-yaml-browser
+        let yaml = jsyaml.load(data);
 
-    }
+        // if no tree, no snippets, no level 1 files
+        if ((articleData.hasTree === true || yaml.snippets) ) {
+                
+            let icon = document.createElement('i');
+            icon.classList.add('uil');
+            icon.classList.add('uil-github');
+            icons.appendChild(icon);
 
-    // Render icons
-    if(yaml.icons.github){
-        let icon = document.createElement('i');
-        icon.classList.add('uil');
-        icon.classList.add('uil-github');
-        icons.appendChild(icon);
-    }
-    if(yaml.icons.youtube){
-        let icon = document.createElement('i');
-        icon.classList.add('uil');
-        icon.classList.add('uil-youtube');
-        icons.appendChild(icon);
-    }
-    if(yaml.icons.blogger){
-        let icon = document.createElement('i');
-        icon.classList.add('uil');
-        icon.classList.add('uil-blogger');
-        icons.appendChild(icon);
+            if(yaml.icons.github === null) {
+                icons.removeChild(icons.lastChild);
+            }
+        }
+        if(yaml.icons.youtube){
+            let icon = document.createElement('i');
+            icon.classList.add('uil');
+            icon.classList.add('uil-youtube');
+            icons.appendChild(icon);
+        }
+        if(yaml.icons.blogger){
+            let icon = document.createElement('i');
+            icon.classList.add('uil');
+            icon.classList.add('uil-blogger');
+            icons.appendChild(icon);
+        }
     }
 }
 
