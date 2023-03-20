@@ -790,30 +790,48 @@ async function renderIcons(articleData, icons) {
         //  from https://github.com/shockey/js-yaml-browser
         let yaml = jsyaml.load(data);
 
-        // if no tree, no snippets, no level 1 files
-        if ((articleData.hasTree === true || yaml.snippets) ) {
-                
-            let icon = document.createElement('i');
-            icon.classList.add('uil');
-            icon.classList.add('uil-github');
-            icons.appendChild(icon);
-
-            if(yaml.icons.github === null) {
-                icons.removeChild(icons.lastChild);
+        try {
+            if(yaml.icons.youtube){
+                let icon = document.createElement('i');
+                icon.classList.add('uil');
+                icon.classList.add('uil-youtube');
+                icons.appendChild(icon);
             }
         }
-        if(yaml.icons.youtube){
-            let icon = document.createElement('i');
-            icon.classList.add('uil');
-            icon.classList.add('uil-youtube');
-            icons.appendChild(icon);
+        catch(err) {
+            //console.log(err);
         }
-        if(yaml.icons.blogger){
-            let icon = document.createElement('i');
-            icon.classList.add('uil');
-            icon.classList.add('uil-blogger');
-            icons.appendChild(icon);
+
+        try {
+            if(yaml.icons.blogger){
+                let icon = document.createElement('i');
+                icon.classList.add('uil');
+                icon.classList.add('uil-blogger');
+                icons.appendChild(icon);
+            }
         }
+        catch(err) {
+            //console.log(err);
+        }
+        
+        try {
+            if ((articleData.hasTree === true || yaml.snippets) ) {
+                
+                let icon = document.createElement('i');
+                icon.classList.add('uil');
+                icon.classList.add('uil-github');
+                icons.appendChild(icon);
+    
+                if(yaml.icons.github === null) {
+                    icons.removeChild(icons.lastChild);
+                }
+            }
+        }
+        catch(err) {
+            //console.log(err);
+        }
+        
+
     }
 }
 
