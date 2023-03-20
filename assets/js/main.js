@@ -725,27 +725,6 @@ async function toggleSkillArticle(event){
         this.parentNode.className = 'skill__article skill__article__close'
     } 
 
-    // // Auto Mode 
-    // if (event.currentTarget.articleData.hasYAML === false) {
-    //     // Show all file names in the article and the content
-    //     // for each of the files.
-    //     let ha = document.createElement('h2');
-    //     ha.innerText = "No Readme";
-    //     this.parentNode.appendChild(ha); 
-    // }
-    // // Manual Mode
-    // if (event.currentTarget.articleData.hasYAML === true) {
-
-    //     let url = "https://api.github.com/repos/edwinguerrerotech/spell-book/contents/frontend/03. JavaScript/05. Scripture | Manual Snippet With 1 File and No Tree/README.md";
-    //     const response = await fetch(url);
-    //     const result = await response.json();
-    //     readmeText = atob(result.content);
-    //     // console.log(readmeText);
-
-    //     let ha = document.createElement('h2');
-    //     ha.innerText = readmeText;
-    //     this.parentNode.appendChild(ha);
-    // }
 }
 
 /*================================ SKILL README */
