@@ -772,6 +772,7 @@ async function renderIcons(articleData, icons) {
     
     console.log("Inside renderIcons()\n")
 
+    // AUTO MODE
     if (articleData.hasYAML === false) {
         if (articleData.hasTree === true) {
             let icon = document.createElement('i');
@@ -801,7 +802,6 @@ async function renderIcons(articleData, icons) {
         catch(err) {
             //console.log(err);
         }
-
         try {
             if(yaml.icons.blogger){
                 let icon = document.createElement('i');
@@ -813,7 +813,6 @@ async function renderIcons(articleData, icons) {
         catch(err) {
             //console.log(err);
         }
-        
         try {
             if ((articleData.hasTree === true || yaml.snippets) ) {
                 
@@ -830,8 +829,6 @@ async function renderIcons(articleData, icons) {
         catch(err) {
             //console.log(err);
         }
-        
-
     }
 }
 
