@@ -780,10 +780,18 @@ async function renderIcons(articleData, icons) {
     // AUTO MODE
     if (articleData.hasYAML === false) {
         if (articleData.hasTree === true) {
+
             let icon = document.createElement('i');
+            icon.classList.add('skill__article-icon');
             icon.classList.add('uil');
             icon.classList.add('uil-github');
-            icons.appendChild(icon);
+            
+            let anchor = document.createElement('a');
+            anchor.setAttribute('href',articleData.githubURL);
+            anchor.setAttribute('target', "_blank");
+            anchor.appendChild(icon);
+
+            icons.appendChild(anchor);
         }
     }
     // MANUAL MODE
@@ -799,9 +807,16 @@ async function renderIcons(articleData, icons) {
         try {
             if(yaml.icons.youtube){
                 let icon = document.createElement('i');
+                icon.classList.add('skill__article-icon');
                 icon.classList.add('uil');
                 icon.classList.add('uil-youtube');
-                icons.appendChild(icon);
+
+                let anchor = document.createElement('a');
+                anchor.setAttribute('href', yaml.icons.youtube);
+                anchor.setAttribute('target', "_blank");
+                anchor.appendChild(icon);
+
+                icons.appendChild(anchor);
             }
         }
         catch(err) {
@@ -810,9 +825,16 @@ async function renderIcons(articleData, icons) {
         try {
             if(yaml.icons.blogger){
                 let icon = document.createElement('i');
+                icon.classList.add('skill__article-icon');
                 icon.classList.add('uil');
                 icon.classList.add('uil-blogger');
-                icons.appendChild(icon);
+
+                let anchor = document.createElement('a');
+                anchor.setAttribute('href', yaml.icons.blogger);
+                anchor.setAttribute('target', "_blank");
+                anchor.appendChild(icon);
+
+                icons.appendChild(anchor);
             }
         }
         catch(err) {
@@ -822,9 +844,16 @@ async function renderIcons(articleData, icons) {
             if ((articleData.hasTree === true || yaml.snippets) ) {
                 
                 let icon = document.createElement('i');
+                icon.classList.add('skill__article-icon');
                 icon.classList.add('uil');
                 icon.classList.add('uil-github');
-                icons.appendChild(icon);
+
+                let anchor = document.createElement('a');
+                anchor.setAttribute('href',articleData.githubURL);
+                anchor.setAttribute('target', "_blank");
+                anchor.appendChild(icon);
+
+                icons.appendChild(anchor);
     
                 if(yaml.icons.github === null) {
                     icons.removeChild(icons.lastChild);
