@@ -316,10 +316,13 @@ function parseBook_1LevelDeep(tree) {
             if (fullPath[3].search('config.yml') >= 0 || fullPath[3].search('config.yaml') >= 0) {
                 book.articles[book.articles.length-1].hasYAML = true;
             }
-            // If it has a file extension then it's a file.
-            if (fullPath[3].indexOf('.') >= 0) {
-                book.articles[book.articles.length-1].files_1stLevel.push(branch.path);
+            if (fullPath[3].search('config.yml') < 0 && fullPath[3].search('config.yaml') < 0) {
+                // If it has a file extension then it's a file.
+                if (fullPath[3].indexOf('.') >= 0) {
+                    book.articles[book.articles.length-1].files_1stLevel.push(branch.path);
+                }
             }
+            
         }
         else if(fullPath.length === 5){
             book.articles[book.articles.length-1].hasTree = true;
@@ -376,10 +379,13 @@ function parseBook_2LevelsDeep(tree) {
             if (fullPath[4].search('config.yml') >= 0 || fullPath[4].search('config.yaml') >= 0) {
                 book.sections[sectionIndex].articles[articleIndex].hasYAML = true;
             }
-            // If it has a file extension then it's a file.
-            if (fullPath[4].indexOf('.') >= 0) {
-                book.sections[sectionIndex].articles[articleIndex].files_1stLevel.push(branch.path);
+            if (fullPath[4].search('config.yml') < 0 && fullPath[4].search('config.yaml') < 0) {
+                // If it has a file extension then it's a file.
+                if (fullPath[4].indexOf('.') >= 0) {
+                    book.sections[sectionIndex].articles[articleIndex].files_1stLevel.push(branch.path);
+                }
             }
+            
         }
         else if(fullPath.length === 6){
             book.sections[sectionIndex].articles[articleIndex].hasTree = true;
@@ -443,10 +449,13 @@ function parseBook_3LevelsDeep(tree) {
             if (fullPath[5].search('config.yml') >= 0 || fullPath[5].search('config.yaml') >= 0) {
                 book.parts[partIndex].sections[sectionIndex].articles[articleIndex].hasYAML = true;
             }
-            // If it has a file extension then it's a file.
-            if (fullPath[5].indexOf('.') >= 0) {
-                book.parts[partIndex].sections[sectionIndex].articles[articleIndex].files_1stLevel.push(branch.path);
+            if (fullPath[5].search('config.yml') < 0 && fullPath[5].search('config.yaml') < 0) {
+                // If it has a file extension then it's a file.
+                if (fullPath[5].indexOf('.') >= 0) {
+                    book.parts[partIndex].sections[sectionIndex].articles[articleIndex].files_1stLevel.push(branch.path);
+                }
             }
+            
         }
         else if(fullPath.length === 7){
             book.parts[partIndex].sections[sectionIndex].articles[articleIndex].hasTree = true;
@@ -766,7 +775,7 @@ function loadIconsForArticles(event) {
         // Render icons //////////////////////////
         // Get the article to check if it has a YAML file and then parse it.
         let articleData = articles[index++];
-        console.log(articleData.githubURL)
+        console.log(articleData)
         renderIcons(articleData, iconsContainer);
 
     }
