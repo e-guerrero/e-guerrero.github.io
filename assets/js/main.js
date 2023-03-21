@@ -614,7 +614,7 @@ function articlesToElementList(articles) {
         articleTitle.innerText = articleData.pathTitle;
         articleHeader.appendChild(articleTitle);
         articleHeader.appendChild(articleIcons);
-        articleIcons.appendChild(articleIcon);
+        //articleIcons.appendChild(articleIcon);
         articleButton.appendChild(articleHeader);
         articleButton.addEventListener('click', toggleSkillArticle);
         article.appendChild(articleButton);
@@ -712,19 +712,47 @@ function toggleSkillSection(){
 async function toggleSkillArticle(event){
     // const skill_data = document.getElementsByClassName('skill__part');
     let itemClass = this.parentNode.className;
-
+    let articleContent = document.createElement('div');
+    articleContent.className = "skill__article__content";
+    
 
     // for(i = 0; i < skill_data.length; i++){
     //     skill_data[i].className = 'skill skill__close'
-    // }
-    
+    // } 
+
     if(itemClass === 'skill__article skill__article__close'){
-        this.parentNode.className = 'skill__article skill__article__open'
+        this.parentNode.className = 'skill__article skill__article__open';
+
+        let articleData = event.currentTarget.articleData;
+        
+        // Auto Mode
+        // If this article container (this.parentNode) already has  
+        //  articleContent (2nd child) then remove it.
+        if (articleData.files_1stLevel.length >= 1 && this.parentNode.children.length < 2) {
+            // Show all file names in the article and the content
+            // for each of the files.
+            let ha = document.createElement('h2');
+            ha.innerText = "Multiple files";
+            articleContent.appendChild(ha); 
+            this.parentNode.appendChild(articleContent);
+        }
+        // // Manual Mode
+        // if (articleData.hasReadme === true) {
+        //     let url = "https://api.github.com/repos/edwinguerrerotech/spell-book/contents/frontend/03. JavaScript/05. Scripture | Manual Snippet With 1 File and No Tree/README.md";
+        //     const response = await fetch(url);
+        //     const result = await response.json();
+        //     readmeText = atob(result.content);
+        //     // console.log(readmeText);
+    
+        //     let ha = document.createElement('h2');
+        //     ha.innerText = readmeText;
+        //     this.parentNode.appendChild(ha);
+        // }
+
     }
     if(itemClass === 'skill__article skill__article__open'){
-        this.parentNode.className = 'skill__article skill__article__close'
-    } 
-
+        this.parentNode.className = 'skill__article skill__article__close';
+    }    
 }
 
 /*================================ SKILL README */

@@ -558,13 +558,26 @@ img {
 }
 
 
-.skill__article {
-  margin-top: 5px;
-}
+
 
 .skill__article__button {
   background-color: salmon;
   color: black;
+}
+.skill__article__close .skill__article__content {
+  height: 0px;
+  overflow: hidden;
+}
+
+.skill__article__open .skill__article__content {
+  height: max-content;
+}
+
+
+
+
+.skill__article {
+  margin-top: 5px;
 }
 
 .skill__article__header {
@@ -591,6 +604,8 @@ img {
 .skill__article-icon:hover {
   color: var(--first-color-alt);
 }
+
+
 /*==================== QUALIFICATION ====================*/
 .qualification__tabs {
   display: flex;
