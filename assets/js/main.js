@@ -163,6 +163,7 @@ class Article {
         this._hasYAML = false;
         this._files_1stLevel = [];
         this._hasTree = false;
+        this._yaml = null;
     }
     get path() { return this._path }
     get pathTitle() { return this._pathTitle }
@@ -179,17 +180,10 @@ class Article {
         let githubURL = base + encodeURIComponent(this.pathFull);
         return githubURL;
     }
+    set yaml(yaml) { this._yaml = yaml; }
+    get yaml() { return this._yaml; }
 }
 
-let Snippet = {
-    filePath: "",
-    ranges: []
-}
-
-let Range = {
-    startLine: 0,
-    endLine: 0
-}
 
 /*================================ PARSE SKILL TREE */
 
@@ -726,16 +720,46 @@ async function toggleSkillArticle(event){
         let articleData = event.currentTarget.articleData;
         
         // Auto Mode
-        // If this article container (this.parentNode) already has  
-        //  articleContent (2nd child) then remove it.
-        if (articleData.files_1stLevel.length >= 1 && this.parentNode.children.length < 2) {
-            // Show all file names in the article and the content
-            // for each of the files.
-            let ha = document.createElement('h2');
-            ha.innerText = "Multiple files";
-            articleContent.appendChild(ha); 
-            this.parentNode.appendChild(articleContent);
+
+        // If the article doesn't already have an articleContent div (2nd child),
+        //  then continue with adding one.
+        if(this.parentNode.children.length < 2) {
+
+            if (articleData.files_1stLevel.length >= 1) {
+
+                articleData.files_1stLevel.forEach(file => {
+                    let text = document.createElement('h4');
+                    text.innerText = file + '\n\n';
+                    articleContent.appendChild(text); 
+                })
+
+                try {
+                    if(articleData.yaml.snippets.length > 0) {
+                        let text = document.createElement('h4');
+                        text.innerText = "Snippets: true \n\n";
+                        articleContent.appendChild(text); 
+                    }
+                }catch(err) {
+                    let text = document.createElement('h4');
+                    text.innerText = 'Snippets: false \n\n';
+                    articleContent.appendChild(text); 
+                }
+
+                if (articleData.hasTree) {
+                    let text = document.createElement('h4');
+                    text.innerText = 'Has Tree: true \n\n';
+                    articleContent.appendChild(text); 
+                }
+                else {
+                    let text = document.createElement('h4');
+                    text.innerText = 'Has Tree: false \n\n';
+                    articleContent.appendChild(text); 
+                }
+
+                this.parentNode.appendChild(articleContent);
+            }
         }
+        
         // // Manual Mode
         // if (articleData.hasReadme === true) {
         //     let url = "https://api.github.com/repos/edwinguerrerotech/spell-book/contents/frontend/03. JavaScript/05. Scripture | Manual Snippet With 1 File and No Tree/README.md";
@@ -819,6 +843,7 @@ async function renderIcons(articleData, icons) {
         // Parser in assets/js/js-yaml.min.js 
         //  from https://github.com/shockey/js-yaml-browser
         let yaml = jsyaml.load(data);
+        articleData.yaml = yaml;
 
         try {
             if(yaml.icons.youtube){
@@ -857,7 +882,7 @@ async function renderIcons(articleData, icons) {
             //console.log(err);
         }
         try {
-            if ((articleData.hasTree === true || yaml.snippets) ) {
+            if ((articleData.hasTree === true) || yaml.snippets) {
                 
                 let icon = document.createElement('i');
                 icon.classList.add('skill__article-icon');
@@ -879,6 +904,7 @@ async function renderIcons(articleData, icons) {
         catch(err) {
             //console.log(err);
         }
+
     }
 }
 
