@@ -55,7 +55,8 @@ navLink.forEach(n => n.addEventListener('click', linkAction))
 /*========================= DYNAMICALLY GENERATED SKILLS =======================*/
 const github_User = "edwinguerrerotech";
 const repo = "spell-book";
-fetch(`https://api.github.com/repos/${github_User}/${repo}/git/trees/main?recursive=1`)
+const branch = "main"
+fetch(`https://api.github.com/repos/${github_User}/${repo}/git/trees/${branch}?recursive=1`)
     .then(response => {
         if(!response.ok) {
             return response.text().then(text => { throw new Error(text) });
@@ -176,7 +177,7 @@ class Article {
     set hasYAML(hasYAML) { this._hasYAML = hasYAML; }
     get hasYAML() { return this._hasYAML; }
     get githubURL() {
-        let base = `https://github.com/${github_User}/${repo}/tree/main/`;
+        let base = `https://github.com/${github_User}/${repo}/tree/${branch}/`;
         let githubURL = base + encodeURIComponent(this.pathFull);
         return githubURL;
     }
@@ -840,7 +841,7 @@ async function renderIcons(articleData, icons) {
     }
     // MANUAL MODE
     else if (articleData.hasYAML === true) {
-        let url = `https://api.github.com/repos/${github_User}/${repo}/contents/${articleData.pathFull}/config.yml`;
+        let url = `https://api.github.com/repos/${github_User}/${repo}/contents/${articleData.pathFull}/config.yml/?ref=${branch}`;
         const response = await fetch(url);
         const result = await response.json();
         let data = atob(result.content);
