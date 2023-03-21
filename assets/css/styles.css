@@ -429,6 +429,7 @@ img {
 }
 
 /*==================== SKILLS ====================*/
+
 .skill__categories__container {
   row-gap: 0;
 }
@@ -559,7 +560,6 @@ img {
 
 
 
-
 .skill__article__button {
   background-color: salmon;
   color: black;
@@ -572,6 +572,7 @@ img {
 .skill__article__open .skill__article__content {
   height: max-content;
 }
+
 
 
 
@@ -596,13 +597,23 @@ img {
   color: #FFF;
 }
 
-.skill__article-icon {
+.skill__article__icon, .skill__article__arrow{
+  display: block;
   cursor: pointer;
   color: var(--first-color);
 }
 
-.skill__article-icon:hover {
-  color: var(--first-color-alt);
+.skill__article__icon:hover {
+  color: var(--first-color-lighter);
+}
+
+
+.skill__article__arrow {
+  transition: .4s;
+}
+
+.skill__article__open .skill__article__arrow {
+  transform: rotate(-180deg); 
 }
 
 

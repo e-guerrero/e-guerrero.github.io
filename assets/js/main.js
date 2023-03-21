@@ -711,15 +711,13 @@ function toggleSkillArticle(event){
             Parent chain: icons/header/button/article 
     */
     let articleItemClass = this.parentNode.parentNode.parentNode.parentNode.className;
-    console.log(articleItemClass); 
     let articleContent = document.createElement('div');
     articleContent.className = "skill__article__content";
 
     if(articleItemClass === 'skill__article skill__article__close'){
         this.parentNode.parentNode.parentNode.parentNode.className = 'skill__article skill__article__open';
-
         let articleData = event.currentTarget.articleData;
-
+        // this.parentNode.style.transform = "rotate(180deg)";
         // If the article doesn't already have an articleContent div (2nd child),
         //  then continue with adding one.
         if(this.parentNode.parentNode.parentNode.parentNode.children.length < 2) {
@@ -758,10 +756,10 @@ function toggleSkillArticle(event){
                 this.parentNode.parentNode.parentNode.parentNode.appendChild(articleContent);
             }
         }
-
     }
-    if(articleItemClass === 'skill__article skill__article__open'){
+    else if(articleItemClass === 'skill__article skill__article__open'){
         this.parentNode.parentNode.parentNode.parentNode.className = 'skill__article skill__article__close';
+        // this.parentNode.style.transform = "rotate(0deg)";
     }   
     
 }
@@ -809,7 +807,7 @@ async function renderIcons(articleData, icons) {
         if (articleData.hasTree === true) {
             // create github icon
             let icon = document.createElement('i');
-            icon.classList.add('skill__article-icon');
+            icon.classList.add('skill__article__icon');
             icon.classList.add('uil');
             icon.classList.add('uil-github');
             
@@ -826,9 +824,10 @@ async function renderIcons(articleData, icons) {
             if ((articleData.files_1stLevel.length > 0) || yaml.snippets.length > 0) {
                 
                 let icon = document.createElement('i');
-                icon.classList.add('skill__article-icon');
+                // icon.classList.add('skill__article__icon');
                 icon.classList.add('uil');
                 icon.classList.add('uil-angle-down');
+                icon.classList.add('skill__article__arrow');
                 icon.articleData = articleData; 
                 icon.addEventListener('click', toggleSkillArticle);
 
@@ -853,7 +852,7 @@ async function renderIcons(articleData, icons) {
         try {
             if(yaml.icons.youtube){
                 let icon = document.createElement('i');
-                icon.classList.add('skill__article-icon');
+                icon.classList.add('skill__article__icon');
                 icon.classList.add('uil');
                 icon.classList.add('uil-youtube');
 
@@ -871,7 +870,7 @@ async function renderIcons(articleData, icons) {
         try {
             if(yaml.icons.blogger){
                 let icon = document.createElement('i');
-                icon.classList.add('skill__article-icon');
+                icon.classList.add('skill__article__icon');
                 icon.classList.add('uil');
                 icon.classList.add('uil-blogger');
 
@@ -890,7 +889,7 @@ async function renderIcons(articleData, icons) {
             if ((articleData.hasTree === true) || yaml.snippets.length > 0) {
                 
                 let icon = document.createElement('i');
-                icon.classList.add('skill__article-icon');
+                icon.classList.add('skill__article__icon');
                 icon.classList.add('uil');
                 icon.classList.add('uil-github');
 
@@ -914,9 +913,10 @@ async function renderIcons(articleData, icons) {
             if ((articleData.files_1stLevel.length > 0) || yaml.snippets.length > 0) {
                 
                 let icon = document.createElement('i');
-                icon.classList.add('skill__article-icon');
+                // icon.classList.add('skill__article__icon');
                 icon.classList.add('uil');
                 icon.classList.add('uil-angle-down');
+                icon.classList.add('skill__article__arrow');
                 icon.articleData = articleData; 
                 icon.addEventListener('click', toggleSkillArticle);
 
