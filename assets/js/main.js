@@ -899,10 +899,6 @@ async function renderIcons(articleData, icons) {
                 anchor.appendChild(icon);
 
                 icons.appendChild(anchor);
-    
-                if(yaml.icons.github === null) {
-                    icons.removeChild(icons.lastChild);
-                }
             }
         }
         catch(err) {
@@ -911,16 +907,17 @@ async function renderIcons(articleData, icons) {
         try {
             // If there's snippets or if there's 1st level files, create arrow icon.
             if ((articleData.files_1stLevel.length > 0) || yaml.snippets.length > 0) {
-                
-                let icon = document.createElement('i');
-                // icon.classList.add('skill__article__icon');
-                icon.classList.add('uil');
-                icon.classList.add('uil-angle-down');
-                icon.classList.add('skill__article__arrow');
-                icon.articleData = articleData; 
-                icon.addEventListener('click', toggleSkillArticle);
-
-                icons.appendChild(icon);
+                if(yaml.displayContent != false) {
+                    let icon = document.createElement('i');
+                    // icon.classList.add('skill__article__icon');
+                    icon.classList.add('uil');
+                    icon.classList.add('uil-angle-down');
+                    icon.classList.add('skill__article__arrow');
+                    icon.articleData = articleData; 
+                    icon.addEventListener('click', toggleSkillArticle);
+    
+                    icons.appendChild(icon);
+                }   
             }
         }
         catch(err) {
