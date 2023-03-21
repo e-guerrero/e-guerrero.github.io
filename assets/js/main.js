@@ -594,15 +594,15 @@ function articlesToElementList(articles) {
         article.classList.add('skill__article__close');
             let articleButton = document.createElement('div');
             articleButton.classList.add('skill__article__button');
-            articleButton.articleData = articleData;
+            //articleButton.articleData = articleData;
                 let articleHeader = document.createElement('div');
                 articleHeader.classList.add('skill__article__header')
                     let articleTitle = document.createElement('h4');
                     articleTitle.classList.add('skill__article__title');
                     let articleIcons = document.createElement('div');
                     articleIcons.classList.add('skill__article__icons');
-                        let articleIcon = document.createElement('i');
-                        articleIcon.classList.add('skill__article__icon');
+                        // let articleIcon = document.createElement('i');
+                        // articleIcon.classList.add('skill__article__icon');
             // let articleContent = document.createElement('div');
             // articleContent.classList.add('skill__article__content');
         articleTitle.innerText = articleData.pathTitle;
@@ -610,7 +610,7 @@ function articlesToElementList(articles) {
         articleHeader.appendChild(articleIcons);
         //articleIcons.appendChild(articleIcon);
         articleButton.appendChild(articleHeader);
-        articleButton.addEventListener('click', toggleSkillArticle);
+        // articleButton.addEventListener('click', toggleSkillArticle);
         article.appendChild(articleButton);
         // article.appendChild(articleContent);
         articlesList.appendChild(article);
@@ -703,27 +703,26 @@ function toggleSkillSection(){
    // this.parentNode.scrollIntoView({behavior: "smooth", block: 'start'});
 }
 
-async function toggleSkillArticle(event){
-    // const skill_data = document.getElementsByClassName('skill__part');
-    let itemClass = this.parentNode.className;
+function toggleSkillArticle(event){
+    /* 
+        Node chain: 
+
+            This node: icon 
+            Parent chain: icons/header/button/article 
+    */
+    let articleItemClass = this.parentNode.parentNode.parentNode.parentNode.className;
+    console.log(articleItemClass); 
     let articleContent = document.createElement('div');
     articleContent.className = "skill__article__content";
-    
 
-    // for(i = 0; i < skill_data.length; i++){
-    //     skill_data[i].className = 'skill skill__close'
-    // } 
-
-    if(itemClass === 'skill__article skill__article__close'){
-        this.parentNode.className = 'skill__article skill__article__open';
+    if(articleItemClass === 'skill__article skill__article__close'){
+        this.parentNode.parentNode.parentNode.parentNode.className = 'skill__article skill__article__open';
 
         let articleData = event.currentTarget.articleData;
-        
-        // Auto Mode
 
         // If the article doesn't already have an articleContent div (2nd child),
         //  then continue with adding one.
-        if(this.parentNode.children.length < 2) {
+        if(this.parentNode.parentNode.parentNode.parentNode.children.length < 2) {
 
             if (articleData.files_1stLevel.length >= 1) {
 
@@ -756,27 +755,15 @@ async function toggleSkillArticle(event){
                     articleContent.appendChild(text); 
                 }
 
-                this.parentNode.appendChild(articleContent);
+                this.parentNode.parentNode.parentNode.parentNode.appendChild(articleContent);
             }
         }
-        
-        // // Manual Mode
-        // if (articleData.hasReadme === true) {
-        //     let url = "https://api.github.com/repos/edwinguerrerotech/spell-book/contents/frontend/03. JavaScript/05. Scripture | Manual Snippet With 1 File and No Tree/README.md";
-        //     const response = await fetch(url);
-        //     const result = await response.json();
-        //     readmeText = atob(result.content);
-        //     // console.log(readmeText);
-    
-        //     let ha = document.createElement('h2');
-        //     ha.innerText = readmeText;
-        //     this.parentNode.appendChild(ha);
-        // }
 
     }
-    if(itemClass === 'skill__article skill__article__open'){
-        this.parentNode.className = 'skill__article skill__article__close';
-    }    
+    if(articleItemClass === 'skill__article skill__article__open'){
+        this.parentNode.parentNode.parentNode.parentNode.className = 'skill__article skill__article__close';
+    }   
+    
 }
 
 /*================================ SKILL README */
@@ -820,7 +807,7 @@ async function renderIcons(articleData, icons) {
     // AUTO MODE
     if (articleData.hasYAML === false) {
         if (articleData.hasTree === true) {
-
+            // create github icon
             let icon = document.createElement('i');
             icon.classList.add('skill__article-icon');
             icon.classList.add('uil');
@@ -832,6 +819,24 @@ async function renderIcons(articleData, icons) {
             anchor.appendChild(icon);
 
             icons.appendChild(anchor);
+        }
+
+        try {
+            // If there's snippets or if there's 1st level files, create arrow icon.
+            if ((articleData.files_1stLevel.length > 0) || yaml.snippets.length > 0) {
+                
+                let icon = document.createElement('i');
+                icon.classList.add('skill__article-icon');
+                icon.classList.add('uil');
+                icon.classList.add('uil-angle-down');
+                icon.articleData = articleData; 
+                icon.addEventListener('click', toggleSkillArticle);
+
+                icons.appendChild(icon);
+            }
+        }
+        catch(err) {
+            //console.log(err);
         }
     }
     // MANUAL MODE
@@ -882,7 +887,7 @@ async function renderIcons(articleData, icons) {
             //console.log(err);
         }
         try {
-            if ((articleData.hasTree === true) || yaml.snippets) {
+            if ((articleData.hasTree === true) || yaml.snippets.length > 0) {
                 
                 let icon = document.createElement('i');
                 icon.classList.add('skill__article-icon');
@@ -899,6 +904,23 @@ async function renderIcons(articleData, icons) {
                 if(yaml.icons.github === null) {
                     icons.removeChild(icons.lastChild);
                 }
+            }
+        }
+        catch(err) {
+            //console.log(err);
+        }
+        try {
+            // If there's snippets or if there's 1st level files, create arrow icon.
+            if ((articleData.files_1stLevel.length > 0) || yaml.snippets.length > 0) {
+                
+                let icon = document.createElement('i');
+                icon.classList.add('skill__article-icon');
+                icon.classList.add('uil');
+                icon.classList.add('uil-angle-down');
+                icon.articleData = articleData; 
+                icon.addEventListener('click', toggleSkillArticle);
+
+                icons.appendChild(icon);
             }
         }
         catch(err) {
