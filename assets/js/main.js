@@ -56,7 +56,7 @@ navLink.forEach(n => n.addEventListener('click', linkAction))
 const github_User = "edwinguerrerotech";
 const repo = "spell-book";
 const branch = "main";
-const token = "";
+const token = "token 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";
 fetch(`https://api.github.com/repos/${github_User}/${repo}/git/trees/${branch}?recursive=1`, 
         {
             headers: {
