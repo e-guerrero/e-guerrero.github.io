@@ -83,9 +83,9 @@ fetch(`https://api.github.com/repos/${github_User}/${repo}/git/trees/${branch}?r
         frontendError.style.maxWidth = "300px";
         let backendError = document.createElement('h5');
         let designError = document.createElement('h5');
-        let errorText = err.value();
-        let splitError = errorText.search(")");
-        errorText = splitError[0];
+        let errorText = err;
+        //let splitError = errorText.search(")");
+        //errorText = splitError[0];
 
         frontendError.innerText = errorText;
         backendError.innerText = errorText;
