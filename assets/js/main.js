@@ -55,12 +55,13 @@ navLink.forEach(n => n.addEventListener('click', linkAction))
 /*========================= DYNAMICALLY GENERATED SKILLS =======================*/
 const github_User = "edwinguerrerotech";
 const repo = "spell-book";
-const branch = "main"
+const branch = "main";
+const token = "";
 fetch(`https://api.github.com/repos/${github_User}/${repo}/git/trees/${branch}?recursive=1`, 
         {
             headers: {
                 // This only has read-only access to the public repo spell-book.
-                authorization: "token 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"
+                authorization: token
             }
         }
     )
@@ -846,7 +847,13 @@ async function renderIcons(articleData, icons) {
     // MANUAL MODE
     else if (articleData.hasYAML === true) {
         let url = `https://api.github.com/repos/${github_User}/${repo}/contents/${articleData.pathFull}/config.yml/?ref=${branch}`;
-        const response = await fetch(url);
+        const response = await fetch(url, 
+        {
+            headers: {
+                // This only has read-only access to the public repo spell-book.
+                authorization: token
+            }
+        });
         const result = await response.json();
         let data = atob(result.content);
         // Parser in assets/js/js-yaml.min.js 
