@@ -56,7 +56,14 @@ navLink.forEach(n => n.addEventListener('click', linkAction))
 const github_User = "edwinguerrerotech";
 const repo = "spell-book";
 const branch = "main"
-fetch(`https://api.github.com/repos/${github_User}/${repo}/git/trees/${branch}?recursive=1`)
+fetch(`https://api.github.com/repos/${github_User}/${repo}/git/trees/${branch}?recursive=1`, 
+        {
+            headers: {
+                // This only has read-only access to the public repo spell-book.
+                authorization: "token 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"
+            }
+        }
+    )
     .then(response => {
         if(!response.ok) {
             return response.text().then(text => { throw new Error(text) });
