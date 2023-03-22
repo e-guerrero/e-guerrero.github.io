@@ -765,10 +765,7 @@ function toggleSkillArticle(event){
     
 }
 
-/*================================ SKILL README */
-
-
-
+/*================================ SKILL YAML */
 
 // Call a load function first, then parse, and finally render.
 // Load means that, not only has the DOM structure been built, but all resources 
