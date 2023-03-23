@@ -531,6 +531,7 @@ img {
 .skill__part__button {
   background-color: green;
   cursor: pointer;
+  margin-top: 5px;
 }
 
 .skill__part__close .skill__sections__list {
@@ -547,6 +548,7 @@ img {
 .skill__section__button {
   background-color: blue;
   cursor: pointer;
+  margin-top: 5px;
 }
 
 .skill__section__close .skill__articles__list {
