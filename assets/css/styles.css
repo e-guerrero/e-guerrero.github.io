@@ -482,7 +482,7 @@ img {
 
 .skill__button {
   cursor: pointer;
-  margin-bottom: 10px;;
+  margin-bottom: 0px;;
 }
 
 .skill__list {
@@ -493,7 +493,7 @@ img {
 .skill__header {
   display: flex;
   justify-content: space-between;
-
+  margin-bottom: var(--mb-0-5);
   align-items: center;
 }
 
@@ -508,7 +508,7 @@ img {
 }
 
 .skill__arrow {
-  margin-left: 1rem;
+  margin-left: 0.4rem;
   font-size: 1.5rem;
   margin-right: .3rem;
   transition: .4s;
