@@ -465,35 +465,6 @@ img {
   transition: .4s;
 }
 
-.skill__list {
-  row-gap: 1.5rem;
-  padding-left: 2.7rem;
-}
-
-.skill__header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: var(--mb-1);
-}
-
-.skill__title {
-  font-size: var(--normal-font-size);
-  font-weight: var(--font-medium);
-}
-
-.skill__progress__bar, .skill__progress {
-  height: 5px;
-  border-radius: .25rem;
-}
-
-.skill__progress__bar {
-  background-color: var(--first-color-lighter);
-}
-
-.skill__progress {
-  display: block;
-  background-color: var(--first-color);
-}
 
 .skill__category__close .skill__list {
   height: 0px;
@@ -511,6 +482,50 @@ img {
 
 .skill__button {
   cursor: pointer;
+  margin-bottom: 10px;;
+}
+
+.skill__list {
+  row-gap: 1.5rem;
+  padding-left: 2.7rem;
+}
+
+.skill__header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--mb-1);
+  align-items: center;
+}
+
+.skill__title {
+  font-size: var(--normal-font-size);
+  font-weight: var(--font-medium);
+}
+
+.skill__icons__container {
+  display: flex;
+  align-items: center;
+}
+
+.skill__arrow {
+  margin-left: 1rem;
+  font-size: 1.5rem;
+  margin-right: .3rem;
+  transition: .4s;
+}
+
+.skill__progress__bar, .skill__progress {
+  height: 5px;
+  border-radius: .25rem;
+}
+
+.skill__progress__bar {
+  background-color: var(--first-color-lighter);
+}
+
+.skill__progress {
+  display: block;
+  background-color: var(--first-color);
 }
 
 .skill__book {
@@ -526,12 +541,18 @@ img {
   height: max-content;
 }
 
+.skill__open .skill__arrow {
+  transform: rotate(-180deg); 
+}
 
 
-.skill__part__button {
+
+.skill__part__header {
   background-color: green;
   cursor: pointer;
   margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .skill__part__close .skill__sections__list {
@@ -553,6 +574,12 @@ img {
   justify-content: space-between;
 }
 
+.skill__section__arrow {
+  font-size: 1.5rem;
+  margin-right: .3rem;
+  transition: .4s;
+}
+
 .skill__section__close .skill__articles__list {
   height: 0px;
   overflow: hidden;
@@ -560,6 +587,10 @@ img {
 
 .skill__section__open .skill__articles__list {
   height: max-content;
+}
+
+.skill__section__open .skill__section__arrow {
+  transform: rotate(-180deg); 
 }
 
 
@@ -619,7 +650,7 @@ img {
 
 .skill__article__arrow {
   background-color: blanchedalmond;
-  font-size: 2rem;
+  font-size: 1.5rem;
   transition: .4s;
 }
 

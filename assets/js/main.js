@@ -492,6 +492,7 @@ function skillToDiv(skillData) {
 
                 // Icons container
                 let iconsContainer = document.createElement('div');
+                iconsContainer.classList.add('skill__icons__container')
 
                     // Skill percentage
                     let percentage = document.createElement('span');
@@ -554,23 +555,35 @@ function skillToDiv(skillData) {
 
 function partsToButtonList(parts) {
     let partsList = document.createElement('div');
+
     parts.forEach((partData) => {
-        let part = document.createElement('div');
-        part.classList.add('skill__part');
-        part.classList.add('skill__part__close');
-            let partButton = document.createElement('div');
-            partButton.classList.add('skill__part__button');
-                let partHeader = document.createElement('div');
-                    let partTitle = document.createElement('h3');
-                    partTitle.classList.add('skill__part__title');
+
+        let partDiv = document.createElement('div');
+        partDiv.classList.add('skill__part');
+        partDiv.classList.add('skill__part__close');
+
+            let partHeader = document.createElement('div');
+            partHeader.classList.add('skill__part__header');
+
+                let partTitle = document.createElement('h3');
+                partTitle.classList.add('skill__part__title');
+                partTitle.innerText = partData.pathTitle;
+
+                let arrow = document.createElement('i');
+                arrow.classList.add('uil');
+                arrow.classList.add('uil-angle-down');
+                arrow.classList.add('skill__part__arrow');
+
             let sectionsList = sectionsToButtonList(partData.sections);
-        partTitle.innerText = partData.pathTitle;
+
         partHeader.appendChild(partTitle);
-        partButton.appendChild(partHeader);
-        partButton.addEventListener('click', toggleSkillPart);
-        part.appendChild(partButton);
-        part.appendChild(sectionsList);
-        partsList.appendChild(part);
+        partHeader.appendChild(arrow);
+        partHeader.addEventListener('click', toggleSkillPart);
+
+        partDiv.appendChild(partHeader);
+        partDiv.appendChild(sectionsList);
+
+        partsList.appendChild(partDiv);
     })
     return partsList;
 }
@@ -590,7 +603,6 @@ function sectionsToButtonList(sections) {
                 let sectionTitle = document.createElement('h3');
                 sectionTitle.innerText = sectionData.pathTitle;
 
-                // Skill arrow icon
                 let arrow = document.createElement('i');
                 arrow.classList.add('uil');
                 arrow.classList.add('uil-angle-down');
