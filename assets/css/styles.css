@@ -545,10 +545,12 @@ img {
 
 
 
-.skill__section__button {
+.skill__section__header {
   background-color: blue;
   cursor: pointer;
   margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .skill__section__close .skill__articles__list {

@@ -477,36 +477,40 @@ function skillToDiv(skillData) {
     let skillDiv = document.createElement('div');
     skillDiv.className = 'skill skill__close';
 
-        //  Header container
-        let header = document.createElement('div');
-        header.classList.add('skill__header');
+        // Skill button
+        let skillButton = document.createElement('div');
+        skillButton.className = 'skill__button';
 
-            // Skill name
-            let title = document.createElement('h3');
-            title.classList.add('skill__title');
-            title.innerText = skillData.pathSkill;
+            //  Header container
+            let header = document.createElement('div');
+            header.classList.add('skill__header');
 
-            // Icons container
-            let iconsContainer = document.createElement('div');
+                // Skill name
+                let title = document.createElement('h3');
+                title.classList.add('skill__title');
+                title.innerText = skillData.pathSkill;
 
-                // Skill percentage
-                let percentage = document.createElement('span');
-                percentage.classList.add('skill__percentage');
-                percentage.innerText = skillData.percentage;
-                // Skill arrow icon
-                let arrow = document.createElement('i');
-                arrow.classList.add('uil');
-                arrow.classList.add('uil-angle-down');
-                arrow.classList.add('skill__arrow');
+                // Icons container
+                let iconsContainer = document.createElement('div');
 
-        //  Skill bar container
-        let progressBar = document.createElement('div');
-        progressBar.classList.add('skill__progress__bar');
-        
-            // Skill bar fill
-            let progress = document.createElement('span');
-            progress.classList.add('skill__progress');
-            progress.style.width = skillData.percentage;
+                    // Skill percentage
+                    let percentage = document.createElement('span');
+                    percentage.classList.add('skill__percentage');
+                    percentage.innerText = skillData.percentage;
+                    // Skill arrow icon
+                    let arrow = document.createElement('i');
+                    arrow.classList.add('uil');
+                    arrow.classList.add('uil-angle-down');
+                    arrow.classList.add('skill__arrow');
+
+            //  Skill bar container
+            let progressBar = document.createElement('div');
+            progressBar.classList.add('skill__progress__bar');
+            
+                // Skill bar fill
+                let progress = document.createElement('span');
+                progress.classList.add('skill__progress');
+                progress.style.width = skillData.percentage;
             
         // Skill book container (hidden while closed).
         let book = document.createElement('div');
@@ -515,13 +519,15 @@ function skillToDiv(skillData) {
     iconsContainer.appendChild(percentage);
     iconsContainer.appendChild(arrow);
 
-    progressBar.appendChild(progress);
-
     header.appendChild(title);
     header.appendChild(iconsContainer);
 
-    skillDiv.appendChild(header);
-    skillDiv.appendChild(progressBar);
+    progressBar.appendChild(progress);
+
+    skillButton.appendChild(header);
+    skillButton.appendChild(progressBar);
+
+    skillDiv.appendChild(skillButton);
     skillDiv.appendChild(book);
 
     //console.log(skillData.sections);
@@ -534,14 +540,14 @@ function skillToDiv(skillData) {
         articleElementListContainer = articlesToElementList(skillData.articles);
         book.appendChild(articleElementListContainer); 
         // Data to pass over to the event handler to load icons...
-        arrow.articles = skillData.articles;
-        arrow.articleElementListContainer = articleElementListContainer;
-        arrow.addEventListener('click', loadIconsForArticles);
+        skillButton.articles = skillData.articles;
+        skillButton.articleElementListContainer = articleElementListContainer;
+        skillButton.addEventListener('click', loadIconsForArticles);
     }
     if (skillData.bookTreeDepth === 2) { book.appendChild(sectionsToButtonList(skillData.sections)); }
     if (skillData.bookTreeDepth === 3) { book.appendChild(partsToButtonList(skillData.parts)); }
 
-    arrow.addEventListener('click', toggleSkill);
+    skillButton.addEventListener('click', toggleSkill);
 
     return skillDiv;
 }
@@ -571,29 +577,41 @@ function partsToButtonList(parts) {
 
 function sectionsToButtonList(sections) {
     let sectionsList = document.createElement('div');
+
     sections.forEach((sectionData) => {
-        let section = document.createElement('div');
-        section.classList.add('skill__section');
-        section.classList.add('skill__section__close');
-            let sectionButton = document.createElement('div');
-            sectionButton.classList.add('skill__section__button');
-                let sectionHeader = document.createElement('div');
-                    let sectionTitle = document.createElement('h3');
+
+        let sectionDiv = document.createElement('div');
+        sectionDiv.classList.add('skill__section');
+        sectionDiv.classList.add('skill__section__close');
+
+            let sectionHeader = document.createElement('div');
+            sectionHeader.classList.add('skill__section__header');
+
+                let sectionTitle = document.createElement('h3');
+                sectionTitle.innerText = sectionData.pathTitle;
+
+                // Skill arrow icon
+                let arrow = document.createElement('i');
+                arrow.classList.add('uil');
+                arrow.classList.add('uil-angle-down');
+                arrow.classList.add('skill__section__arrow');
+
             let articlesList = articlesToElementList(sectionData.articles);
-        sectionTitle.innerText = sectionData.pathTitle;
+
         sectionHeader.appendChild(sectionTitle);
-        sectionButton.appendChild(sectionHeader);
+        sectionHeader.appendChild(arrow);
 
-        //console.log(sectionData.articles);
-        sectionButton.articles = sectionData.articles;
-        sectionButton.articleElementListContainer = articlesList;
-        sectionButton.addEventListener('click', loadIconsForArticles);
-        sectionButton.addEventListener('click', toggleSkillSection);
+        sectionHeader.articles = sectionData.articles;
+        sectionHeader.articleElementListContainer = articlesList;
+        sectionHeader.addEventListener('click', loadIconsForArticles);
+        sectionHeader.addEventListener('click', toggleSkillSection);
 
-        section.appendChild(sectionButton);
-        section.appendChild(articlesList);
-        sectionsList.appendChild(section);
+        sectionDiv.appendChild(sectionHeader);
+        sectionDiv.appendChild(articlesList);
+
+        sectionsList.appendChild(sectionDiv);
     })
+
     sectionsList.classList.add('skill__sections__list');
     return sectionsList;
 }
@@ -659,7 +677,7 @@ function toggleSkillType(){
 
 function toggleSkill(){
     // const skill_data = document.getElementsByClassName('skill');
-    let thisNode = this.parentNode.parentNode.parentNode;
+    let thisNode = this.parentNode;
     let itemClass = thisNode.className;
     console.log("Toggle Skill: " + itemClass);
 
