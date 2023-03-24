@@ -477,46 +477,51 @@ function skillToDiv(skillData) {
     let skillDiv = document.createElement('div');
     skillDiv.className = 'skill skill__close';
 
-        // Skill Button
-        let skillButton = document.createElement('div');
-        skillButton.classList.add('skill__button');
+        //  Header container
+        let header = document.createElement('div');
+        header.classList.add('skill__header');
 
-            //  Header container
-            let header = document.createElement('div');
-            header.classList.add('skill__header');
+            // Skill name
+            let title = document.createElement('h3');
+            title.classList.add('skill__title');
+            title.innerText = skillData.pathSkill;
 
-                // Skill name
-                let title = document.createElement('h3');
-                title.classList.add('skill__title');
-                title.innerText = skillData.pathSkill;
+            // Icons container
+            let iconsContainer = document.createElement('div');
+
                 // Skill percentage
                 let percentage = document.createElement('span');
                 percentage.classList.add('skill__percentage');
                 percentage.innerText = skillData.percentage;
+                // Skill arrow icon
+                let arrow = document.createElement('i');
+                arrow.classList.add('uil');
+                arrow.classList.add('uil-angle-down');
+                arrow.classList.add('skill__arrow');
 
-            //  Skill bar container
-            let progressBar = document.createElement('div');
-            progressBar.classList.add('skill__progress__bar');
+        //  Skill bar container
+        let progressBar = document.createElement('div');
+        progressBar.classList.add('skill__progress__bar');
+        
+            // Skill bar fill
+            let progress = document.createElement('span');
+            progress.classList.add('skill__progress');
+            progress.style.width = skillData.percentage;
             
-                // Skill bar fill
-                let progress = document.createElement('span');
-                progress.classList.add('skill__progress');
-                progress.style.width = skillData.percentage;
-            
-        // Skill book container
+        // Skill book container (hidden while closed).
         let book = document.createElement('div');
         book.classList.add('skill__book');
-
     
-    header.appendChild(title);
-    header.appendChild(percentage);
+    iconsContainer.appendChild(percentage);
+    iconsContainer.appendChild(arrow);
 
     progressBar.appendChild(progress);
 
-    skillButton.appendChild(header);
-    skillButton.appendChild(progressBar);
+    header.appendChild(title);
+    header.appendChild(iconsContainer);
 
-    skillDiv.appendChild(skillButton);
+    skillDiv.appendChild(header);
+    skillDiv.appendChild(progressBar);
     skillDiv.appendChild(book);
 
     //console.log(skillData.sections);
@@ -529,14 +534,14 @@ function skillToDiv(skillData) {
         articleElementListContainer = articlesToElementList(skillData.articles);
         book.appendChild(articleElementListContainer); 
         // Data to pass over to the event handler to load icons...
-        skillButton.articles = skillData.articles;
-        skillButton.articleElementListContainer = articleElementListContainer;
-        skillButton.addEventListener('click', loadIconsForArticles);
+        arrow.articles = skillData.articles;
+        arrow.articleElementListContainer = articleElementListContainer;
+        arrow.addEventListener('click', loadIconsForArticles);
     }
     if (skillData.bookTreeDepth === 2) { book.appendChild(sectionsToButtonList(skillData.sections)); }
     if (skillData.bookTreeDepth === 3) { book.appendChild(partsToButtonList(skillData.parts)); }
 
-    skillButton.addEventListener('click', toggleSkill);
+    arrow.addEventListener('click', toggleSkill);
 
     return skillDiv;
 }
@@ -654,17 +659,19 @@ function toggleSkillType(){
 
 function toggleSkill(){
     // const skill_data = document.getElementsByClassName('skill');
-    let itemClass = this.parentNode.className;
+    let thisNode = this.parentNode.parentNode.parentNode;
+    let itemClass = thisNode.className;
+    console.log("Toggle Skill: " + itemClass);
 
     // for(i = 0; i < skill_data.length; i++){
     //     skill_data[i].className = 'skill skill__close'
     // }
     
     if(itemClass === 'skill skill__close'){
-        this.parentNode.className = 'skill skill__open'
+        thisNode.className = 'skill skill__open'
     }
     if(itemClass === 'skill skill__open'){
-        this.parentNode.className = 'skill skill__close'
+        thisNode.className = 'skill skill__close'
     }
 
     // Load article header data if book depth is root...
