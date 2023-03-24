@@ -493,7 +493,7 @@ img {
 .skill__header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: var(--mb-1);
+
   align-items: center;
 }
 
@@ -555,6 +555,12 @@ img {
   justify-content: space-between;
 }
 
+.skill__part__arrow {
+  font-size: 1.5rem;
+  margin-right: .3rem;
+  transition: .4s;
+}
+
 .skill__part__close .skill__sections__list {
   height: 0px;
   overflow: hidden;
@@ -562,6 +568,10 @@ img {
 
 .skill__part__open .skill__sections__list {
   height: max-content;
+}
+
+.skill__part__open .skill__part__arrow {
+  transform: rotate(-180deg); 
 }
 
 
