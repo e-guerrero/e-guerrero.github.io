@@ -752,22 +752,21 @@ function toggleSkillSection(){
 function toggleSkillArticle(event){
     /* 
         Node chain: 
-
-            This node: icon 
-            Parent chain: icons/header/button/article 
+            Parent chain: icons/header/button/article/ 
+            This node: /icon     
     */
-    let articleItemClass = this.parentNode.parentNode.parentNode.parentNode.className;
+    let articleNode = this.parentNode.parentNode.parentNode.parentNode;
     let articleContent = document.createElement('div');
     articleContent.className = "skill__article__content";
 
-    if(articleItemClass === 'skill__article skill__article__close'){
-        this.parentNode.parentNode.parentNode.parentNode.className = 'skill__article skill__article__open';
+    if(articleNode.className === 'skill__article skill__article__close'){
+        articleNode.className = 'skill__article skill__article__open';
         let articleData = event.currentTarget.articleData;
-        // this.parentNode.style.transform = "rotate(180deg)";
-        // If the article doesn't already have an articleContent div (2nd child),
-        //  then continue with adding one.
-        if(this.parentNode.parentNode.parentNode.parentNode.children.length < 2) {
-
+        // If the article doesn't already have an articleContent div (a 2nd child),
+        //  then continue with adding one. In other words, if the user wants new updated data,
+        //  they will need to refreesh the entire page. This is to help reduce number of calls.
+        if(articleNode.children.length < 2) {
+            // If there's multiple files (does not include whether or not there's a tree).
             if (articleData.files_1stLevel.length >= 1) {
 
                 articleData.files_1stLevel.forEach(file => {
@@ -776,6 +775,7 @@ function toggleSkillArticle(event){
                     articleContent.appendChild(text); 
                 })
 
+                // Try to get yaml data.
                 try {
                     if(articleData.yaml.snippets.length > 0) {
                         let text = document.createElement('h4');
@@ -788,6 +788,7 @@ function toggleSkillArticle(event){
                     articleContent.appendChild(text); 
                 }
 
+                // If this article has a tree.
                 if (articleData.hasTree) {
                     let text = document.createElement('h4');
                     text.innerText = 'Has Tree: true \n\n';
@@ -799,13 +800,12 @@ function toggleSkillArticle(event){
                     articleContent.appendChild(text); 
                 }
 
-                this.parentNode.parentNode.parentNode.parentNode.appendChild(articleContent);
+                articleNode.appendChild(articleContent);
             }
         }
     }
-    else if(articleItemClass === 'skill__article skill__article__open'){
-        this.parentNode.parentNode.parentNode.parentNode.className = 'skill__article skill__article__close';
-        // this.parentNode.style.transform = "rotate(0deg)";
+    else if(articleNode.className === 'skill__article skill__article__open'){
+        articleNode.className = 'skill__article skill__article__close';
     }   
     
 }
