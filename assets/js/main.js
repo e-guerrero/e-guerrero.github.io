@@ -53,7 +53,7 @@ navLink.forEach(n => n.addEventListener('click', linkAction))
 
 
 /*========================= DYNAMICALLY GENERATED SKILLS =======================*/
-const github_User = "edwinguerrerotech";
+const github_User = "e-guerrero";
 const repo = "spell-book";
 const branch = "main";
 const token = "token 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";
