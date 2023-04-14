@@ -886,10 +886,10 @@ async function renderIcons(articleData, icons) {
         let url = `https://api.github.com/repos/${github_User}/${repo}/contents/${articleData.pathFull}/config.yml/?ref=${branch}`;
         const response = await fetch(url, 
         {
-            headers: {
-                // This only has read-only access to the public repo spell-book.
-                authorization: token
-            }
+            // headers: {
+            //     // This only has read-only access to the public repo spell-book.
+            //     authorization: token
+            // }
         });
         const result = await response.json();
         let data = atob(result.content);
