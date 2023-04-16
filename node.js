@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const githubToken = process.env.HELLO; // Access the GitHub API token from environment variables
+const githubToken = process.env.GITHUB_TOKEN; // Access the GitHub API token from environment variables
 
 app.get('/github-token', (req, res) => {
   res.send({ token: githubToken });
