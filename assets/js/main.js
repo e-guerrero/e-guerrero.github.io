@@ -48,7 +48,7 @@ navLink.forEach(n => n.addEventListener('click', linkAction))
 
 
 console.log("Secret: ")
-console.log(env.GITHUB_TOKEN)
+console.log(GITHUB_TOKEN)
 
 /*========================= DYNAMICALLY GENERATED SKILLS =======================*/
 const github_User = "e-guerrero";
