@@ -6,7 +6,8 @@ jobs:
   test_secret_HELLO:
     runs-on: ubuntu-latest
     steps:
-      - name: Run script
+      - name: Decrypt secret
+        run: ./decrypt_secret.sh
         env:
           TOKEN: ${{ secrets.HELLO }}
 
