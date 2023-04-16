@@ -53,14 +53,13 @@ const github_User = "e-guerrero";
 const repo = "spell-book";
 const branch = "main";
 // const token = "token ";
-fetch(`https://api.github.com/repos/${github_User}/${repo}/git/trees/${branch}?recursive=1`, 
-        {
-            headers: {
-                // This only has read-only access to the public repo spell-book.
-                authorization: `Bearer ${process.env.GITHUB_TOKEN}`
-            }
-        }
-    )
+const options = {
+    method: 'GET',
+    headers: {
+        Authorization: `Bearer ${process.env.GITHUB_TOKEN}`
+    }
+};
+fetch(`https://api.github.com/repos/${github_User}/${repo}/git/trees/${branch}?recursive=1`, options)
     .then(response => {
         if(!response.ok) {
             return response.text().then(text => { throw new Error(text) });
