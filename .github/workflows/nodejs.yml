@@ -4,9 +4,9 @@ jobs:
   test_secret_HELLO:
     runs-on: ubuntu-latest
     steps:
-      name: Run script
-      env:
-        TOKEN: ${{ secrets.HELLO }}
-      run: |
-        node .github/actions-scripts/use-the-api.mjs
+      - name: Run script
+        env:
+          TOKEN: ${{ secrets.HELLO }}
+        run: |
+          node .github/actions-scripts/use-the-api.mjs
 
