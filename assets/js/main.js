@@ -51,7 +51,7 @@ const branch = "main";
 const options = {
     method: 'GET',
     headers: {
-        Authorization: `token ${window.GITHUB_TOKEN}`
+        Authorization: `token ${GITHUB_TOKEN}`
     }
 };
 console.log(`token ${window.GITHUB_TOKEN}`)
