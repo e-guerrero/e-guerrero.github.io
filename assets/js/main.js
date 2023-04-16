@@ -43,11 +43,6 @@ navLink.forEach(n => n.addEventListener('click', linkAction))
 
 
 
-
-require('dotenv').config();
-
-
-
 /*========================= DYNAMICALLY GENERATED SKILLS =======================*/
 const github_User = "e-guerrero";
 const repo = "spell-book";
@@ -56,7 +51,7 @@ const branch = "main";
 const options = {
     method: 'GET',
     headers: {
-        Authorization: `Bearer ${process.env.GITHUB_TOKEN}`
+        Authorization: `Bearer ${env.GITHUB_TOKEN}`
     }
 };
 fetch(`https://api.github.com/repos/${github_User}/${repo}/git/trees/${branch}?recursive=1`, options)
