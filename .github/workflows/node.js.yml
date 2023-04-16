@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    stragety:
+    strategy:
       matrix:
         node-version: [16]
 
