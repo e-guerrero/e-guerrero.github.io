@@ -44,7 +44,7 @@ navLink.forEach(n => n.addEventListener('click', linkAction))
 
 
 
-
+require('dotenv').config();
 
 
 
