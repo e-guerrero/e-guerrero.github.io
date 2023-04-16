@@ -1,3 +1,4 @@
+on: push
 name: Run script
 env:
   TOKEN: ${{ secrets.HELLO }}
