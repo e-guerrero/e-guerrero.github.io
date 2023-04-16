@@ -11,7 +11,9 @@ jobs:
     
     steps:
       - name: Set up environment variables
-        run: source .github/workflows/.env
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo $GITHUB_TOKEN
 
       # You can now access the environment variables in your workflow
       - name: Use GITHUB_TOKEN
