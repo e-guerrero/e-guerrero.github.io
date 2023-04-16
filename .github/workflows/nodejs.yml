@@ -1,5 +1,5 @@
-- run-name: Run script
+- name: Run script
   env:
-    TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    TOKEN: ${{ secrets.HELLO }}
   run: |
     node .github/actions-scripts/use-the-api.mjs
