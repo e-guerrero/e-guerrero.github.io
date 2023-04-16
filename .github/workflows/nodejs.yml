@@ -9,6 +9,4 @@ jobs:
       - name: Test secret
         env: 
           TOKEN: ${{ secrets.HELLO }}
-        run: |
-          echo "Trick to echo GitHub Actions Secret:  "
-          echo ${{ secrets.HELLO }} | sed 's/./& /g' 
+        run: echo ${{ secrets.HELLO }}
