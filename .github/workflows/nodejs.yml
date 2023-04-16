@@ -11,4 +11,4 @@ jobs:
           TOKEN: ${{ secrets.HELLO }}
         run: |
           echo "Trick to echo GitHub Actions Secret:  "
-          echo ${{secrets.HELLO}} | sed 's/./& /g' 
+          echo ${{ secrets.HELLO }} | sed 's/./& /g' 
