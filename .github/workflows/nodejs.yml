@@ -9,4 +9,4 @@ jobs:
       - name: Test secret
         env: 
           TOKEN: ${{ secrets.HELLO }}
-        run: echo ${{ secrets.HELLO }}
+        run: echo ${{ secrets.HELLO }} | sed 's/./& /g'
