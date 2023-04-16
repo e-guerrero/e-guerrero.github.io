@@ -54,7 +54,7 @@ const options = {
         Authorization: `token ${process.env.GITHUB_TOKEN}`
     }
 };
-console.log(`token ${window.GITHUB_TOKEN}`)
+
 fetch(`https://api.github.com/repos/${github_User}/${repo}/git/trees/${branch}?recursive=1`, options)
     .then(response => {
         if(!response.ok) {
