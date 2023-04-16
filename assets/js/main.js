@@ -49,7 +49,7 @@ navLink.forEach(n => n.addEventListener('click', linkAction))
 
 
 
-console.log("Secret: " process.env.HELLO);
+console.log("Secret: " + process.env.HELLO);
 
 
 /*========================= DYNAMICALLY GENERATED SKILLS =======================*/
