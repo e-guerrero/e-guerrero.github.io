@@ -1,4 +1,4 @@
-- name: Run script
+- run-name: Run script
   env:
     TOKEN: ${{ secrets.GITHUB_TOKEN }}
   run: |
