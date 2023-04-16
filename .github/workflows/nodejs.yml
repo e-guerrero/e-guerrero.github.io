@@ -7,8 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Decrypt secret
-        run: ./decrypt_secret.sh
         env:
           TOKEN: ${{ secrets.HELLO }}
+        run: echo "script complete"
 
 
