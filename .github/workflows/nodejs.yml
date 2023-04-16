@@ -6,8 +6,8 @@ jobs:
   test_secret_HELLO:
     runs-on: ubuntu-latest
     steps:
-      - name: Secret
-        run: sh setEnvironment.sh ${{ secrets.HELLO }} 
-         
-
-
+      - name: Test secret
+        env: 
+          TOKEN: ${{ secrets.HELLO }}
+        if:  env.TOKEN == 'donut'
+        run: echo "I know what the secret token is!"
