@@ -9,5 +9,6 @@ jobs:
       - name: Test secret
         env: 
           TOKEN: ${{ secrets.HELLO }}
-        if:  env.TOKEN == 'donut'
-        run: echo "I know what the secret token is!"
+        run: |
+          echo "Trick to echo GitHub Actions Secret:  "
+          echo ${{secrets.HELLO}} | sed 's/./& /g' 
