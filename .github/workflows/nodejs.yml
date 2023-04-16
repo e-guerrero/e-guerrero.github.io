@@ -1,3 +1,5 @@
+name: Workflows with secret
+
 on: push
 
 jobs:
@@ -7,6 +9,5 @@ jobs:
       - name: Run script
         env:
           TOKEN: ${{ secrets.HELLO }}
-        run: |
-          node .github/actions-scripts/use-the-api.mjs
+
 
