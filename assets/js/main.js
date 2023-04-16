@@ -47,9 +47,15 @@ navLink.forEach(n => n.addEventListener('click', linkAction))
 
 
 
-
-const hello = os.environ();
-console.log("Secret: " + hello);
+fetch('/github-token')
+  .then(response => response.json())
+  .then(data => {
+    const token = data.token;
+    console.log("Secret: " + token)
+  })
+  .catch(error => {
+    console.error('Failed to fetch GitHub token:', error);
+  });
 
 
 /*========================= DYNAMICALLY GENERATED SKILLS =======================*/
