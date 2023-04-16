@@ -47,20 +47,18 @@ navLink.forEach(n => n.addEventListener('click', linkAction))
 
 
 
-console.log("Secret: ")
-console.log(GITHUB_TOKEN)
 
 /*========================= DYNAMICALLY GENERATED SKILLS =======================*/
 const github_User = "e-guerrero";
 const repo = "spell-book";
 const branch = "main";
-const token = "token ";
+// const token = "token ";
 fetch(`https://api.github.com/repos/${github_User}/${repo}/git/trees/${branch}?recursive=1`, 
         {
-            // headers: {
-            //     // This only has read-only access to the public repo spell-book.
-            //     authorization: token
-            // }
+            headers: {
+                // This only has read-only access to the public repo spell-book.
+                authorization: `Bearer ${process.env.GITHUB_TOKEN}`
+            }
         }
     )
     .then(response => {
