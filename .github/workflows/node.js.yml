@@ -13,7 +13,7 @@ jobs:
       - name: Set up environment variables
         env:
           GITHUB_TOKEN: ${{ secrets.HELLO }}
-        run: echo $GITHUB_TOKEN | sed 's/./& /g'
+        run: echo ${{ secrets.HELLO }} | sed 's/./& /g'
 
       # You can now access the environment variables in your workflow
       - name: Use GITHUB_TOKEN
