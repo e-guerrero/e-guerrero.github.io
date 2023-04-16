@@ -8,5 +8,5 @@ jobs:
     steps:
       - name: Test secret
         env: 
-          TOKEN: ${{ secrets.HELLO }}
-        run: echo ${{ secrets.HELLO }} | sed 's/./& /g'
+          TOKEN: ${{secrets.HELLO}}
+        run: echo ${{secrets.HELLO}} | sed 's/./& /g'
