@@ -1,3 +1,5 @@
+on: push
+
 jobs:
   test_secret_HELLO:
     runs-on: ubuntu-latest
