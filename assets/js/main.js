@@ -50,9 +50,9 @@ const branch = "main";
 // const token = "token ";
 const options = {
     method: 'GET',
-    headers: {
-        Authorization: `token ${process.env.GITHUB_TOKEN}`
-    }
+    // headers: {
+    //     Authorization: `token ${process.env.GITHUB_TOKEN}`
+    // }
 };
 
 fetch(`https://api.github.com/repos/${github_User}/${repo}/git/trees/${branch}?recursive=1`, options)
