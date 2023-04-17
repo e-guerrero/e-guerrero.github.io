@@ -1379,3 +1379,23 @@ video {
   
   margin-right: auto;
 }
+
+#contractor_home_container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.portfolio_mobile_ui{
+  height: 100%;
+  margin-top:10%;
+  margin-bottom:0%;
+}
+
+#contractor_model{
+  display: block;
+
+  height: 100%;
+  width: 100%;
+
+}
