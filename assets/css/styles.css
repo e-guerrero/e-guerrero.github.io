@@ -901,6 +901,10 @@ img {
   outline: none;
 }
 
+video {
+  width: 100%;
+}
+
 /*==================== PROJECT IN MIND ====================*/
 .project {
   text-align: center;
