@@ -1288,7 +1288,7 @@ video {
     width: 450px;
   }
   .portfolio__img {
-    width: 320px;
+    width: 100%;
   }
   .portfolio__content {
     align-items: center;
