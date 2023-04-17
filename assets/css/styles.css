@@ -1367,3 +1367,15 @@ img {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+video {
+  display: block;
+
+  height: 100%;
+  width: 100%;
+  margin-top: 8%;
+  margin-bottom: 5%;
+  margin-left: auto;
+  
+  margin-right: auto;
+}
