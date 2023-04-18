@@ -846,6 +846,7 @@ img {
   overflow: initial;
 }
 
+
 .portfolio__content {
   padding: 0 1.5rem;
 }
@@ -899,10 +900,6 @@ img {
 .swiper-button-next,
 .swiper-pagination-bullet {
   outline: none;
-}
-
-video {
-  width: 100%;
 }
 
 /*==================== PROJECT IN MIND ====================*/
