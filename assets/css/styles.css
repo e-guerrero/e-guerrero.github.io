@@ -846,6 +846,9 @@ img {
   overflow: initial;
 }
 
+.swiper-wrapper {
+  align-items: center;
+}
 
 .portfolio__content {
   padding: 0 1.5rem;
